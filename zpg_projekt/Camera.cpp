@@ -5,9 +5,8 @@
 
 // https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.4.camera_class/camera_class.cpp
 
-Camera::Camera(Shader* shader, glm::vec3 position) : Object(position)
+Camera::Camera(glm::vec3 position) : Object(position)
 {
-	this->m_shader = shader;
 	this->movingDirection = 0;
 	this->target = glm::vec3(0.0f, 0.0f, 0.0f);
 	this->worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -42,12 +41,9 @@ glm::mat4 Camera::getProjectionMatrix()
 
 void Camera::setPerspectiveCamera()
 {
-	// Nastaveni projekèní matice na perspektivní promítání
+	// Nastaveni projekèní matice na perspektivní promítání	(perspective projection)
 	// Projection matrix:            45° Field of View, 4:3 ratio, display range: 0.1 unit, 100 units
 	projection = glm::perspective(glm::radians(fov), 4.0f / 3.0f, 0.01f, 100.0f);
-	//perspective = projection;
-
-	//m_shader->sendUniform("projectionMatrix", projection);
 }
 
 // processes input received from a mouse input system. Expects the offset value in both the x and y direction.

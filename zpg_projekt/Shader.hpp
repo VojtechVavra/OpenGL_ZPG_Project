@@ -15,6 +15,7 @@ public:
     Shader(Camera* camera);
     Shader(int i);
     //GLuint CreateAndCompile();
+    void sendUniform(const GLchar* name, GLfloat value);
     void sendUniform(const GLchar* name, glm::vec3 dataVec3);
     void sendUniform(const GLchar* name, glm::vec4 dataVec4);
     void sendUniform(const GLchar* name, glm::mat4 dataMat4);

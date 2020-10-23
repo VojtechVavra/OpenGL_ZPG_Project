@@ -8,15 +8,16 @@ in vec3 ex_worldPosition; // fragPos
 in vec3 ex_worldNormal;   // normal
 
 uniform vec3 lightColor; // = vec3(1.0, 0.0, 0.5);
-uniform vec3 viewPos = vec3(1.0, 0.0, 0.0);
-
+uniform vec3 viewPos = vec3(0.0, 0.0, 0.0);
+uniform float ambientStrength = 0.1f;
+uniform float specularStrength = 0.5f;  // 0.5
 //uniform vec3 lightPosition;   //the shader has light position
 //uniform vec3 viewPos;
 //out vec4 frag_colour;
 
 void main () {
 //ambient
-    float ambientStrength = 0.20f;
+    //float ambientStrength = 0.1f;
     vec3 ambient = ambientStrength * lightColor;
 //diffuse
     vec3 norm = normalize(ex_worldNormal);
@@ -24,7 +25,7 @@ void main () {
     float diff = max(dot(norm, lightDir), 0.0);  // dot product?
     vec3 diffuse = diff * lightColor;
 // specular
-    float specularStrength = 0.5f;
+    //float specularStrength = 0.5f;  // 0.5
     vec3 viewDir = normalize(viewPos - ex_worldPosition);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);   // h = 32

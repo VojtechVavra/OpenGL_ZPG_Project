@@ -7,8 +7,9 @@
 #include <array>
 #include "Callback.hpp"
 #include "Shader.hpp"
-#include "Camera.hpp"
 #include "Object.hpp"
+#include "Camera.hpp"
+
 
 
 class Application {

@@ -102,6 +102,19 @@ GLuint Shader::getShader()
     }
 }*/
 
+void Shader::sendUniform(const GLchar* name, GLfloat value)
+{
+    GLint uniformID = glGetUniformLocation(this->shaderProgram, name);  // check for -1, nepouzita uniformni promenna (otestovano)
+    if (uniformID >= 0) {
+        glUniform1f(uniformID, value);
+    }
+    else {
+        // in shader doesn't exist uniform variable 
+        std::cout << "promenna neexistuje(0) " << name << std::endl;
+    }
+    
+}
+
 void Shader::sendUniform(const GLchar* name, glm::vec3 pos) {
     GLint uniformID = glGetUniformLocation(this->shaderProgram, name);  // check for -1, nepouzita uniformni promenna (otestovano)
     if (uniformID >= 0) {

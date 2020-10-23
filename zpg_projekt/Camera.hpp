@@ -10,10 +10,7 @@
 
 #include <GLFW/glfw3.h>	// this will include <GL/gl.h>
 #include "Object.hpp"
-#include "Shader.hpp"
-//#include "Object.hpp"
-
-class Shader;
+//class Shader;
 
 enum movDir {
 	//NO_MOVE = 0,
@@ -35,7 +32,7 @@ namespace cameraDefaultValues {
 class Camera : public Object
 {
 public:
-	Camera(Shader* shader, glm::vec3 position);
+	Camera(glm::vec3 position);
 	Camera();
 	~Camera();
 	glm::mat4 getCamera();
@@ -47,7 +44,6 @@ public:
 	void processKeyboard(float deltaTime);
 	void processMouseScroll(float yoffset);
 private:
-	Shader* m_shader;
 	glm::mat4 projection;
 	glm::vec3 up;
 	glm::vec3 right;

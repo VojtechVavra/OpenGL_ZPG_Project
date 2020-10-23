@@ -9,9 +9,9 @@ layout(location = 0) in vec3 vp;
 layout(location = 1) in vec3 vertNormal;
 //layout(location=1) in vec3 vertexColor; //  // Notice that the 1 here equals the 1 in glVertexAttribPointer
 
-uniform mat4 modelMatrix;                  // = mat4(1.0f);
-uniform mat4 viewMatrix = mat4(1.0f);      // = mat4(1.0f);
-uniform mat4 projectionMatrix = mat4(1.0f); // = mat4(1.0f);   // perspective or orthographic effect
+uniform mat4 modelMatrix;           // = mat4(1.0f);
+uniform mat4 viewMatrix;			// = mat4(1.0f);
+uniform mat4 projectionMatrix;		// = mat4(1.0f);   // perspective or orthographic effect
 uniform vec3 fragColor;
 uniform vec3 newLightPos;
 
