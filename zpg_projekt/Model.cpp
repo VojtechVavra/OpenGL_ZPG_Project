@@ -19,7 +19,11 @@ Model::Model(std::string modelName/*, Shader shader*/, GLuint vertCount)
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	if (modelName == "koule")
+    if (modelName == "plain") {
+        vertexCount = 36;
+        glBufferData(GL_ARRAY_BUFFER, sizeof(suziFlat), suziFlat, GL_STATIC_DRAW);
+    }
+	else if (modelName == "sphere")
 	{
 		vertexCount = 2880;
         glBufferData(GL_ARRAY_BUFFER, sizeof(sphere), sphere, GL_STATIC_DRAW);
@@ -28,8 +32,11 @@ Model::Model(std::string modelName/*, Shader shader*/, GLuint vertCount)
         vertexCount = 2904;
         glBufferData(GL_ARRAY_BUFFER, sizeof(suziSmooth), suziSmooth, GL_STATIC_DRAW);
     }
-
-
+    else if (modelName == "suzi_flat") {
+        vertexCount = 2904;
+        glBufferData(GL_ARRAY_BUFFER, sizeof(suziFlat), suziFlat, GL_STATIC_DRAW);
+    }
+    
     glBindVertexArray(VAO);
 
     // position attribute
@@ -43,7 +50,7 @@ Model::Model(std::string modelName/*, Shader shader*/, GLuint vertCount)
 void Model::render() {
 	// render the cube
 	//glBindVertexArray(VAO); 
-	glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+	glDrawArrays(GL_TRIANGLES, 0, vertexCount); // mode, first, count
 }
 
 GLuint Model::getVAO()
