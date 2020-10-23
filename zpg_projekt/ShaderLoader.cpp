@@ -115,6 +115,7 @@ void ShaderLoader::checkProgramShaderCompileError(GLuint programID)
 		glGetProgramInfoLog(programID, logLen, NULL, strInfoLog);
 		fprintf(stderr, "Linker failure: %s\n", strInfoLog);
 		delete[] strInfoLog;
+		exit(EXIT_FAILURE);
 	}
 }
 

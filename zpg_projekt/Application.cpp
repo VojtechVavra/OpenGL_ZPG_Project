@@ -168,20 +168,6 @@ void Application::draw()
 		// input
 		camera.processKeyboard(deltaTime);
 
-		GLint status = 0;
-		glGetProgramiv(shaderProgram, GL_LINK_STATUS, &status);
-		if (status == GL_FALSE)
-		{
-			GLint infoLogLength;
-			glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
-			GLchar* strInfoLog = new GLchar[infoLogLength + 1];
-			glGetProgramInfoLog(shaderProgram, infoLogLength, NULL, strInfoLog);
-			fprintf(stderr, "Linker failure: %s\n", strInfoLog);
-			delete[] strInfoLog;
-
-			exit(EXIT_FAILURE);
-		}
-
 		// clear color and depth buffer
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);	// space color
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -190,60 +176,10 @@ void Application::draw()
 		// draw model 1
 		// Render
 		//glUseProgram(shaderProgram);
-		
-		/*
-		glUseProgram(shader2.getShader());
-
-		// Note that to convert from degrees to radians, use glm::radians(degrees)
-		glm::mat4 rotatemat = glm::mat4(1.0f);
-		//rotatemat = glm::rotate(rotatemat, glm::radians(5.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-
-		glm::mat4 translatemat = glm::translate(rotatemat, glm::vec3(-0.25f, 0.0f, -0.25f)); // (-0.4f, 0.5f, -1.0f)
-		glm::mat4 scalemat = glm::scale(glm::mat4(1.0f), glm::vec3(0.10f, 0.10f, 0.10f));
-		glm::mat4 trans3mat = translatemat * scalemat;
-		// glm::mat4 trans3 = rotatem * translatem;
-
-		// the correct order is: Translation * Rotation * Scale * OriginalVector;
-
-		shaders.sendUniform("modelMatrix", trans3mat);
-		shaders.sendUniform("fragColor", glm::vec3(1.0f, 0.5f, 0.31f));
-		//shaders.sendUniform("lightColor", glm::vec3(1.0f, 0.5f, 1.0f));
-
-		
-		//shaders.sendUniform("newLightPosition", light.getPosition());
-		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
-
-
-		//shaders.sendUniform("viewPos", camera.GetViewMatrix());
-		//shaders.sendUniform("transv4", glm::vec4(1.0f));
-
-		shaders.Update();
-
-		*/
-
-
-
-
-
-		//glfwSwapBuffers(window);
-		//camera.cameraDirection(x, y);
-		//shaders.sendUniform("viewMatrix", camera.getCamera());
-		
-		//glBindVertexArray(VAO);
-		// draw triangles
-		//glDrawArrays(GL_TRIANGLES, 0, 2880);	// 12*3
-		//glBindVertexArray(Sphere2.getVAO());
 		glBindVertexArray(0);
 		glBindVertexArray(object[0].getModel().getVAO());
 		object[0].useShader();		//glUseProgram(object[0].getShader());
-		//glBindVertexArray(Sphere3.getVAO());
-		//glBindVertexArray(0);
-		////////
-		// also draw the lamp object
-		// draw model 2
-		//GLuint sphereShader = Sphere2.shader.getShader();
-		//glUseProgram(sphereShader);
-		//Sphere2.shader.use();
+
 		glm::mat4 trmat = glm::translate(glm::mat4(1.0f), glm::vec3(0.25f, 0.0f, 0.25f));
 		glm::mat4 scmat = glm::scale(glm::mat4(1.0f), glm::vec3(0.10f, 0.10f, 0.10f));
 		glm::mat4 vysledek = trmat * scmat;//glm::mat4(1.0f); //trmat * scmat;
