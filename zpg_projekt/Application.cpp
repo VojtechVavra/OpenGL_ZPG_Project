@@ -140,6 +140,8 @@ void Application::draw()
 	//camera.cameraDirection(0.0f, 0.0f);
 	camera.setPerspectiveCamera();
 	//Light light(glm::vec3(1.0, 0.0, 0.0));	// 10.0,10.0,10.0
+	glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
+	glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	Shader shader2 = Shader(&camera);
 	GLuint shaderProgram2 = shader2.getShader();
@@ -162,7 +164,7 @@ void Application::draw()
 	object.push_back(Object(pos, suzi_smooth, shaderProgram));
 	object.push_back(Object(pos, suzi_flat, shaderProgram));
 	
-	glm::vec3 sphereScale = glm::vec3(0.1f, 0.1f, 0.1f);
+	glm::vec3 sphereScale = glm::vec3(0.2f, 0.2f, 0.2f);
 	object[0].Scale(sphereScale);
 	object[1].Scale(sphereScale);
 	object[2].Scale(sphereScale);
@@ -181,7 +183,7 @@ void Application::draw()
 		camera.processKeyboard(deltaTime);
 
 		// clear color and depth buffer
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);	// space color (gray)
+		//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);	// space color (gray)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		
@@ -192,7 +194,10 @@ void Application::draw()
 
 		//glm::mat4 scalemat0 = glm::scale(object[0].getMatrix(), glm::vec3(0.10f, 0.10f, 0.10f));
 		shaders.sendUniform("modelMatrix", object[0].getMatrix());
-		shaders.sendUniform("fragColor", glm::vec3(1.0f, 1.0f, 1.0f));
+		shaders.sendUniform("fragColor", glm::vec3(0.10f, 0.10f, 0.10f));
+		shaders.sendUniform("newLightPos", lightPos);
+		shaders.sendUniform("lightColor", lightColor);
+		shaders.sendUniform("viewPos", camera.getPosition());
 		shaders.sendUniform("viewMatrix", camera.getCamera());
 		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
 		object[0].getModel().render();
@@ -203,7 +208,9 @@ void Application::draw()
 		object[1].useShader();		//glUseProgram(object[0].getShader());
 		//glm::mat4 scalemat1 = glm::scale(object[1].getMatrix(), glm::vec3(0.1f, 0.1f, 0.1f));
 		shaders.sendUniform("modelMatrix", object[1].getMatrix());
-		shaders.sendUniform("fragColor", glm::vec3(0.0f, 0.0f, 1.0f));
+		shaders.sendUniform("fragColor", glm::vec3(0.0f, 0.0f, 0.9f));
+		shaders.sendUniform("newLightPos", lightPos);
+		shaders.sendUniform("viewPos", camera.getPosition());
 		shaders.sendUniform("viewMatrix", camera.getCamera());
 		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
 		object[1].getModel().render();
@@ -214,7 +221,9 @@ void Application::draw()
 		object[2].useShader();		//glUseProgram(object[0].getShader());
 		//-glm::mat4 scalemat2 = glm::scale(object[2].getMatrix(), glm::vec3(0.10f, 0.10f, 0.10f));
 		shaders.sendUniform("modelMatrix", object[2].getMatrix());
-		shaders.sendUniform("fragColor", glm::vec3(1.0f, 0.0f, 0.5f));
+		shaders.sendUniform("fragColor", glm::vec3(0.7f, 0.0f, 0.5f));
+		shaders.sendUniform("newLightPos", lightPos);
+		shaders.sendUniform("viewPos", camera.getPosition());
 		shaders.sendUniform("viewMatrix", camera.getCamera());
 		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
 		object[2].getModel().render();
@@ -225,7 +234,9 @@ void Application::draw()
 		object[3].useShader();		//glUseProgram(object[0].getShader());
 		//glm::mat4 scalemat3 = glm::scale(object[3].getMatrix(), glm::vec3(0.10f, 0.10f, 0.10f));
 		shaders.sendUniform("modelMatrix", object[3].getMatrix());
-		shaders.sendUniform("fragColor", glm::vec3(1.0f, 0.0f, 0.0f));
+		shaders.sendUniform("fragColor", glm::vec3(0.8f, 0.0f, 0.0f));
+		shaders.sendUniform("newLightPos", lightPos);
+		shaders.sendUniform("viewPos", camera.getPosition());
 		shaders.sendUniform("viewMatrix", camera.getCamera());
 		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
 		object[3].getModel().render();
@@ -247,9 +258,11 @@ void Application::draw()
 		Sphere2.shader.sendUniform("fragColor", glm::vec3(0.0f, 0.0f, 1.0f));
 		Sphere2.shader.sendUniform("projectionMatrix", camera.getProjectionMatrix());
 		*/
-		shaders.sendUniform("viewMatrix", camera.getCamera());
 		shaders.sendUniform("modelMatrix", vysledek);
 		shaders.sendUniform("fragColor", glm::vec3(0.0f, 0.0f, 1.0f));
+		shaders.sendUniform("newLightPos", lightPos);
+		shaders.sendUniform("viewPos", camera.getPosition());
+		shaders.sendUniform("viewMatrix", camera.getCamera());
 		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
 
 
@@ -276,18 +289,22 @@ void Application::draw()
 		shaders.sendUniform("viewMatrix", camera.getCamera());
 		shaders.sendUniform("modelMatrix", vysledek3);
 		shaders.sendUniform("fragColor", glm::vec3(0.10f, 1.0f, 0.4f));
+		shaders.sendUniform("newLightPos", lightPos);
+		shaders.sendUniform("viewPos", camera.getPosition());
 		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
 		object[5].getModel().render();
 
 	
 		// draw model 6 - suzie flat
-		glm::mat4 trmat4 = glm::translate(glm::mat4(1.0f), glm::vec3(0.25f, 0.5f, -1.0f));
+		glm::mat4 trmat4 = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, -0.30, 0.0));
 		glm::mat4 vysledek4 = glm::scale(trmat4, glm::vec3(0.10f, 0.10f, 0.10f));
 		glBindVertexArray(object[6].getModel().getVAO());
 		object[6].useShader();
 		shaders.sendUniform("viewMatrix", camera.getCamera());
 		shaders.sendUniform("modelMatrix",vysledek4);
 		shaders.sendUniform("fragColor", glm::vec3(1.0f, 1.0f, 0.4f));
+		shaders.sendUniform("newLightPos", lightPos);
+		shaders.sendUniform("viewPos", camera.getPosition());
 		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
 		object[6].getModel().render();  //	glDrawArrays(GL_TRIANGLES, 0, 2904);
 

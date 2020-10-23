@@ -30,7 +30,8 @@ Shader::Shader(Camera* camera)
 GLuint Shader::createShader()
 {
     ShaderLoader loader;
-    this->shaderProgram = loader.loadShader("./vertex2.glsl", "./fragment2.glsl");
+    this->shaderProgram = loader.loadShader("./vertex.glsl", "./fragment.glsl");
+    //this->shaderProgram = loader.loadShader("./vertex2.glsl", "./fragment2.glsl");
     return this->shaderProgram;
 }
 
