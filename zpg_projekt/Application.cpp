@@ -132,20 +132,33 @@ void Application::callBackFunctions() {
 
 void Application::draw()
 {
-	shaders = Shader(&camera);
+	//shaders = Shader(&camera);
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f));
 	Callback::setCamera(&camera);
 	//GLuint shaderProgram = shaders.CreateAndCompile();
-	GLuint shaderProgram = shaders.getShader();
 
-	//camera.cameraDirection(0.0f, 0.0f);
+	std::vector<Shader> shader;
+	shader.push_back(Shader(&camera, ShaderType::AMBIENT));
+	shader.push_back(Shader(&camera, ShaderType::DIFFUSE));
+	shader.push_back(Shader(&camera, ShaderType::SPECULAR));
+	shader.push_back(Shader(&camera, ShaderType::PHONG));
+	for (int i = 4; i < 7; i++)
+	{
+		shader.push_back(Shader(&camera, ShaderType::PHONG));
+	}
+	std::vector<GLuint> shaderProgram;
+	for (int i = 0; i < 7; i++)
+	{
+		shaderProgram.push_back(shader[i].getShader());
+	}
+
 	camera.setPerspectiveCamera();
-	//Light light(glm::vec3(1.0, 0.0, 0.0));	// 10.0,10.0,10.0
+
 	glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
 	glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	Shader shader2 = Shader(&camera);
-	GLuint shaderProgram2 = shader2.getShader();
+	Shader shaderLight = Shader(&camera, ShaderType::AMBIENT);
+	GLuint shaderLightProgram = shaderLight.getShader();
 	std::vector<Object> object;
 	
 	std::unique_ptr<Shader> pshader222;
@@ -155,17 +168,20 @@ void Application::draw()
 	Model sphere("sphere");
 	Model suzi_smooth("suzi_smooth");
 	Model suzi_flat("suzi_flat");
-	Model light("sphere");
+	Model lightModel("sphere");
+	// light
+	Light light(glm::vec3(0.0f, 0.0f, 0.0f), lightModel, glm::vec3(1.0f, 1.0f, 1.0f), shaderLightProgram, glm::vec3(1.0f, 1.0f, 1.0f));
 
-	object.push_back(Object(glm::vec3(-0.25, 0, 0.25), sphere, shaderProgram));	// horni leva koule
-	object.push_back(Object(glm::vec3(0.25, 0, 0.25), sphere, shaderProgram));	// horni prava koule
-	object.push_back(Object(glm::vec3(-0.25, 0, -0.25), sphere, shaderProgram)); // dolni leva koule
-	object.push_back(Object(glm::vec3(0.25, 0, -0.25), sphere, shaderProgram)); // dolni prava koule
+	object.push_back(Object(glm::vec3(-0.25f, 0.f, 0.25f), sphere, glm::vec3(1.10f, 1.10f, 1.10f), shaderProgram[0]));	// horni leva koule
+	object.push_back(Object(glm::vec3(0.25f, 0.f, 0.25f), sphere, glm::vec3(0.0f, 0.0f, 0.9f), shaderProgram[1]));		// horni prava koule
+	object.push_back(Object(glm::vec3(-0.25f, 0.f, -0.25f), sphere, glm::vec3(0.7f, 0.0f, 0.5f), shaderProgram[2]));	// dolni leva koule
+	object.push_back(Object(glm::vec3(0.25f, 0.f, -0.25f), sphere, glm::vec3(0.8f, 0.0f, 0.0f), shaderProgram[3]));		// dolni prava koule
 
-	object.push_back(Object(pos, plain, shaderProgram));
-	object.push_back(Object(pos, suzi_smooth, shaderProgram));
-	object.push_back(Object(pos, suzi_flat, shaderProgram));
-	object.push_back(Object(pos, light, shaderProgram2));
+	object.push_back(Object(pos, plain, shaderProgram[4]));
+	object.push_back(Object(pos, suzi_smooth, shaderProgram[5]));
+	object.push_back(Object(pos, suzi_flat, shaderProgram[6]));
+	// light
+	//object.push_back(Object(pos, light, shaderLightProgram));
 
 	glm::vec3 sphereScale = glm::vec3(0.2f, 0.2f, 0.2f);
 	object[0].Scale(sphereScale);
@@ -173,8 +189,21 @@ void Application::draw()
 	object[2].Scale(sphereScale);
 	object[3].Scale(sphereScale);
 
-	glEnable(GL_DEPTH_TEST);
+	bool first = true;
 
+	// object translate and scale
+	object[4].Translate(glm::vec3(0.25f, 0.0f, 0.25f));
+	object[4].Scale(glm::vec3(0.10f, 0.10f, 0.10f));
+	object[5].Translate(glm::vec3(-1.0f, 0.0f, 0.25f));
+	object[5].Scale(glm::vec3(0.10f, 0.10f, 0.10f));
+	object[6].Translate(glm::vec3(0.0, -0.30, 0.0));
+	object[6].Scale(glm::vec3(0.10f, 0.10f, 0.10f));
+	// end translate, scale
+
+
+
+	glEnable(GL_DEPTH_TEST);
+	// vytvorit renderer, predat mu tridu scenu, scena udrzuje objekty
 	while (!glfwWindowShouldClose(window))
 	{
 		// per-frame time logic
@@ -190,154 +219,142 @@ void Application::draw()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
-		lightPos.z = sin(glfwGetTime() / 2.0f) * 1.0f;
+		//lightPos.x = 1.0f + sin(glfwGetTime()) * 2.0f;
+		//lightPos.z = sin(glfwGetTime() / 2.0f) * 1.0f;
 
 		// draw model 1 - sphere
-		glBindVertexArray(0);
-		glBindVertexArray(object[0].getModel().getVAO());
-		object[0].useShader();		//glUseProgram(shaderProgram);
-
-		//glm::mat4 scalemat0 = glm::scale(object[0].getMatrix(), glm::vec3(0.10f, 0.10f, 0.10f));
-		shaders.sendUniform("modelMatrix", object[0].getMatrix());
-		shaders.sendUniform("fragColor", glm::vec3(0.10f, 0.10f, 0.10f));
-		shaders.sendUniform("newLightPos", lightPos);
-		shaders.sendUniform("lightColor", lightColor);
-		shaders.sendUniform("viewPos", camera.getPosition());
-		shaders.sendUniform("viewMatrix", camera.getCamera());
-		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
-		object[0].getModel().render();
-
-		// draw model 2 - sphere
 		//glBindVertexArray(0);
-		glBindVertexArray(object[1].getModel().getVAO());
-		object[1].useShader();		//glUseProgram(object[0].getShader());
-		//glm::mat4 scalemat1 = glm::scale(object[1].getMatrix(), glm::vec3(0.1f, 0.1f, 0.1f));
-		shaders.sendUniform("modelMatrix", object[1].getMatrix());
-		shaders.sendUniform("fragColor", glm::vec3(0.0f, 0.0f, 0.9f));
-		shaders.sendUniform("newLightPos", lightPos);
-		shaders.sendUniform("lightColor", lightColor);
-		shaders.sendUniform("viewPos", camera.getPosition());
-		shaders.sendUniform("viewMatrix", camera.getCamera());
-		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
-		object[1].getModel().render();
+		//glBindVertexArray(object[0].getModel().getVAO());
 
-		// draw model 3 - sphere
-		//glBindVertexArray(0);
-		glBindVertexArray(object[2].getModel().getVAO());
-		object[2].useShader();		//glUseProgram(object[0].getShader());
-		//-glm::mat4 scalemat2 = glm::scale(object[2].getMatrix(), glm::vec3(0.10f, 0.10f, 0.10f));
-		shaders.sendUniform("modelMatrix", object[2].getMatrix());
-		shaders.sendUniform("fragColor", glm::vec3(0.7f, 0.0f, 0.5f));
-		shaders.sendUniform("newLightPos", lightPos);
-		shaders.sendUniform("lightColor", lightColor);
-		shaders.sendUniform("viewPos", camera.getPosition());
-		shaders.sendUniform("viewMatrix", camera.getCamera());
-		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
-		object[2].getModel().render();
+		if (first)
+		{
+			first = false;
+			
+			// draw models - sphere
+			for (int i = 0; i < 7; i++) {
+				glBindVertexArray(0);
+				glBindVertexArray(object[0].getModel().getVAO());
+				object[i].useShader();		//glUseProgram(shaderProgram);
+				if (shader[i].getType() == ShaderType::AMBIENT)
+				{
+					// vertex shader uniforms
+					shader[i].sendUniform("modelMatrix", object[i].getMatrix());
+					shader[i].sendUniform("viewMatrix", camera.getCamera());
+					shader[i].sendUniform("projectionMatrix", camera.getProjectionMatrix());
 
-		// draw model 4 - sphere
-		//glBindVertexArray(0);
-		glBindVertexArray(object[3].getModel().getVAO());
-		object[3].useShader();		//glUseProgram(object[0].getShader());
-		//glm::mat4 scalemat3 = glm::scale(object[3].getMatrix(), glm::vec3(0.10f, 0.10f, 0.10f));
-		shaders.sendUniform("modelMatrix", object[3].getMatrix());
-		shaders.sendUniform("fragColor", glm::vec3(0.8f, 0.0f, 0.0f));
-		shaders.sendUniform("newLightPos", lightPos);
-		shaders.sendUniform("lightColor", lightColor);
-		shaders.sendUniform("viewPos", camera.getPosition());
-		shaders.sendUniform("viewMatrix", camera.getCamera());
-		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
-		object[3].getModel().render();
+					// fragment shader uniforms
+					shader[i].sendUniform("fragmentColor", object[i].getColor());
+					//shader[i].sendUniform("viewPos", camera.getPosition());
+					// posilat jen pri zmnene
+					//shader[i].sendUniform("newLightPos", light.getPosition());
+					//shader[i].sendUniform("lightColor", light.lightColor);
+				}
+				else if (shader[i].getType() == ShaderType::DIFFUSE)
+				{
+					// vertex shader uniforms
+					shader[i].sendUniform("modelMatrix", object[i].getMatrix());
+					shader[i].sendUniform("viewMatrix", camera.getCamera());
+					shader[i].sendUniform("projectionMatrix", camera.getProjectionMatrix());
 
-		// draw model 5 - plain
-		//glUseProgram(shaderProgram);
-		glBindVertexArray(0);
-		glBindVertexArray(object[4].getModel().getVAO());
-		object[4].useShader();		//glUseProgram(object[0].getShader());
+					// fragment shader uniforms
+					shader[i].sendUniform("fragmentColor", object[i].getColor());
+					shader[i].sendUniform("lightPosition", light.getPosition());
+					shader[i].sendUniform("lightColor", light.lightColor);
+				}
+				else if (shader[i].getType() == ShaderType::SPECULAR)
+				{
+					// vertex shader uniforms
+					shader[i].sendUniform("modelMatrix", object[i].getMatrix());
+					shader[i].sendUniform("viewMatrix", camera.getCamera());
+					shader[i].sendUniform("projectionMatrix", camera.getProjectionMatrix());
 
-		glm::mat4 trmat = glm::translate(glm::mat4(1.0f), glm::vec3(0.25f, 0.0f, 0.25f));
-		glm::mat4 scmat = glm::scale(glm::mat4(1.0f), glm::vec3(0.10f, 0.10f, 0.10f));
-		glm::mat4 vysledek = trmat * scmat;//glm::mat4(1.0f); //trmat * scmat;
-		//light.render();
+					// fragment shader uniforms
+					shader[i].sendUniform("fragmentColor", object[i].getColor());
+					shader[i].sendUniform("lightPosition", light.getPosition());
+					shader[i].sendUniform("lightColor", light.lightColor);
+					shader[i].sendUniform("viewPos", camera.getPosition());
+					shader[i].sendUniform("specularStrength", 0.5f);
+				}
+				else if (shader[i].getType() == ShaderType::PHONG)
+				{
+					shader[i].sendUniform("modelMatrix", object[i].getMatrix());
+					shader[i].sendUniform("fragmentColor", object[i].getColor());
+					shader[i].sendUniform("viewPos", camera.getPosition());
+					// posilat jen pri zmnene
+					shader[i].sendUniform("lightPosition", light.getPosition());
+					shader[i].sendUniform("lightColor", light.lightColor);
+					shader[i].sendUniform("viewMatrix", camera.getCamera());
+					shader[i].sendUniform("projectionMatrix", camera.getProjectionMatrix());
+				}
+				
+				object[i].getModel().render();
+			}
 
-		/* funguje
-		Sphere2.shader.sendUniform("viewMatrix", camera.getCamera());
-		Sphere2.shader.sendUniform("modelMatrix", vysledek);
-		Sphere2.shader.sendUniform("fragColor", glm::vec3(0.0f, 0.0f, 1.0f));
-		Sphere2.shader.sendUniform("projectionMatrix", camera.getProjectionMatrix());
-		*/
-		shaders.sendUniform("modelMatrix", vysledek);
-		shaders.sendUniform("fragColor", glm::vec3(0.0f, 0.0f, 1.0f));
-		shaders.sendUniform("newLightPos", lightPos);
-		shaders.sendUniform("lightColor", lightColor);
-		shaders.sendUniform("viewPos", camera.getPosition());
-		shaders.sendUniform("viewMatrix", camera.getCamera());
-		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
 
 
-		//Sphere.shader.sendUniform("newLightPosition", light.getPosition());
-		//Sphere.shader.sendUniform("projectionMatrix", camera.getProjectionMatrix());
-		//shaders.Update();
-		//Sphere2.render();
+			// draw model 7 - light
+			glBindVertexArray(light.getModel().getVAO());
+			//glm::mat4 trmat5 = glm::translate(glm::mat4(1.0f), lightPos);
+			//glm::mat4 vysledek5 = glm::scale(trmat5, glm::vec3(0.05f, 0.05f, 0.05f));
+			light.useShader();
 
-		object[4].getModel().render();
-		//glDrawArrays(GL_TRIANGLES, 0, 2880);	// funguje
-		
-		// draw model 6 - suzie smooth
-		glBindVertexArray(0);
-		glBindVertexArray(object[5].getModel().getVAO());
-		object[5].useShader();	   // glUseProgram(object[1].getShader());
+			//object[7].Translate(lightPos);
+			light.Scale(glm::vec3(0.05f, 0.05f, 0.05f));
+			shaderLight.sendUniform("viewMatrix", camera.getCamera());
+			shaderLight.sendUniform("modelMatrix", light.getMatrix());
+			shaderLight.sendUniform("fragmentColor", light.getColor());
+			//shaderLight.sendUniform("lightColor", light.lightColor);
+			shaderLight.sendUniform("ambientStrength", 1.0f);
+			//shader2.sendUniform("specularStrength", 0.0f);
+			//shaderLight.sendUniform("lightPosition", light.getPosition());
+			//shaderLight.sendUniform("viewPos", camera.getPosition());
+			shaderLight.sendUniform("projectionMatrix", camera.getProjectionMatrix());
+			light.getModel().render();	//	glDrawArrays(GL_TRIANGLES, 0, 2880);
+		}
+		else
+		{
+		// objects
+			for (int i = 0; i < 7; i++)
+			{
+				glBindVertexArray(object[i].getModel().getVAO());
+				object[i].useShader();
 
-		glm::mat4 trmat3 = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, 0.0f, 0.25f));
-		glm::mat4 scmat3 = glm::scale(glm::mat4(1.0f), glm::vec3(0.10f, 0.10f, 0.10f));
-		glm::mat4 vysledek3 = trmat3 * scmat3;
-		//vysledek2 = glm::translate(vysledek2, glm::vec3(-0.50f, 0.0f, 0.50f));
-		//GLuint sphereShader3 = Sphere3.shader.getShader();
-		//glUseProgram(sphereShader3);
-		
-		shaders.sendUniform("viewMatrix", camera.getCamera());
-		shaders.sendUniform("modelMatrix", vysledek3);
-		shaders.sendUniform("fragColor", glm::vec3(0.10f, 1.0f, 0.4f));
-		shaders.sendUniform("lightColor", lightColor);
-		shaders.sendUniform("newLightPos", lightPos);
-		shaders.sendUniform("viewPos", camera.getPosition());
-		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
-		object[5].getModel().render();
+				if (shader[i].getType() == ShaderType::AMBIENT)
+				{
+					shader[i].sendUniform("modelMatrix", object[i].getMatrix());
+					shader[i].sendUniform("viewMatrix", camera.getCamera());
+				}
+				else if (shader[i].getType() == ShaderType::DIFFUSE)
+				{
+					shader[i].sendUniform("modelMatrix", object[i].getMatrix());
+					shader[i].sendUniform("viewMatrix", camera.getCamera());
+				}
+				else if (shader[i].getType() == ShaderType::SPECULAR)
+				{
+					shader[i].sendUniform("modelMatrix", object[i].getMatrix());
+					shader[i].sendUniform("viewMatrix", camera.getCamera());
+					shader[i].sendUniform("viewPos", camera.getPosition());
+				}
+				else if (shader[i].getType() == ShaderType::PHONG)
+				{
+					shader[i].sendUniform("modelMatrix", object[i].getMatrix());
+					shader[i].sendUniform("viewMatrix", camera.getCamera());
+					shader[i].sendUniform("viewPos", camera.getPosition());
+				}
+				
 
-	
-		// draw model 6 - suzie flat
-		glm::mat4 trmat4 = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, -0.30, 0.0));
-		glm::mat4 vysledek4 = glm::scale(trmat4, glm::vec3(0.10f, 0.10f, 0.10f));
-		glBindVertexArray(object[6].getModel().getVAO());
-		object[6].useShader();
-		shaders.sendUniform("viewMatrix", camera.getCamera());
-		shaders.sendUniform("modelMatrix",vysledek4);
-		shaders.sendUniform("fragColor", glm::vec3(1.0f, 1.0f, 0.4f));
-		shaders.sendUniform("lightColor", lightColor);
-		shaders.sendUniform("newLightPos", lightPos);
-		shaders.sendUniform("viewPos", camera.getPosition());
-		shaders.sendUniform("projectionMatrix", camera.getProjectionMatrix());
-		object[6].getModel().render();  //	glDrawArrays(GL_TRIANGLES, 0, 2904);
+				//shader[i].sendUniform("projectionMatrix", camera.getProjectionMatrix());
+				//shader[i].sendUniform("fragColor", object[i].getColor());
+				object[i].getModel().render();
+			}
 
-		
-		// draw model 7 - light
-		glBindVertexArray(object[7].getModel().getVAO());
-		object[7].useShader();
-		
-		glm::mat4 trmat5 = glm::translate(glm::mat4(1.0f), lightPos);
-		glm::mat4 vysledek5 = glm::scale(trmat5, glm::vec3(0.05f, 0.05f, 0.05f));
-		object[7].useShader();
-		shader2.sendUniform("viewMatrix", camera.getCamera());
-		shader2.sendUniform("modelMatrix", vysledek5);
-		shader2.sendUniform("fragColor", glm::vec3(1.0f, 1.0f, 1.0f));
-		shader2.sendUniform("lightColor", lightColor);
-		shader2.sendUniform("ambientStrength", 1.0f);
-		//shader2.sendUniform("specularStrength", 0.0f);
-		shader2.sendUniform("newLightPos", lightPos);
-		shader2.sendUniform("viewPos", camera.getPosition());
-		shader2.sendUniform("projectionMatrix", camera.getProjectionMatrix());
-		object[7].getModel().render();	//	glDrawArrays(GL_TRIANGLES, 0, 2880);
+			// light
+			glBindVertexArray(light.getModel().getVAO());
+			light.useShader();
+			shaderLight.sendUniform("modelMatrix", light.getMatrix());
+			shaderLight.sendUniform("viewMatrix", camera.getCamera());
+			light.getModel().render();
+		}
 		
 
 		//glDrawElements(GL_TRIANGLES, sizeof(idxs)/sizeof(idxs[0]), GL_UNSIGNED_SHORT, idxs);

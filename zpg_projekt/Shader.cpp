@@ -15,29 +15,50 @@ Shader::Shader() {
     //m_camera = nullptr;
     //createShader();
 }
-Shader::Shader(int i) {
-    createShader();
+/*Shader::Shader(int i) {
+    createShader(ShaderType::PHONG);
+    //createShader();
     glUseProgram(shaderProgram);
-}
+}*/
 
-Shader::Shader(Camera* camera)
+Shader::Shader(Camera* camera, ShaderType shaderType)
 {
     m_camera = camera;
-    createShader();
+    type = shaderType;
+    //createShader();
+    createShader(shaderType);
     //glUseProgram(shaderProgram);
 }
 
-GLuint Shader::createShader()
+GLuint Shader::createShader(ShaderType fragmentShaderType)
 {
     ShaderLoader loader;
-    this->shaderProgram = loader.loadShader("./vertex.glsl", "./fragment.glsl");
-    //this->shaderProgram = loader.loadShader("./vertex2.glsl", "./fragment2.glsl");
+    const std::string fragmentShaderName = fragShaderPath[fragmentShaderType];
+
+    //this->shaderProgram = loader.loadShader("./vertex.glsl", "./phongFragment.glsl");
+    this->shaderProgram = loader.loadShader("./vertex.glsl", fragmentShaderName.c_str());
+
     return this->shaderProgram;
 }
+
+/*GLuint Shader::createShader()
+{
+    ShaderLoader loader;
+
+    //this->shaderProgram = loader.loadShader("./vertex.glsl", "./phongFragment.glsl");
+    this->shaderProgram = loader.loadShader("./vertex.glsl", "./phongFragment.glsl");
+    //this->shaderProgram = loader.loadShader("./vertex2.glsl", "./fragment2.glsl");
+    return this->shaderProgram;
+}*/
 
 GLuint Shader::getShader()
 {
     return this->shaderProgram;
+}
+
+ShaderType Shader::getType()
+{
+    return this->type;
 }
 
 /*GLuint Shader::CreateAndCompile() {

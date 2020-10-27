@@ -152,6 +152,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
   </ItemGroup>
@@ -164,6 +165,7 @@
     <ClInclude Include="Model.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="plain.hpp" />
+    <ClInclude Include="Scene.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="ShaderLoader.hpp" />
     <ClInclude Include="sphere.hpp" />
@@ -175,9 +177,13 @@
     <ClInclude Include="worker.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragment.glsl" />
+    <None Include="ambient.frag" />
+    <None Include="blinn.frag" />
+    <None Include="diffuse.frag" />
+    <None Include="phong.frag" />
     <None Include="fragment2.glsl" />
     <None Include="vertex.glsl" />
+    <None Include="specular.frag" />
     <None Include="vertex2.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

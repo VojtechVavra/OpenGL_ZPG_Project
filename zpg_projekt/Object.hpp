@@ -15,7 +15,8 @@
 class Object
 {
 public:
-    Object(glm::vec3 position);
+    Object(glm::vec3 position); // pouzivam jen pro kameru
+    Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderID);
     Object(glm::vec3 position, Model model, GLuint shaderID);
     Object();
     ~Object();
@@ -31,11 +32,13 @@ public:
     void Translate(glm::vec3 shift);
     void Scale(glm::mat4 mat4x4, glm::vec3 scale);
     void Scale(glm::vec3 scale);
+    glm::vec3 getColor();
 protected:
     glm::vec3 position;
     glm::mat4 m_matrix;   // model matrix
     Model model;
     GLuint shaderID;
+    glm::vec3 color;
     //GLuint id;      // shader program object ID in scene -> in shader object
 private:
     

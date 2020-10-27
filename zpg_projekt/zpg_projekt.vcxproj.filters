@@ -54,6 +54,9 @@
     <ClCompile Include="Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp">
@@ -107,18 +110,33 @@
     <ClInclude Include="Model.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Scene.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertex.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="fragment.glsl">
-      <Filter>shaders</Filter>
-    </None>
     <None Include="fragment2.glsl">
       <Filter>shaders</Filter>
     </None>
     <None Include="vertex2.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="vertex.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="ambient.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="diffuse.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="phong.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="specular.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="blinn.frag">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

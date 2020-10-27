@@ -2,7 +2,11 @@
 #include <GLFW/glfw3.h>  
 #include "Light.hpp"
 
-Light::Light(glm::vec3 position) : Object(position) {
+Light::Light(glm::vec3 position, Model model, glm::vec3 modelColor, GLuint shaderID, glm::vec3 lightColor) : Object(position, model, modelColor, shaderID) {
+	this->lightColor = lightColor;
+	this->lightIntensity = 1.0f;
+
+	/*
 	//this->position = position;
 	this->m_matrix = glm::translate(m_matrix, position);
 	VAO = 0;
@@ -15,6 +19,7 @@ Light::Light(glm::vec3 position) : Object(position) {
 	glEnableVertexAttribArray(0);
 
 	render();
+	*/
 }
 
 Light::~Light() {

@@ -2,11 +2,11 @@
 
 out vec4 out_Color; // original name: frag_colour
 
-in vec3 fragmentColor;
-in vec3 lightPosition;
 in vec3 ex_worldPosition; // fragPos
 in vec3 ex_worldNormal;   // normal
 
+uniform vec3 fragmentColor;
+uniform vec3 lightPosition;
 uniform vec3 lightColor; // = vec3(1.0, 0.0, 0.5);
 uniform vec3 viewPos = vec3(0.0, 0.0, 0.0);
 uniform float ambientStrength = 0.1f;

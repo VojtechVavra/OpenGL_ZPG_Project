@@ -14,10 +14,21 @@ Object::Object(glm::vec3 position)
     Translate(position);
 }
 
+Object::Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderID)
+{
+    this->m_matrix = glm::mat4(1.0f);
+    this->position = glm::vec3(0.0f, 0.0f, 0.0f);
+    this->color = color;
+    this->model = model;
+    this->shaderID = shaderID;
+    Translate(position);
+}
+
 Object::Object(glm::vec3 position, Model model, GLuint shaderID)
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
+    this->color = glm::vec3(1.0f, 1.0f, 1.0f);
     this->model = model;
     this->shaderID = shaderID;
     Translate(position);
@@ -98,4 +109,9 @@ void Object::Scale(glm::mat4 mat4x4, glm::vec3 scale)
 void Object::Scale(glm::vec3 scale)
 {
     this->m_matrix = glm::scale(m_matrix, scale);
+}
+
+glm::vec3 Object::getColor()
+{
+    return this->color;
 }

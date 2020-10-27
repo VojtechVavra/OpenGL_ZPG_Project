@@ -1,19 +1,41 @@
 #ifndef SHADER_HPP
 #define SHADER_HPP
 
+#include <unordered_map>
+#include <string>
+
 #include <GL/glew.h> // must be always included first!
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp> 
 // http://www.cplusplus.com/forum/beginner/146499/
 //#include "Camera.hpp" //The problem is that you can't include an object of a derived class in its parent . Reason being
 
+
+enum class ShaderType {
+    AMBIENT,    // Constant
+    DIFFUSE,    // Lambert
+    SPECULAR,
+    PHONG,      // Phong = Constant + Lambert + Specular
+    BLINN
+};
+
+static std::unordered_map<ShaderType, std::string> fragShaderPath(
+    {
+        { ShaderType::AMBIENT,  "./ambient.frag" },
+        { ShaderType::DIFFUSE,  "./diffuse.frag" },
+        { ShaderType::SPECULAR, "./specular.frag" },
+        { ShaderType::PHONG,    "./phong.frag" },
+        { ShaderType::BLINN,    "./blinn.frag" }
+});
+
+
 class Camera;
 
 class Shader {
 public:
     Shader();
-    Shader(Camera* camera);
-    Shader(int i);
+    Shader(Camera* camera, ShaderType shaderType);
+    //Shader(int i);
     //GLuint CreateAndCompile();
     void sendUniform(const GLchar* name, GLfloat value);
     void sendUniform(const GLchar* name, glm::vec3 dataVec3);
@@ -21,14 +43,19 @@ public:
     void sendUniform(const GLchar* name, glm::mat4 dataMat4);
     //void Update();
     void createMe();
-    GLuint createShader();
+
+    GLuint createShader(ShaderType fragmentShaderType = ShaderType::PHONG);
+    //GLuint createShader();
+
     GLuint getShader();
+    ShaderType getType();
     void use();
 private:
     GLuint shaderProgram;
     //void VertShaderCompileError(GLuint shader);
     //void FragShaderCompileError(GLuint shader);
     Camera* m_camera;
+    ShaderType type;
 
     /*const char* vertex_shader =
         "#version 420\n"    // 330

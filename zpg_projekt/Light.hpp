@@ -8,9 +8,12 @@
 class Light : public Object
 {
 private:
-	GLuint VAO;
+	//GLuint VAO;
 public:
-	Light(glm::vec3 position);
+	Light(glm::vec3 position, Model model, glm::vec3 modelColor, GLuint shaderID, glm::vec3 lightColor);
+	//Light(glm::vec3 position);
 	~Light();
 	void render();
+	glm::vec3 lightColor;
+	float lightIntensity;
 };
