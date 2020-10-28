@@ -12,6 +12,7 @@ private:
 public:
 	Light(glm::vec3 position, Model model, glm::vec3 modelColor, GLuint shaderID, glm::vec3 lightColor);
 	//Light(glm::vec3 position);
+	Light();
 	~Light();
 	void render();
 	glm::vec3 lightColor;

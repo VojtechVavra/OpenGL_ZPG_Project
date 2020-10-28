@@ -20,12 +20,12 @@ Model::Model(std::string modelName/*, Shader shader*/, GLuint vertCount)
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
     if (modelName == "plain") {
-        vertexCount = 36;
-        glBufferData(GL_ARRAY_BUFFER, sizeof(suziFlat), suziFlat, GL_STATIC_DRAW);
+        vertexCount = 6;
+        glBufferData(GL_ARRAY_BUFFER, sizeof(plain), plain, GL_STATIC_DRAW);
     }
 	else if (modelName == "sphere")
 	{
-		vertexCount = 2880;
+		vertexCount = 2880; // 2880
         glBufferData(GL_ARRAY_BUFFER, sizeof(sphere), sphere, GL_STATIC_DRAW);
 	}
     else if (modelName == "suzi_smooth") {
@@ -40,10 +40,12 @@ Model::Model(std::string modelName/*, Shader shader*/, GLuint vertCount)
     glBindVertexArray(VAO);
 
     // position attribute
+    // Vezni 3 hodnoty z pole (typu float) z sesti. Zacni brat od nulteho prvku.
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);   //enable vertex attributes
     // normal attribute
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
+    // Vezni 3 hodnoty typu float z sesti hodnot. Zacni od 3. pozice tzn 4. hodnota
     glEnableVertexAttribArray(1);
 }
 
@@ -53,7 +55,12 @@ void Model::render() {
 	glDrawArrays(GL_TRIANGLES, 0, vertexCount); // mode, first, count
 }
 
-GLuint Model::getVAO()
+/*GLuint Model::getVAO()
 {
 	return VAO;
+}*/
+
+void Model::bindVAO()
+{
+    glBindVertexArray(VAO);
 }

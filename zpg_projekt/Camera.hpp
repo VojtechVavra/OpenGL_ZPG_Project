@@ -10,6 +10,7 @@
 
 #include <GLFW/glfw3.h>	// this will include <GL/gl.h>
 #include "Object.hpp"
+#include "Subject.hpp"
 //class Shader;
 
 enum movDir {
@@ -29,7 +30,7 @@ namespace cameraDefaultValues {
 	const float FOV = 45.0f;		// (camera) ZOOM
 }
 
-class Camera : public Object
+class Camera : public Object, public Subject
 {
 public:
 	Camera(glm::vec3 position);

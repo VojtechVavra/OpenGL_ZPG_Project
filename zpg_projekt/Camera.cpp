@@ -44,6 +44,8 @@ void Camera::setPerspectiveCamera()
 	// Nastaveni projekèní matice na perspektivní promítání	(perspective projection)
 	// Projection matrix:            45° Field of View, 4:3 ratio, display range: 0.1 unit, 100 units
 	projection = glm::perspective(glm::radians(fov), 4.0f / 3.0f, 0.01f, 100.0f);
+
+	notifyObservers("projection");	// zoomed
 }
 
 // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
@@ -80,6 +82,8 @@ void Camera::updateCameraVectors()
 	// Also re-calculate the Right and Up vector
 	right = glm::normalize(glm::cross(this->target, worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 	up = glm::normalize(glm::cross(right, this->target));	// 'target' = 'front'
+
+	notifyObservers("camera");
 }
 
 void Camera::setMoveDir(movDir movDirection)
@@ -132,7 +136,10 @@ void Camera::processKeyboard(float deltaTime)
 		position += glm::normalize(glm::cross(target, up)) * velocity;
 		//position += right * velocity;
 	}
-	
+	else
+	{
+		return;
+	}
 	// make sure the user stays at the ground level
 	//position.y = 0.0f; // <-- this one-liner keeps the user at the ground level (xz plane)
 

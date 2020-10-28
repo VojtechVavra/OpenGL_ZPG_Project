@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\include;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glm;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glfw-3.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models\2;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models\1;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\shaders;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\include;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glm;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glfw-3.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\include;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glm;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glfw-3.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models\2;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models\1;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\shaders;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\include;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glm;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glfw-3.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,39 +152,50 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Observer.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
+    <ClCompile Include="Subject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp" />
-    <ClInclude Include="bedna.hpp" />
     <ClInclude Include="Callback.hpp" />
     <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="FPSCounter.hpp" />
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="Model.hpp" />
+    <ClInclude Include="models\1\bedna.hpp" />
+    <ClInclude Include="models\1\sphere2.hpp" />
+    <ClInclude Include="models\1\suzi_flat2.hpp" />
+    <ClInclude Include="models\1\suzi_smooth2.hpp" />
+    <ClInclude Include="models\1\worker.hpp" />
+    <ClInclude Include="models\2\plain.hpp" />
+    <ClInclude Include="models\2\sphere.hpp" />
+    <ClInclude Include="models\2\suzi_flat.hpp" />
+    <ClInclude Include="models\2\suzi_smooth.hpp" />
     <ClInclude Include="Object.hpp" />
-    <ClInclude Include="plain.hpp" />
+    <ClInclude Include="Observer.hpp" />
+    <ClInclude Include="Renderer.hpp" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="ShaderLoader.hpp" />
-    <ClInclude Include="sphere.hpp" />
-    <ClInclude Include="sphere2.hpp" />
-    <ClInclude Include="suzi_flat.hpp" />
-    <ClInclude Include="suzi_flat2.hpp" />
-    <ClInclude Include="suzi_smooth.hpp" />
-    <ClInclude Include="suzi_smooth2.hpp" />
-    <ClInclude Include="worker.hpp" />
+    <ClInclude Include="Subject.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ambient.frag" />
-    <None Include="blinn.frag" />
-    <None Include="diffuse.frag" />
-    <None Include="phong.frag" />
-    <None Include="fragment2.glsl" />
-    <None Include="vertex.glsl" />
-    <None Include="specular.frag" />
-    <None Include="vertex2.glsl" />
+    <None Include="shaders\ambient.frag" />
+    <None Include="shaders\blinn.frag" />
+    <None Include="shaders\diffuse.frag" />
+    <None Include="shaders\fragment2.glsl" />
+    <None Include="shaders\phong.frag" />
+    <None Include="shaders\specular.frag" />
+    <None Include="shaders\vertex.glsl" />
+    <None Include="shaders\vertex2.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="zpg_projekt.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

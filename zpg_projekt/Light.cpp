@@ -22,6 +22,10 @@ Light::Light(glm::vec3 position, Model model, glm::vec3 modelColor, GLuint shade
 	*/
 }
 
+Light::Light() {
+
+}
+
 Light::~Light() {
 
 }

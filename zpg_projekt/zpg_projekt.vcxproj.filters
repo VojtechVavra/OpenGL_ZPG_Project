@@ -13,17 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{ae3d57e3-6bc8-4adc-9fe7-0a76b7eef547}</UniqueIdentifier>
+    </Filter>
     <Filter Include="models">
-      <UniqueIdentifier>{812a1eb1-0900-4ccc-8d9e-44eaaf604e19}</UniqueIdentifier>
+      <UniqueIdentifier>{46df8f8b-ff96-4f6f-8461-9baa2706cbb3}</UniqueIdentifier>
     </Filter>
     <Filter Include="models\1">
-      <UniqueIdentifier>{105ff2c0-3c53-4bc5-8b6b-f8d2b2dd4d1c}</UniqueIdentifier>
+      <UniqueIdentifier>{97f00151-757e-4d4a-bc19-0a7c18baae8f}</UniqueIdentifier>
     </Filter>
     <Filter Include="models\2">
-      <UniqueIdentifier>{8c46db05-ae52-4134-be97-7dfa938074d7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="shaders">
-      <UniqueIdentifier>{fa0dad61-2283-4e5e-9a72-7248e1c946c0}</UniqueIdentifier>
+      <UniqueIdentifier>{ff36c5f8-68d6-4900-b12e-ce2f07019f36}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -57,6 +57,15 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Observer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp">
@@ -74,33 +83,6 @@
     <ClInclude Include="Shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bedna.hpp">
-      <Filter>models\1</Filter>
-    </ClInclude>
-    <ClInclude Include="worker.hpp">
-      <Filter>models\1</Filter>
-    </ClInclude>
-    <ClInclude Include="plain.hpp">
-      <Filter>models\2</Filter>
-    </ClInclude>
-    <ClInclude Include="sphere2.hpp">
-      <Filter>models\1</Filter>
-    </ClInclude>
-    <ClInclude Include="suzi_smooth2.hpp">
-      <Filter>models\1</Filter>
-    </ClInclude>
-    <ClInclude Include="suzi_flat2.hpp">
-      <Filter>models\1</Filter>
-    </ClInclude>
-    <ClInclude Include="sphere.hpp">
-      <Filter>models\2</Filter>
-    </ClInclude>
-    <ClInclude Include="suzi_flat.hpp">
-      <Filter>models\2</Filter>
-    </ClInclude>
-    <ClInclude Include="suzi_smooth.hpp">
-      <Filter>models\2</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -113,31 +95,78 @@
     <ClInclude Include="Scene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Observer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSCounter.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="models\2\plain.hpp">
+      <Filter>models\2</Filter>
+    </ClInclude>
+    <ClInclude Include="models\2\suzi_smooth.hpp">
+      <Filter>models\2</Filter>
+    </ClInclude>
+    <ClInclude Include="models\2\sphere.hpp">
+      <Filter>models\2</Filter>
+    </ClInclude>
+    <ClInclude Include="models\2\suzi_flat.hpp">
+      <Filter>models\2</Filter>
+    </ClInclude>
+    <ClInclude Include="models\1\bedna.hpp">
+      <Filter>models\1</Filter>
+    </ClInclude>
+    <ClInclude Include="models\1\sphere2.hpp">
+      <Filter>models\1</Filter>
+    </ClInclude>
+    <ClInclude Include="models\1\suzi_flat2.hpp">
+      <Filter>models\1</Filter>
+    </ClInclude>
+    <ClInclude Include="models\1\suzi_smooth2.hpp">
+      <Filter>models\1</Filter>
+    </ClInclude>
+    <ClInclude Include="models\1\worker.hpp">
+      <Filter>models\1</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragment2.glsl">
+    <None Include="shaders\ambient.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="vertex2.glsl">
+    <None Include="shaders\blinn.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="vertex.glsl">
+    <None Include="shaders\diffuse.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="ambient.frag">
+    <None Include="shaders\fragment2.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="diffuse.frag">
+    <None Include="shaders\phong.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="phong.frag">
+    <None Include="shaders\specular.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="specular.frag">
+    <None Include="shaders\vertex.glsl">
       <Filter>shaders</Filter>
     </None>
-    <None Include="blinn.frag">
+    <None Include="shaders\vertex2.glsl">
       <Filter>shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="zpg_projekt.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

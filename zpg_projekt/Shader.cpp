@@ -1,9 +1,12 @@
 #include <iostream>
+#include <cstdio>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>   // glm::mat4
 #include <glm/gtc/type_ptr.hpp>
+
 #include "ShaderLoader.hpp"
 #include "Shader.hpp"
 #include "Camera.hpp"
@@ -12,8 +15,7 @@
 //https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.4.camera_class/camera_class.cpp
 
 Shader::Shader() {
-    //m_camera = nullptr;
-    //createShader();
+
 }
 /*Shader::Shader(int i) {
     createShader(ShaderType::PHONG);
@@ -36,7 +38,7 @@ GLuint Shader::createShader(ShaderType fragmentShaderType)
     const std::string fragmentShaderName = fragShaderPath[fragmentShaderType];
 
     //this->shaderProgram = loader.loadShader("./vertex.glsl", "./phongFragment.glsl");
-    this->shaderProgram = loader.loadShader("./vertex.glsl", fragmentShaderName.c_str());
+    this->shaderProgram = loader.loadShader("./shaders/vertex.glsl", fragmentShaderName.c_str());
 
     return this->shaderProgram;
 }
@@ -61,67 +63,6 @@ ShaderType Shader::getType()
     return this->type;
 }
 
-/*GLuint Shader::CreateAndCompile() {
-    // 4 Create and compile shaders
-
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertex_shader, NULL);
-    glCompileShader(vertexShader);
-    VertShaderCompileError(vertexShader);
-
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragment_shader, NULL);
-    glCompileShader(fragmentShader);
-    FragShaderCompileError(fragmentShader);
-
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, fragmentShader);
-    glAttachShader(shaderProgram, vertexShader);
-    glLinkProgram(shaderProgram);
-
-    this->shaderProgram = shaderProgram;
-    return shaderProgram;
-}*/
-
-/*void Shader::VertShaderCompileError(GLuint vertShader) {
-    GLint result;
-    glGetShaderiv(vertShader, GL_COMPILE_STATUS, &result);
-
-    if (result == 0) {
-        std::cout << "Vertex shader compilation failed!\n";
-        GLint logLen;
-
-        glGetShaderiv(vertShader, GL_INFO_LOG_LENGTH, &logLen);
-        if (logLen > 0) {
-            char* log = (char*)malloc(logLen);
-            GLsizei writter;
-            glGetShaderInfoLog(vertShader, logLen, &writter, log);
-            std::cout << "Vertex Shader log:\n" << log << std::endl;
-            free(log);
-        }
-    }
-}*/
-
-/*void Shader::FragShaderCompileError(GLuint fragShader) {
-    GLint result;
-    glGetShaderiv(fragShader, GL_COMPILE_STATUS, &result);
-
-    if (result == 0) {
-        std::cout << "Fragment shader compilation failed!\n";
-        fflush(stdout);
-
-        GLint logLen;
-        glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &logLen);
-
-        if (logLen > 0) {
-            char* log = (char*)malloc(logLen);
-            GLsizei writter;
-            glGetShaderInfoLog(fragShader, logLen, &writter, log);
-            std::cout << "Fragment Shader log:\n" << log << std::endl;
-            free(log);
-        }
-    }
-}*/
 
 void Shader::sendUniform(const GLchar* name, GLfloat value)
 {
@@ -133,7 +74,6 @@ void Shader::sendUniform(const GLchar* name, GLfloat value)
         // in shader doesn't exist uniform variable 
         std::cout << "promenna neexistuje(0) " << name << std::endl;
     }
-    
 }
 
 void Shader::sendUniform(const GLchar* name, glm::vec3 pos) {
@@ -145,7 +85,6 @@ void Shader::sendUniform(const GLchar* name, glm::vec3 pos) {
     }
     else {
         // in shader doesn't exist uniform variable 
-        // zastavit program zde
         std::cout << "promenna neexistuje(1) " << name << std::endl;
     }
 }
@@ -158,7 +97,6 @@ void Shader::sendUniform(const GLchar* name, glm::vec4 data) {
     }
     else {
         // in shader doesn't exist uniform variable 
-        // zastavit program zde
         std::cout << "promenna neexistuje(2) " << name << std::endl;
     }
 }
@@ -196,8 +134,62 @@ void Shader::use()
     glUseProgram(shaderProgram);
 }
 
-void Shader::createMe()
+void Shader::update(std::string change)
 {
+    /*if (change == "camera") {
+        //std::printf("Camera has changed\n");
+        //std::cout << "Camera has changed\n"; // << std::endl;
+    }
+    else if (change == "projection") {
+        //std::printf("Projection has changed\n");
+        //std::cout << "Projection has changed\n"; // << std::endl;
+    }*/
+
+    this->use();
+    if (change == "camera") {
+        //use();
+        // nepridavat vypisy/printy sekala by se scena
+        if (getType() == ShaderType::AMBIENT)
+        {
+            //sendUniform("modelMatrix", scene->object[i].getMatrix());
+            sendUniform("viewMatrix", m_camera->getCamera());
+        }
+        else if (getType() == ShaderType::DIFFUSE)
+        {
+            //sendUniform("modelMatrix", scene->object[i].getMatrix());
+            sendUniform("viewMatrix", m_camera->getCamera());
+        }
+        else if (getType() == ShaderType::SPECULAR)
+        {
+            //sendUniform("modelMatrix", scene->object[i].getMatrix());
+            sendUniform("viewMatrix", m_camera->getCamera());
+            sendUniform("viewPos", m_camera->getPosition());
+        }
+        else if (getType() == ShaderType::PHONG)
+        {
+            //sendUniform("modelMatrix", scene->object[i].getMatrix());
+            sendUniform("viewMatrix", m_camera->getCamera());
+            sendUniform("viewPos", m_camera->getPosition());
+        }
+        else if (getType() == ShaderType::BLINN)
+        {
+            //sendUniform("modelMatrix", scene->object[i].getMatrix());
+            //sendUniform("viewMatrix", m_camera->getCamera());
+            //sendUniform("viewPos", m_camera->getPosition());
+        }
+        //std::cout << "Camera has changed" << std::endl;
+    }
+    else if (change == "projection") {
+        // zoom / fov changed
+        sendUniform("projectionMatrix", m_camera[0].getProjectionMatrix());
+        //std::cout << "Projection has changed" << std::endl;
+    }
+
+
+}
+
+//void Shader::createMe()
+//{
     /* This is a handle to the shader program */
     //GLuint shaderprogram;
 
@@ -236,4 +228,4 @@ void Shader::createMe()
     /* Enable attribute index 1 as being used */
     //glEnableVertexAttribArray(1);
 
-}
+//}

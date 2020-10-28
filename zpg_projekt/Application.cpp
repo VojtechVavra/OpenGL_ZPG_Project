@@ -16,7 +16,8 @@
 #include "sphere.hpp"
 #include "Light.hpp"
 #include "Model.hpp"
-
+#include "Scene.hpp"
+#include "Renderer.hpp"
 
 
 Application* Application::single = nullptr;
@@ -32,8 +33,8 @@ Application* Application::getInstance()
 Application::Application()
 {
 	windowWidth = windowHeight = 0;
-	deltaTime = 0.0f;
-	lastFrame = 0.0f;
+	//deltaTime = 0.0f;
+	//lastFrame = 0.0f;
 }
 
 void Application::init()
@@ -65,7 +66,7 @@ void Application::init()
 
 	PrintInfo();
 	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
+	glfwGetFramebufferSize(window.get(), &width, &height);
 	//float ratio = width / (float)height;
 	glViewport(0, 0, width, height);
 
@@ -86,22 +87,22 @@ void Application::setWindowSize(int width, int height)
 
 void Application::CreateWindow(int width, int height)
 {
-	this->window = glfwCreateWindow(width, height, "ZPG", NULL, NULL);
+	this->window = std::shared_ptr<GLFWwindow>(glfwCreateWindow(width, height, "ZPG", NULL, NULL));
 
-	if (!window)
+	if (!window.get())
 	{
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 		std::cout << "Error in creating window on line: " << __LINE__ << std::endl;
 	}
 
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(window.get());
 	glfwSwapInterval(1);
 
 
 	// we will tell GLFW that it should hide the cursor and capture it. Capturing a cursor means that, once the application has focus, the mouse cursor stays within the center of the window (unless the application loses focus or quits). We can do this with one simple configuration call:
 	// After this call, wherever we move the mouse it won't be visible and it should not leave the window.
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void Application::PrintInfo()
@@ -120,18 +121,19 @@ void Application::PrintInfo()
 void Application::callBackFunctions() {
 	glfwSetErrorCallback([](int error, const char* description) { Callback::error_callback(error, description); });
 	//glfwSetCursorPosCallback(this->GetWindow(), [](GLFWwindow* window, double mouseXPos, double mouseYPos) -> void { Callback::cursor_pos_callback(window, mouseXPos, mouseYPos); });
-	glfwSetCursorPosCallback(window, Callback::cursor_pos_callback);
-	glfwSetKeyCallback(this->GetWindow(), [](GLFWwindow* window, int key, int scancode, int action, int mods) { Callback::key_callback(window, key, scancode, action, mods); });
-	glfwSetMouseButtonCallback(this->GetWindow(), [](GLFWwindow* window, int button, int action, int mode) { Callback::button_callback(window, button, action, mode); });
-	glfwSetWindowFocusCallback(this->GetWindow(), [](GLFWwindow* window, int focused) { Callback::window_focus_callback(window, focused); });
-	glfwSetWindowIconifyCallback(this->GetWindow(), [](GLFWwindow* window, int iconified) { Callback::window_iconify_callback(window, iconified); });
+	glfwSetCursorPosCallback(window.get(), Callback::cursor_pos_callback);
+	glfwSetKeyCallback(this->GetWindow().get(), [](GLFWwindow* window, int key, int scancode, int action, int mods) { Callback::key_callback(window, key, scancode, action, mods); });
+	glfwSetMouseButtonCallback(this->GetWindow().get(), [](GLFWwindow* window, int button, int action, int mode) { Callback::button_callback(window, button, action, mode); });
+	glfwSetWindowFocusCallback(this->GetWindow().get(), [](GLFWwindow* window, int focused) { Callback::window_focus_callback(window, focused); });
+	glfwSetWindowIconifyCallback(this->GetWindow().get(), [](GLFWwindow* window, int iconified) { Callback::window_iconify_callback(window, iconified); });
 	//glfwSetWindowSizeCallback(this->GetWindow(), [](GLFWwindow* window, int width, int height) { Callback::window_size_callback(window, width, height); });
-	glfwSetWindowSizeCallback(window, Callback::window_size_callback);
-	glfwSetScrollCallback(window, Callback::scroll_callback);
+	glfwSetWindowSizeCallback(window.get(), Callback::window_size_callback);
+	glfwSetScrollCallback(window.get(), Callback::scroll_callback);
 }
 
 void Application::draw()
 {
+	/*
 	//shaders = Shader(&camera);
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f));
 	Callback::setCamera(&camera);
@@ -199,12 +201,19 @@ void Application::draw()
 	object[6].Translate(glm::vec3(0.0, -0.30, 0.0));
 	object[6].Scale(glm::vec3(0.10f, 0.10f, 0.10f));
 	// end translate, scale
+	*/
+
+	std::shared_ptr<Scene> scene = std::shared_ptr<Scene>(new Scene());
+	Renderer renderer = Renderer();
+
+	renderer.renderScene(scene, window);
 
 
+	/*
 
 	glEnable(GL_DEPTH_TEST);
 	// vytvorit renderer, predat mu tridu scenu, scena udrzuje objekty
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window.get()))
 	{
 		// per-frame time logic
 		float currentFrame = glfwGetTime();
@@ -225,6 +234,9 @@ void Application::draw()
 		// draw model 1 - sphere
 		//glBindVertexArray(0);
 		//glBindVertexArray(object[0].getModel().getVAO());
+
+
+
 
 		if (first)
 		{
@@ -364,10 +376,14 @@ void Application::draw()
 		// update other events like input handling
 		glfwPollEvents();
 		// put the stuff we’ve been drawing onto the display
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(window.get());
 	}
-	glfwDestroyWindow(window);
-	glfwTerminate();
+	*/
+
+
+
+	//glfwDestroyWindow(window.get());
+	//glfwTerminate();
 }
 
 Application::~Application()
