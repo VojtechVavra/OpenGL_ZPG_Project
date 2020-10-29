@@ -10,16 +10,12 @@ Renderer::Renderer()
 	lastFrame = 0.0f;
 }
 
-
 void Renderer::renderScene(std::shared_ptr<Scene> scene, std::shared_ptr<GLFWwindow> window)
 {
 	this->scene = scene;
-	//this->scene = std::move(scene);
 	this->window = window;
 
 	glEnable(GL_DEPTH_TEST);
-
-	first = true;
 	renderInit();
 	renderLoop();
 }

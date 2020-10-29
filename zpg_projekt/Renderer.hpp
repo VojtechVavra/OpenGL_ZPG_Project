@@ -21,8 +21,6 @@ private:
 	float currentFrame;
 	float deltaTime;	// time between current frame and last frame
 	float lastFrame;
-
-	bool first;
 };
 
 #endif // !RENDERER_HPP

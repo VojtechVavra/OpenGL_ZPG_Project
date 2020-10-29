@@ -39,38 +39,15 @@ void Scene::InitializeScene()
 	object.push_back(objectFactory.createObject("suzi_flat", ShaderType::PHONG, pos, glm::vec3(0.2f, 0.5f, 1.0f), camera[0]));
 
 
-
-	// TODO: pouzit statickou funkci Shader::createShader() pro vytvoreni shaderu
-	// a ziskanit GLunit shaderProgramID a ulozeni teto hodnoty do vytvoreneho objektu.
+	// TODO:
 	// Dale pak volani v rendereru na shader bude pres Staticke funkce
 	// v objektu draw()
-	/*shader.push_back(Shader(&camera[0], ShaderType::AMBIENT));
-	shader.push_back(Shader(&camera[0], ShaderType::DIFFUSE));
-	shader.push_back(Shader(&camera[0], ShaderType::SPECULAR));
-	shader.push_back(Shader(&camera[0], ShaderType::PHONG));
-	*/
 
-	/*camera[0].registerObserver(std::make_shared<Shader>(shader[0]));
-	camera[0].registerObserver(std::make_shared<Shader>(shader[1]));
-	camera[0].registerObserver(std::make_shared<Shader>(shader[2]));
-	camera[0].registerObserver(std::make_shared<Shader>(shader[3]));
-	*/
-	/*camera[0]->registerObserver(std::make_shared<Object>(object[0]));
-	camera[0]->registerObserver(std::make_shared<Object>(object[1]));
-	camera[0]->registerObserver(std::make_shared<Object>(object[2]));
-	camera[0]->registerObserver(std::make_shared<Object>(object[3]));
-	*/
 	camera[0]->registerObserver(object[0]);
 	camera[0]->registerObserver(object[1]);
 	camera[0]->registerObserver(object[2]);
 	camera[0]->registerObserver(object[3]);
 	
-
-	/*shader.push_back(Shader(&camera[0], ShaderType::PHONG));
-	camera[0].registerObserver(std::make_shared<Shader>(shader[4]));
-	shader.push_back(Shader(&camera[0], ShaderType::PHONG));
-	camera[0].registerObserver(std::make_shared<Shader>(shader[5]));
-	*/
 
 	for (int i = 4; i < 7; i++)
 	{
@@ -79,21 +56,7 @@ void Scene::InitializeScene()
 		camera[0]->registerObserver(object[i]);
 	}
 
-	/*for (int i = 0; i < 7; i++)
-	//for (int i = 0; i < 4; i++)
-	{
-		shaderProgram.push_back(shader[i].getShader());
-	}*/
-
 	camera[0]->setPerspectiveCamera();
-
-	//shaderLight = Shader(&camera[0], ShaderType::AMBIENT);
-	
-	//camera[0].registerObserver(std::make_shared<Shader>(shaderLight));
-	
-
-	//std::unique_ptr<Shader> pshader222;
-	
 
 	/*Model plain("plain");
 	Model sphere("sphere");
@@ -109,19 +72,6 @@ void Scene::InitializeScene()
 	light = std::unique_ptr<Light>(new Light(glm::vec3(0.0f, 0.0f, 0.0f), lightModel, glm::vec3(1.0f, 1.0f, 1.0f), shaderLightProgram, lightColor, ShaderType::AMBIENT, camera[0])); // glm::vec3(1.0f, 1.0f, 1.0f)
 	light->Scale(glm::vec3(0.05f, 0.05f, 0.05f));
 	camera[0]->registerObserver(*light);
-
-
-	/*object.push_back(Object(glm::vec3(-0.25f, 0.f, 0.25f), sphere, glm::vec3(1.10f, 1.10f, 1.10f), shaderProgram[0]));	// horni leva koule
-	object.push_back(Object(glm::vec3(0.25f, 0.f, 0.25f), sphere, glm::vec3(1.0f, 1.0f, 0.9f), shaderProgram[1])); // glm::vec3(0.0f, 0.0f, 0.9f)		// horni prava koule
-	object.push_back(Object(glm::vec3(-0.25f, 0.f, -0.25f), sphere, glm::vec3(0.7f, 0.0f, 0.5f), shaderProgram[2]));	// dolni leva koule
-	object.push_back(Object(glm::vec3(0.25f, 0.f, -0.25f), sphere, glm::vec3(0.8f, 0.0f, 0.0f), shaderProgram[3]));		// dolni prava koule
-	
-	object.push_back(Object(pos, plain, glm::vec3(0.2f, 1.0f, 0.2f), shaderProgram[4]));
-	object.push_back(Object(pos, suzi_smooth, shaderProgram[5]));
-	object.push_back(Object(pos, suzi_flat, shaderProgram[6]));
-	*/
-	// light
-	//object.push_back(Object(pos, light, shaderLightProgram));
 
 	// 4 spheres
 	glm::vec3 sphereScale = glm::vec3(0.2f, 0.2f, 0.2f);
