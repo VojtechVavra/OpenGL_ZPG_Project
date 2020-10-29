@@ -1,7 +1,9 @@
+#include <GL/glew.h> // must be always included first!
+#include <GLFW/glfw3.h> // this will include <GL/gl.h>
 
 #include "Model.hpp"
-#include "Shader.hpp"
-#include <GLFW/glfw3.h>
+//#include "Shader.hpp"
+
 
 Model::Model()
 {
@@ -62,5 +64,6 @@ void Model::render() {
 
 void Model::bindVAO()
 {
+    //glBindVertexArray(0);
     glBindVertexArray(VAO);
 }

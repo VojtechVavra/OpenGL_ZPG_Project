@@ -37,24 +37,33 @@ class Shader : public Observer {
 public:
     Shader();
     Shader(Camera* camera, ShaderType shaderType);
+
     void sendUniform(const GLchar* name, GLfloat value);
     void sendUniform(const GLchar* name, glm::vec3 dataVec3);
     void sendUniform(const GLchar* name, glm::vec4 dataVec4);
     void sendUniform(const GLchar* name, glm::mat4 dataMat4);
+
+    static void sendUniform(GLuint shaderProgram, const GLchar* name, GLfloat value);
+    static void sendUniform(GLuint shaderProgram, const GLchar* name, glm::vec3 dataVec3);
+    static void sendUniform(GLuint shaderProgram, const GLchar* name, glm::vec4 dataVec4);
+    static void sendUniform(GLuint shaderProgram, const GLchar* name, glm::mat4 dataMat4);
+
     //void Update();
     //void createMe();
 
     GLuint createShader(ShaderType fragmentShaderType = ShaderType::PHONG);
+    static GLuint createShader(ShaderType fragmentShaderType, int i);
+
     //GLuint createShader();
 
     GLuint getShader();
     ShaderType getType();
     void update(std::string change) override;
     void use();
+    static void use(GLuint shaderProgram);
 private:
     GLuint shaderProgram;
-    //void VertShaderCompileError(GLuint shader);
-    //void FragShaderCompileError(GLuint shader);
+    
     Camera* m_camera;
     ShaderType type;
 };

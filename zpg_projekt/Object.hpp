@@ -2,22 +2,29 @@
 #define OBJECTSPACE_H
 
 #include <vector>
+#include <memory>
+
 #include <GL/glew.h>	// must be always included first!
 #include <GLFW/glfw3.h> // this will include <GL/gl.h>
 #include <glm/vec3.hpp>     // glm::vec3
 #include <glm/vec4.hpp>     // glm::vec4
 #include <glm/mat4x4.hpp>   // glm::mat4
+
+#include "Observer.hpp"
 #include "Model.hpp"  // dodat
 #include "Shader.hpp"
+
+//#include "Camera.hpp"   // added, maybe throw error
 //class Shader;
+class camera;
 
 // Object model space
-class Object
+class Object : public Observer
 {
 public:
     Object(glm::vec3 position); // pouzivam jen pro kameru
-    Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderID);
-    Object(glm::vec3 position, Model model, GLuint shaderID);
+    Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderID, ShaderType shaderType, std::shared_ptr<Camera> camera);
+    Object(glm::vec3 position, Model model, GLuint shaderID, ShaderType shaderType);
     Object();
     ~Object();
     glm::vec3 getPosition() const;
@@ -33,11 +40,15 @@ public:
     void Scale(glm::mat4 mat4x4, glm::vec3 scale);
     void Scale(glm::vec3 scale);
     glm::vec3 getColor();
+    ShaderType getShaderType();
+    void update(std::string change);
 protected:
     glm::vec3 position;
     glm::mat4 m_matrix;   // model matrix
     Model model;
-    GLuint shaderID;
+    GLuint shaderProgram;   // originally shaderID
+    ShaderType shaderType;
+    std::shared_ptr<Camera> camera;
     glm::vec3 color;
     //GLuint id;      // shader program object ID in scene -> in shader object
 private:

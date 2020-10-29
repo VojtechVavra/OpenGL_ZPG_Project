@@ -1,7 +1,10 @@
 #include <string>
+
 #include <glm/gtc/matrix_transform.hpp>	// glm::lookAt
+
 #include "Camera.hpp"
 #include "Shader.hpp"
+#include "Object.hpp"
 
 // https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.4.camera_class/camera_class.cpp
 

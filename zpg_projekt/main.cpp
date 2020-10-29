@@ -13,9 +13,6 @@ int main()
 	app->setWindowSize(800, 600);
 	app->init();
 
-	exit(EXIT_SUCCESS);
+	return(EXIT_SUCCESS);
+	//exit(EXIT_SUCCESS);
 }
-
-
-//  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL); // rezani
-//				id pointeru, kolik hodnot si ma uriznout, datovy typ, 

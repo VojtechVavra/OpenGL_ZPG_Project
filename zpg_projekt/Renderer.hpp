@@ -10,11 +10,10 @@ public:
 	Renderer();
 	~Renderer();
 	void renderScene(std::shared_ptr<Scene> scene, std::shared_ptr<GLFWwindow> window);
-
 private:
 	void renderInit();
 	void renderLoop();
-	void render();
+	void render(Object* object);
 	std::shared_ptr<Scene> scene;
 	std::shared_ptr<GLFWwindow> window;
 

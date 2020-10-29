@@ -8,10 +8,10 @@
 class Callback {
 public:
     //Callback(Camera* camera);
-    static void setCamera(Camera* camera);
+    static void setCamera(std::shared_ptr<Camera> camera);
 private:
     //static GLFWwindow* window;
-    static Camera* camera;
+    static std::shared_ptr<Camera> camera;
 public:
     static float lastX, lastY;
     static bool firstMouse;

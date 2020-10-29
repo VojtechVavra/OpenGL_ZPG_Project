@@ -9,13 +9,13 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
 #include "Application.hpp"
-#include "Shader.hpp"
-#include "Object.hpp"
+//#include "Shader.hpp"
+//#include "Object.hpp"
 #include "Callback.hpp"
 //#include "models/1/bedna.hpp"
-#include "sphere.hpp"
-#include "Light.hpp"
-#include "Model.hpp"
+//#include "sphere.hpp"
+//#include "Light.hpp"
+//#include "Model.hpp"
 #include "Scene.hpp"
 #include "Renderer.hpp"
 

@@ -29,7 +29,6 @@ Shader::Shader(Camera* camera, ShaderType shaderType)
     type = shaderType;
     //createShader();
     createShader(shaderType);
-    //glUseProgram(shaderProgram);
 }
 
 GLuint Shader::createShader(ShaderType fragmentShaderType)
@@ -41,6 +40,14 @@ GLuint Shader::createShader(ShaderType fragmentShaderType)
     this->shaderProgram = loader.loadShader("./shaders/vertex.glsl", fragmentShaderName.c_str());
 
     return this->shaderProgram;
+}
+
+GLuint Shader::createShader(ShaderType fragmentShaderType, int i)
+{
+    ShaderLoader loader;
+    const std::string fragmentShaderName = fragShaderPath[fragmentShaderType];
+
+    return loader.loadShader("./shaders/vertex.glsl", fragmentShaderName.c_str());
 }
 
 /*GLuint Shader::createShader()
@@ -112,6 +119,55 @@ void Shader::sendUniform(const GLchar* name, glm::mat4 data) {
     }
 }
 
+
+// static functions
+void Shader::sendUniform(GLuint shaderProgram, const GLchar* name, GLfloat value)
+{
+    GLint uniformID = glGetUniformLocation(shaderProgram, name);  // check for -1, nepouzita uniformni promenna (otestovano)
+    if (uniformID >= 0) {
+        glUniform1f(uniformID, value);
+    }
+    else {
+        // in shader doesn't exist uniform variable 
+        std::cout << "promenna neexistuje(static 0) " << name << std::endl;
+    }
+}
+
+void Shader::sendUniform(GLuint shaderProgram, const GLchar* name, glm::vec3 pos) {
+    GLint uniformID = glGetUniformLocation(shaderProgram, name);  // check for -1, nepouzita uniformni promenna (otestovano)
+    if (uniformID >= 0) {
+        glProgramUniform3f(shaderProgram, uniformID, pos.x, pos.y, pos.z); // aktualizace dat
+    }
+    else {
+        // in shader doesn't exist uniform variable 
+        std::cout << "promenna neexistuje(static 1) " << name << std::endl;
+    }
+}
+
+void Shader::sendUniform(GLuint shaderProgram, const GLchar* name, glm::vec4 data) {
+    GLint uniformID = glGetUniformLocation(shaderProgram, name);  // check for -1, nepouzita uniformni promenna (otestovano)
+    if (uniformID >= 0) {
+        glUniform4f(uniformID, data.x, data.y, data.z, data.w);
+    }
+    else {
+        // in shader doesn't exist uniform variable 
+        std::cout << "promenna neexistuje(static 2) " << name << std::endl;
+    }
+}
+
+void Shader::sendUniform(GLuint shaderProgram, const GLchar* name, glm::mat4 data) {
+    GLint uniformID = glGetUniformLocation(shaderProgram, name);
+    if (uniformID >= 0) {
+        glUniformMatrix4fv(uniformID, 1, GL_FALSE, glm::value_ptr(data));
+    }
+    else {
+        // in shader doesn't exist uniform variable 
+        std::cout << "promenna neexistuje(3) " << name << std::endl;
+    }
+}
+// end static functions
+
+
 /*
 void Shader::Update()
 {
@@ -130,6 +186,11 @@ void Shader::Update()
 }*/
 
 void Shader::use()
+{
+    glUseProgram(shaderProgram);
+}
+
+void Shader::use(GLuint shaderProgram)
 {
     glUseProgram(shaderProgram);
 }

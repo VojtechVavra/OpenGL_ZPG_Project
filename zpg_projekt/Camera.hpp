@@ -2,16 +2,19 @@
 #define CAMERA_HPP
 
 #include <string>
+
 #include <GL/glew.h>	// must be always included first!
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
-
 #include <GLFW/glfw3.h>	// this will include <GL/gl.h>
-#include "Object.hpp"
+
 #include "Subject.hpp"
+#include "Object.hpp"
+
 //class Shader;
+class Object;
 
 enum movDir {
 	//NO_MOVE = 0,
@@ -50,6 +53,7 @@ private:
 	glm::vec3 right;
 	glm::vec3 worldUp;
 	glm::vec3 target;
+
 	// Euler Angles
 	float yaw;
 	float pitch;

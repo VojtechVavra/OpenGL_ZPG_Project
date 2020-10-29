@@ -1,7 +1,8 @@
 #pragma once
 
 #include<string>
-#include "Shader.hpp"
+
+//#include "Shader.hpp"
 #include "models/2/sphere.hpp"
 #include "models/2/suzi_flat.hpp"
 #include "models/2/suzi_smooth.hpp"
@@ -15,8 +16,8 @@ class Model
 {
 public:
 	Model();
-	Model(std::string modelName/*, Shader shader*/, GLuint vertCount = 0);
-	GLuint getVAO();
+	Model(std::string modelName, GLuint vertCount = 0);
+	//GLuint getVAO();
 	void render();
 	void bindVAO();
 	//Shader shader;

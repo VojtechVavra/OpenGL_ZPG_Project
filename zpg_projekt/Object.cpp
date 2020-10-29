@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <glm/gtc/type_ptr.hpp>         // glm::value_ptr
 #include "Object.hpp"
+#include "Camera.hpp"
 
 
 Object::Object(glm::vec3 position)
@@ -14,23 +15,27 @@ Object::Object(glm::vec3 position)
     Translate(position);
 }
 
-Object::Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderID)
+Object::Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType, std::shared_ptr<Camera> camera)
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
     this->color = color;
     this->model = model;
-    this->shaderID = shaderID;
+    this->shaderProgram = shaderProgram;
+    this->shaderType = shaderType;
+    this->camera = camera;
+    
     Translate(position);
 }
 
-Object::Object(glm::vec3 position, Model model, GLuint shaderID)
+Object::Object(glm::vec3 position, Model model, GLuint shaderProgram, ShaderType shaderType)
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
     this->color = glm::vec3(1.0f, 1.0f, 1.0f);
     this->model = model;
-    this->shaderID = shaderID;
+    this->shaderProgram = shaderProgram;
+    this->shaderType = shaderType;
     Translate(position);
 }
 
@@ -61,12 +66,12 @@ Model Object::getModel() const
 
 GLuint Object::getShader() const
 {
-    return this->shaderID;
+    return this->shaderProgram;
 }
 
 void Object::useShader()
 {
-    glUseProgram(shaderID);
+    glUseProgram(shaderProgram);
 }
 
 void Object::setPosition(glm::vec3 newPosition)
@@ -114,4 +119,52 @@ void Object::Scale(glm::vec3 scale)
 glm::vec3 Object::getColor()
 {
     return this->color;
+}
+
+ShaderType Object::getShaderType()
+{
+    return this->shaderType;
+}
+
+void Object::update(std::string change)
+{
+    //this->use();
+    Shader::use(this->getShader());
+    if (change == "camera") {
+        // nepridavat vypisy/printy sekala by se scena
+        if (shaderType == ShaderType::AMBIENT)
+        {
+            //sendUniform("modelMatrix", scene->object[i].getMatrix());
+            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
+        }
+        else if (shaderType == ShaderType::DIFFUSE)
+        {
+            //sendUniform("modelMatrix", scene->object[i].getMatrix());
+            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
+        }
+        else if (shaderType == ShaderType::SPECULAR)
+        {
+            //sendUniform("modelMatrix", scene->object[i].getMatrix());
+            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
+            Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
+        }
+        else if (shaderType == ShaderType::PHONG)
+        {
+            //sendUniform("modelMatrix", scene->object[i].getMatrix());
+            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
+            Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
+        }
+        else if (shaderType == ShaderType::BLINN)
+        {
+            //Shader::sendUniform(shaderProgram, "modelMatrix", scene->object[i].getMatrix());
+            //Shader::sendUniform(shaderProgram, "viewMatrix", m_camera->getCamera());
+            //Shader::sendUniform(shaderProgram, "viewPos", m_camera->getPosition());
+        }
+        //std::cout << "Camera has changed" << std::endl;
+    }
+    else if (change == "projection") {
+        // zoom / fov changed
+        Shader::sendUniform(shaderProgram, "projectionMatrix", camera->getProjectionMatrix());
+        //std::cout << "Projection has changed" << std::endl;
+    }
 }

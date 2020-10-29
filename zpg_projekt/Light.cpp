@@ -1,11 +1,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>  
+
 #include "Light.hpp"
 
-Light::Light(glm::vec3 position, Model model, glm::vec3 modelColor, GLuint shaderID, glm::vec3 lightColor) : Object(position, model, modelColor, shaderID) {
+Light::Light(glm::vec3 position, Model model, glm::vec3 modelColor, GLuint shaderID, glm::vec3 lightColor, ShaderType shaderType, std::shared_ptr<Camera> camera) : Object(position, model, modelColor, shaderID, shaderType, camera) {
 	this->lightColor = lightColor;
 	this->lightIntensity = 1.0f;
-
+	
 	/*
 	//this->position = position;
 	this->m_matrix = glm::translate(m_matrix, position);

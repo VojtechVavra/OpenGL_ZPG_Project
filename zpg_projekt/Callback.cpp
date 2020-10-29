@@ -7,13 +7,13 @@
 #include "Callback.hpp"
 
 
-Camera* Callback::camera = nullptr;
+std::shared_ptr<Camera> Callback::camera = nullptr;
 
 float Callback::lastX = 800 / 2.0f;
 float Callback::lastY = 600 / 2.0f;
 bool Callback::firstMouse = true;
 
-void Callback::setCamera(Camera* camera) {
+void Callback::setCamera(std::shared_ptr<Camera> camera) {
 	Callback::camera = camera;
 }
 

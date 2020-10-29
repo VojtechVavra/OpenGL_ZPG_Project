@@ -151,7 +151,9 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ModelPrefabs.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="ObjectFactory.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -166,6 +168,7 @@
     <ClInclude Include="FPSCounter.hpp" />
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="Model.hpp" />
+    <ClInclude Include="ModelPrefabs.hpp" />
     <ClInclude Include="models\1\bedna.hpp" />
     <ClInclude Include="models\1\sphere2.hpp" />
     <ClInclude Include="models\1\suzi_flat2.hpp" />
@@ -176,6 +179,7 @@
     <ClInclude Include="models\2\suzi_flat.hpp" />
     <ClInclude Include="models\2\suzi_smooth.hpp" />
     <ClInclude Include="Object.hpp" />
+    <ClInclude Include="ObjectFactory.hpp" />
     <ClInclude Include="Observer.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="resource.h" />

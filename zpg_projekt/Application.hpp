@@ -9,9 +9,9 @@
 #include <GLFW/glfw3.h>
 
 #include "Callback.hpp"
-#include "Shader.hpp"
-#include "Object.hpp"
-#include "Camera.hpp"
+//#include "Shader.hpp"
+//#include "Object.hpp"
+//#include "Camera.hpp"
 
 
 

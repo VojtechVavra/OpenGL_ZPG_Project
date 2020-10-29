@@ -19,7 +19,7 @@ private:
 public:
 	std::vector<Object> object;
 	std::vector<Shader> shader;
-	std::vector<Camera> camera;
+	std::vector<std::shared_ptr<Camera>> camera;
 	std::vector<Model> model;
 	std::vector<GLuint> shaderProgram; // asi smazu
 

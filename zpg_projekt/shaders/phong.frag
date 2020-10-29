@@ -9,7 +9,7 @@ uniform vec3 fragmentColor;
 uniform vec3 lightPosition;
 uniform vec3 lightColor; // = vec3(1.0, 0.0, 0.5);
 uniform vec3 viewPos = vec3(0.0, 0.0, 0.0);
-uniform float ambientStrength = 0.1f;
+uniform float ambientStrength = 0.2f;
 uniform float specularStrength = 0.5f;  // 0.5
 //uniform vec3 lightPosition;   //the shader has light position
 //uniform vec3 viewPos;
