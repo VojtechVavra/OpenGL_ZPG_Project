@@ -100,9 +100,13 @@ void Renderer::renderLoop()
 	FPSCounter fpsCounter = FPSCounter();
 
 	glEnable(GL_DEPTH_TEST);
+
+	// added stencil
+	//pøidání ID do stencil bufferu
+	glEnable(GL_STENCIL_TEST);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
 	// vytvorit renderer, predat mu tridu scenu, scena udrzuje objekty
-
-
 	while (!glfwWindowShouldClose(window.get()))
 	{
 		// per-frame time logic
@@ -118,23 +122,23 @@ void Renderer::renderLoop()
 
 		// clear color and depth buffer
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);	// space color (gray)
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 
 		// render objects
 		for (auto it = scene->object.begin(); it != scene->object.end(); ++it)
 		{
-			render(&*it);
+			renderObject(&*it);
+			glStencilFunc(GL_ALWAYS, it->getID(), 0xFF);
+
+			//std::cout << "id: " << it->getID();
+			//drawArray(...);
 		}
 
 		// render lights
 		scene->light->getModel().bindVAO();
 		scene->light->useShader();
-		//Shader::sendUniform(scene->shaderLightProgram, "viewMatrix", scene->camera[0]->getCamera());
-		//Shader::sendUniform(scene->shaderLightProgram, "modelMatrix", scene->light->getMatrix());
-
-		//scene->shaderLight.sendUniform("modelMatrix", scene->light->getMatrix());
-		//scene->shaderLight.sendUniform("viewMatrix", scene->camera[0]->getCamera());
 		scene->light->getModel().render();
 
 
@@ -148,7 +152,7 @@ void Renderer::renderLoop()
 	glfwTerminate();
 }
 
-void Renderer::render(Object* object)
+void Renderer::renderObject(Object* object)
 {
 	object->getModel().bindVAO();
 	object->useShader();

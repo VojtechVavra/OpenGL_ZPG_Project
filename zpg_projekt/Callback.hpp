@@ -21,7 +21,10 @@ public:
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);  // presmerovat informace na objekt
     static void window_focus_callback(GLFWwindow* window, int focused);
     static void window_iconify_callback(GLFWwindow* window, int iconified);
+
     static void window_size_callback(GLFWwindow* window, int width, int height);
+    //static void window_size_modify_callback(int& windowWidth, int& windowHeight);
+
     static void cursor_callback(GLFWwindow* window, double x, double y);
     static void button_callback(GLFWwindow* window, int button, int action, int mode);
     static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);

@@ -27,6 +27,8 @@ Application* Application::getInstance()
 Application::Application()
 {
 	windowWidth = windowHeight = 0;
+	windSize[0] = &this->windowWidth;
+	windSize[1] = &this->windowHeight;
 }
 
 void Application::init()
@@ -44,7 +46,7 @@ void Application::init()
 	}
 	
 	// after window creatin can be set callbacks
-	callBackFunctions();
+	callbackFunctions();
 
 	// start GLEW extension handler
 	glewExperimental = GL_TRUE;
@@ -103,7 +105,7 @@ void Application::PrintInfo()
 	printf("Using GLFW %i.%i.%i\n", major, minor, revision);
 }
 
-void Application::callBackFunctions() {
+void Application::callbackFunctions() {
 	glfwSetErrorCallback([](int error, const char* description) { Callback::error_callback(error, description); });
 	//glfwSetCursorPosCallback(this->GetWindow(), [](GLFWwindow* window, double mouseXPos, double mouseYPos) -> void { Callback::cursor_pos_callback(window, mouseXPos, mouseYPos); });
 	glfwSetCursorPosCallback(window.get(), Callback::cursor_pos_callback);
@@ -111,8 +113,19 @@ void Application::callBackFunctions() {
 	glfwSetMouseButtonCallback(this->GetWindow().get(), [](GLFWwindow* window, int button, int action, int mode) { Callback::button_callback(window, button, action, mode); });
 	glfwSetWindowFocusCallback(this->GetWindow().get(), [](GLFWwindow* window, int focused) { Callback::window_focus_callback(window, focused); });
 	glfwSetWindowIconifyCallback(this->GetWindow().get(), [](GLFWwindow* window, int iconified) { Callback::window_iconify_callback(window, iconified); });
-	//glfwSetWindowSizeCallback(this->GetWindow(), [](GLFWwindow* window, int width, int height) { Callback::window_size_callback(window, width, height); });
+
+	//int* windSize[2]{ &this->windowWidth, &this->windowHeight };
+	//glfwSetWindowSizeCallback(window.get(), [&](GLFWwindow* window, int width, int height) { Callback::window_size_callback(window, width, height, &this->windowWidth, &this->windowHeight); });
+	//glfwSetWindowUserPointer(window.get(), Callback::window_size_callback, &this->windowWidth, &this->windowHeight);
+	
+	//void (*my_fptr_setWindowSizeCallback)(int& winWidth, int& winHeight) = Callback::window_size_modify_callback;
+	//my_fptr_setWindowSizeCallback
+	glfwSetWindowUserPointer(window.get(), &windSize);
+	//glfwSetWindowUserPointer
+	//glfwSetWindowSizeCallback(window.get(), Callback::window_size_callback);
+
 	glfwSetWindowSizeCallback(window.get(), Callback::window_size_callback);
+
 	glfwSetScrollCallback(window.get(), Callback::scroll_callback);
 }
 

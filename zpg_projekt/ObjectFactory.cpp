@@ -13,6 +13,7 @@ Object ObjectFactory::createObject(std::string modelName, ShaderType shaderType,
 
 Object ObjectFactory::createObject(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 color, std::shared_ptr<Camera> camera)
 {
+	// oddelit objekt od shaderu. shadery se budou registrovat na kameru
 	GLuint shaderProgram = Shader::createShader(shaderType, 2);
 	ModelPrefabs modelPrefabs;
 	Model model = modelPrefabs.getModel(modelName);

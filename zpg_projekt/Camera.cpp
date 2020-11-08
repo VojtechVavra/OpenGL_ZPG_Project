@@ -20,6 +20,9 @@ Camera::Camera(glm::vec3 position) : Object(position)
 	this->cameraSpeed = cameraDefaultValues::SPEED;
 	this->sensitivity = cameraDefaultValues::SENSITIVITY;
 
+	this->width = 4.0f;
+	this->height = 3.0f;
+
 	setPerspectiveCamera();
 	updateCameraVectors();
 }
@@ -46,7 +49,20 @@ void Camera::setPerspectiveCamera()
 {
 	// Nastaveni projekèní matice na perspektivní promítání	(perspective projection)
 	// Projection matrix:            45° Field of View, 4:3 ratio, display range: 0.1 unit, 100 units
-	projection = glm::perspective(glm::radians(fov), 4.0f / 3.0f, 0.01f, 100.0f);
+	projection = glm::perspective(glm::radians(fov), width / height, 0.01f, 100.0f);
+
+	notifyObservers("projection");	// zoomed
+}
+
+void Camera::setPerspectiveCamera(GLfloat width, GLfloat height)
+{
+	// Nastaveni projekèní matice na perspektivní promítání	(perspective projection)
+	// Projection matrix:            45° Field of View, 4:3 ratio, display range: 0.1 unit, 100 units
+	this->width = width;
+	this->height = height;
+	GLfloat aspectRatio = width / height;
+
+	projection = glm::perspective(glm::radians(fov), aspectRatio, 0.01f, 100.0f);
 
 	notifyObservers("projection");	// zoomed
 }

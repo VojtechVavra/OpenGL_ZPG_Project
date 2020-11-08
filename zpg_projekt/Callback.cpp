@@ -126,10 +126,28 @@ void Callback::window_iconify_callback(GLFWwindow* window, int iconified) {
 	printf("window_iconify_callback \n");
 }
 
+// original one
 void Callback::window_size_callback(GLFWwindow* window, int width, int height) {
 	printf("resize %d, %d \n", width, height);
 	glViewport(0, 0, width, height);
+
+	int* windSize = (int*)glfwGetWindowUserPointer(window);
+	windSize[0] = width;
+	windSize[1] = height;
+
+	Callback::camera->setPerspectiveCamera(width, height);
+
+	//printf("windWidth: %d\n", my_data[0]);
+	//printf("windHeight: %d\n", my_data[1]);
 }
+
+// new
+/*void Callback::window_size_modify_callback(int& windowWidth, int& windowHeight) {
+	//printf("resize %d, %d \n", width, height);
+	//glViewport(0, 0, width, height);
+	printf("My window resize function\n");
+	//Callback::camera->
+}*/
 
 void Callback::cursor_callback(GLFWwindow* window, double x, double y) {
 	printf("cursor_callback \n");

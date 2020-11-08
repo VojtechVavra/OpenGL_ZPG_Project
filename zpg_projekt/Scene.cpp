@@ -43,16 +43,14 @@ void Scene::InitializeScene()
 	// Dale pak volani v rendereru na shader bude pres Staticke funkce
 	// v objektu draw()
 
-	camera[0]->registerObserver(object[0]);
+	/*camera[0]->registerObserver(object[0]);
 	camera[0]->registerObserver(object[1]);
 	camera[0]->registerObserver(object[2]);
-	camera[0]->registerObserver(object[3]);
+	camera[0]->registerObserver(object[3]);*/
 	
 
-	for (int i = 4; i < 7; i++)
+	for (int i = 0; i < 7; i++)
 	{
-		//shader.push_back(Shader(&camera[0], ShaderType::PHONG));
-		//object.push_back(objectFactory.createObject("sphere", ShaderType::PHONG, glm::vec3(0.5f, 0.f, -0.5f), glm::vec3(0.8f, 0.0f, 0.0f), camera[0]));
 		camera[0]->registerObserver(object[i]);
 	}
 

@@ -42,6 +42,7 @@ public:
 	glm::mat4 getCamera();
 	glm::mat4 getProjectionMatrix();
 	void setPerspectiveCamera();
+	void setPerspectiveCamera(GLfloat width, GLfloat height);
 	void processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
 	void setMoveDir(movDir _movDir);
 	void unSetMoveDir(movDir _movDir);
@@ -53,6 +54,8 @@ private:
 	glm::vec3 right;
 	glm::vec3 worldUp;
 	glm::vec3 target;
+
+	GLfloat width, height;
 
 	// Euler Angles
 	float yaw;

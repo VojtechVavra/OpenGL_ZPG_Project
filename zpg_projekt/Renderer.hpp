@@ -13,7 +13,7 @@ public:
 private:
 	void renderInit();
 	void renderLoop();
-	void render(Object* object);
+	void renderObject(Object* object);
 	std::shared_ptr<Scene> scene;
 	std::shared_ptr<GLFWwindow> window;
 

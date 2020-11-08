@@ -14,7 +14,7 @@ public:
     Application* getInstance();
     ~Application();
     inline std::shared_ptr<GLFWwindow> GetWindow() { return window; }
-    void callBackFunctions();
+    void callbackFunctions();
     void setWindowSize(int width, int height);
     void init();
 private:
@@ -22,6 +22,7 @@ private:
     Application();
     std::shared_ptr<GLFWwindow> window;
     int windowWidth, windowHeight;
+    int* windSize[2];
 
     void CreateWindow(int width = 800, int height = 600);
     void PrintInfo();

@@ -1,4 +1,5 @@
-//Include GLM  
+#include <iostream>
+
 #include <glm/vec3.hpp>                 // glm::vec3
 #include <glm/vec4.hpp>                 // glm::vec4
 #include <glm/mat4x4.hpp>               // glm::mat4
@@ -8,11 +9,15 @@
 #include "Camera.hpp"
 
 
+GLuint Object::objectCount = 0;
+
 Object::Object(glm::vec3 position)
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
     Translate(position);
+
+    std::cout << "Object type 1 - camera only" << std::endl;
 }
 
 Object::Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType, std::shared_ptr<Camera> camera)
@@ -25,10 +30,14 @@ Object::Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderPr
     this->shaderType = shaderType;
     this->camera = camera;
     
+    this->objID = ++Object::objectCount;
+
     Translate(position);
+
+    std::cout << "Object type 2 - other model objects" << std::endl;
 }
 
-Object::Object(glm::vec3 position, Model model, GLuint shaderProgram, ShaderType shaderType)
+/*Object::Object(glm::vec3 position, Model model, GLuint shaderProgram, ShaderType shaderType)
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -37,7 +46,9 @@ Object::Object(glm::vec3 position, Model model, GLuint shaderProgram, ShaderType
     this->shaderProgram = shaderProgram;
     this->shaderType = shaderType;
     Translate(position);
-}
+
+    std::cout << "Object 3" << std::endl;
+}*/
 
 Object::Object()
 {
@@ -124,6 +135,11 @@ glm::vec3 Object::getColor()
 ShaderType Object::getShaderType()
 {
     return this->shaderType;
+}
+
+GLuint Object::getID()
+{
+    return this->objID;
 }
 
 void Object::update(std::string change)
