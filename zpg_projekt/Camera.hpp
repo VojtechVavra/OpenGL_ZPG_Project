@@ -30,12 +30,24 @@ namespace cameraDefaultValues {
 	const float PITCH = 0.0f;		// up / down
 	const float SPEED = 2.0f;		// camera movement speed
 	const float SENSITIVITY = 0.1f;	// mouse sensitivity
-	const float FOV = 45.0f;		// (camera) ZOOM
+	const float FOV = 45.0f;		// camera ZOOM / FOV
 }
+
+enum camChange {
+	MOVE_ROTATE,
+	PROJECTION
+};
+
+struct Resolution;
 
 class Camera : public Object, public Subject
 {
+//struct Resolution;
+
 public:
+	struct Resolution {
+		int x, y;
+	};
 	Camera(glm::vec3 position);
 	Camera();
 	~Camera();
@@ -48,18 +60,37 @@ public:
 	void unSetMoveDir(movDir _movDir);
 	void processKeyboard(float deltaTime);
 	void processMouseScroll(float yoffset);
-private:
+	//void update2(Subject* subject) override;
+
+	Resolution getResolution();
+	void setResolution(Resolution resolution);
+
+	// added 14. 11
+	void updateHoldObject(float velocity);
+	void rotateHoldObjectToCamera(float x, float y);
+	void setHoldObject(std::shared_ptr<Object> object);
+	void dropObject();
+	std::shared_ptr<Object> holdObject;
+	// end
+
 	glm::mat4 projection;
+	glm::vec3 target;
+
+	float yaw2;
+	float pitch2;
+private:
+	//glm::mat4 projection;
 	glm::vec3 up;
 	glm::vec3 right;
 	glm::vec3 worldUp;
-	glm::vec3 target;
+	//glm::vec3 target;
 
 	GLfloat width, height;
 
 	// Euler Angles
 	float yaw;
 	float pitch;
+
 	float cameraSpeed;
 	float sensitivity;
 	GLbyte movingDirection;

@@ -3,16 +3,22 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "Camera.hpp"
+#include "Scene.hpp"
 
 
 class Callback {
 public:
     //Callback(Camera* camera);
     static void setCamera(std::shared_ptr<Camera> camera);
+    static void setWindow(std::shared_ptr<GLFWwindow> window);
+    static std::shared_ptr<GLFWwindow> window;
 private:
     //static GLFWwindow* window;
     static std::shared_ptr<Camera> camera;
+    static bool isObjectHold;
+    static unsigned int indexObject;
 public:
+    static std::shared_ptr<Scene> scene;
     static float lastX, lastY;
     static bool firstMouse;
 

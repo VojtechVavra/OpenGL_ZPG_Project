@@ -12,8 +12,10 @@ class ObjectFactory
 {
 public:
 	//std::unique_ptr<Object> createObject(std::string modelName, ShaderType shaderType);
-	Object createObject(std::string modelName, ShaderType shaderType, std::shared_ptr<Camera> camera);
-	Object createObject(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 color, std::shared_ptr<Camera> camera);
+	std::shared_ptr<Object> createObject(std::string modelName, ShaderType shaderType);
+	//Object createObject(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 color, std::shared_ptr<Camera> camera);
+	//std::shared_ptr<Object> createObject(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 color, std::shared_ptr<Camera> camera);
+	std::shared_ptr<Object> createObject(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 color);
 private:
 	const glm::vec3 DEFAULT_POSITION = glm::vec3(0.0f, 0.0f, 0.0f);
 	const glm::vec3 DEFAULT_COLOR = glm::vec3(1.0f, 1.0f, 1.0f);

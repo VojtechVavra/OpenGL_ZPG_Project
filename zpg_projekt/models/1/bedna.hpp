@@ -1,13 +1,10 @@
 #pragma once
 
-typedef struct Vertex
-{
-	float Position[3];
-	float Normal[3];
-} Vertex;
-float pocetPrvku = 522;
+#include "../vertex.hpp"
+
+//float bednaPocetPrvku = 522;
 //glDrawArrays(GL_TRIANGLES, 0, pocetPrvku);;
-const Vertex vertices[522] = {
+const Vertex bedna[522] = {
 {{-1.000000 , -1.000000 , 1.000000 },{ -1.000000 , 0.000000 , 0.000000}},
 {{-1.000000 , -0.800000 , 0.800000 },{ -1.000000 , 0.000000 , 0.000000}},
 {{-1.000000 , -0.800000 , 0.600000 },{ -1.000000 , 0.000000 , 0.000000}},

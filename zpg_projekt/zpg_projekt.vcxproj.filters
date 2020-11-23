@@ -149,6 +149,9 @@
     <ClInclude Include="ModelPrefabs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vertex.hpp">
+      <Filter>models</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\ambient.frag">
@@ -160,9 +163,6 @@
     <None Include="shaders\diffuse.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="shaders\fragment2.glsl">
-      <Filter>shaders</Filter>
-    </None>
     <None Include="shaders\phong.frag">
       <Filter>shaders</Filter>
     </None>
@@ -170,9 +170,6 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\vertex.glsl">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="shaders\vertex2.glsl">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

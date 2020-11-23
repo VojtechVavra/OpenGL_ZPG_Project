@@ -37,59 +37,59 @@ void Renderer::renderInit()
 	// draw models
 	for (int i = 0; i < scene->object.size(); i++) {
 		glBindVertexArray(0);
-		scene->object[i].getModel().bindVAO();
-		scene->object[i].useShader();		//glUseProgram(scene->shaderProgram);
-		ShaderType shadType = scene->object[i].getShaderType();
+		scene->object[i]->getModel().bindVAO();
+		scene->object[i]->useShader();		//glUseProgram(scene->shaderProgram);
+		ShaderType shadType = scene->object[i]->getShaderType();
 
 		if (shadType == ShaderType::AMBIENT)
 		{
 			// vertex scene->shader uniforms
-			Shader::sendUniform(scene->object[i].getShader(), "modelMatrix", scene->object[i].getMatrix());
-			Shader::sendUniform(scene->object[i].getShader(), "viewMatrix", scene->camera[0]->getCamera());
-			Shader::sendUniform(scene->object[i].getShader(), "projectionMatrix", scene->camera[0]->getProjectionMatrix());
+			Shader::sendUniform(scene->object[i]->getShader(), "modelMatrix", scene->object[i]->getMatrix());
+			Shader::sendUniform(scene->object[i]->getShader(), "viewMatrix", scene->camera[0]->getCamera());
+			Shader::sendUniform(scene->object[i]->getShader(), "projectionMatrix", scene->camera[0]->getProjectionMatrix());
 
 			// fragment scene->shader uniforms
-			Shader::sendUniform(scene->object[i].getShader(), "fragmentColor", scene->object[i].getColor());
+			Shader::sendUniform(scene->object[i]->getShader(), "fragmentColor", scene->object[i]->getColor());
 		}
 		else if (shadType == ShaderType::DIFFUSE)
 		{
 			// vertex scene->shader uniforms
-			Shader::sendUniform(scene->object[i].getShader(), "modelMatrix", scene->object[i].getMatrix());
-			Shader::sendUniform(scene->object[i].getShader(), "viewMatrix", scene->camera[0]->getCamera());
-			Shader::sendUniform(scene->object[i].getShader(), "projectionMatrix", scene->camera[0]->getProjectionMatrix());
+			Shader::sendUniform(scene->object[i]->getShader(), "modelMatrix", scene->object[i]->getMatrix());
+			Shader::sendUniform(scene->object[i]->getShader(), "viewMatrix", scene->camera[0]->getCamera());
+			Shader::sendUniform(scene->object[i]->getShader(), "projectionMatrix", scene->camera[0]->getProjectionMatrix());
 
 			// fragment scene->shader uniforms
-			Shader::sendUniform(scene->object[i].getShader(), "fragmentColor", scene->object[i].getColor());
-			Shader::sendUniform(scene->object[i].getShader(), "lightPosition", scene->light->getPosition());
-			Shader::sendUniform(scene->object[i].getShader(), "lightColor", scene->light->lightColor);
+			Shader::sendUniform(scene->object[i]->getShader(), "fragmentColor", scene->object[i]->getColor());
+			Shader::sendUniform(scene->object[i]->getShader(), "lightPosition", scene->light->getPosition());
+			Shader::sendUniform(scene->object[i]->getShader(), "lightColor", scene->light->lightColor);
 		}
 		else if (shadType == ShaderType::SPECULAR)
 		{
 			// vertex scene->shader uniforms
-			Shader::sendUniform(scene->object[i].getShader(), "modelMatrix", scene->object[i].getMatrix());
-			Shader::sendUniform(scene->object[i].getShader(), "viewMatrix", scene->camera[0]->getCamera());
-			Shader::sendUniform(scene->object[i].getShader(), "projectionMatrix", scene->camera[0]->getProjectionMatrix());
+			Shader::sendUniform(scene->object[i]->getShader(), "modelMatrix", scene->object[i]->getMatrix());
+			Shader::sendUniform(scene->object[i]->getShader(), "viewMatrix", scene->camera[0]->getCamera());
+			Shader::sendUniform(scene->object[i]->getShader(), "projectionMatrix", scene->camera[0]->getProjectionMatrix());
 
 			// fragment scene->shader uniforms
-			Shader::sendUniform(scene->object[i].getShader(), "fragmentColor", scene->object[i].getColor());
-			Shader::sendUniform(scene->object[i].getShader(), "lightPosition", scene->light->getPosition());
-			Shader::sendUniform(scene->object[i].getShader(), "lightColor", scene->light->lightColor);
-			Shader::sendUniform(scene->object[i].getShader(), "viewPos", scene->camera[0]->getPosition());
-			Shader::sendUniform(scene->object[i].getShader(), "specularStrength", 0.5f);
+			Shader::sendUniform(scene->object[i]->getShader(), "fragmentColor", scene->object[i]->getColor());
+			Shader::sendUniform(scene->object[i]->getShader(), "lightPosition", scene->light->getPosition());
+			Shader::sendUniform(scene->object[i]->getShader(), "lightColor", scene->light->lightColor);
+			Shader::sendUniform(scene->object[i]->getShader(), "viewPos", scene->camera[0]->getPosition());
+			Shader::sendUniform(scene->object[i]->getShader(), "specularStrength", 0.5f);
 		}
 		else if (shadType == ShaderType::PHONG)
 		{
-			Shader::sendUniform(scene->object[i].getShader(), "modelMatrix", scene->object[i].getMatrix());
-			Shader::sendUniform(scene->object[i].getShader(), "fragmentColor", scene->object[i].getColor());
-			Shader::sendUniform(scene->object[i].getShader(), "viewPos", scene->camera[0]->getPosition());
+			Shader::sendUniform(scene->object[i]->getShader(), "modelMatrix", scene->object[i]->getMatrix());
+			Shader::sendUniform(scene->object[i]->getShader(), "fragmentColor", scene->object[i]->getColor());
+			Shader::sendUniform(scene->object[i]->getShader(), "viewPos", scene->camera[0]->getPosition());
 			// posilat jen pri zmnene
-			Shader::sendUniform(scene->object[i].getShader(), "lightPosition", scene->light->getPosition());
-			Shader::sendUniform(scene->object[i].getShader(), "lightColor", scene->light->lightColor);
-			Shader::sendUniform(scene->object[i].getShader(), "viewMatrix", scene->camera[0]->getCamera());
-			Shader::sendUniform(scene->object[i].getShader(), "projectionMatrix", scene->camera[0]->getProjectionMatrix());
+			Shader::sendUniform(scene->object[i]->getShader(), "lightPosition", scene->light->getPosition());
+			Shader::sendUniform(scene->object[i]->getShader(), "lightColor", scene->light->lightColor);
+			Shader::sendUniform(scene->object[i]->getShader(), "viewMatrix", scene->camera[0]->getCamera());
+			Shader::sendUniform(scene->object[i]->getShader(), "projectionMatrix", scene->camera[0]->getProjectionMatrix());
 		}
 
-		scene->object[i].getModel().render();
+		scene->object[i]->getModel().render();
 	}
 
 }
@@ -106,6 +106,7 @@ void Renderer::renderLoop()
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
+	
 	// vytvorit renderer, predat mu tridu scenu, scena udrzuje objekty
 	while (!glfwWindowShouldClose(window.get()))
 	{
@@ -115,27 +116,51 @@ void Renderer::renderLoop()
 		lastFrame = currentFrame;
 
 		// FPSCounter
-		fpsCounter.drawFps(currentFrame);
+		//fpsCounter.drawFps(currentFrame);
 
 		// input
 		scene->camera[0]->processKeyboard(deltaTime);
 
 		// clear color and depth buffer
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);	// space color (gray)
+		//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);	// space color (gray)
+		glClearStencil(0); // this is the default value
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-
+		int drawableObjects = 0;
 		// render objects
-		for (auto it = scene->object.begin(); it != scene->object.end(); ++it)
+		/*for (auto it = scene->object.begin(); it != scene->object.end(); ++it)
 		{
-			renderObject(&*it);
-			glStencilFunc(GL_ALWAYS, it->getID(), 0xFF);
+			
+			renderObject(*it);
+			int stencilID = (*it)->getID();
+			//std::cout << "Stencil ID: " << stencilID << std::endl;
+			glStencilFunc(GL_ALWAYS, (*it)->getID(), 0xFF);
+			//glStencilFunc(GL_ALWAYS, ++drawableObjects, 0xFF);
 
 			//std::cout << "id: " << it->getID();
 			//drawArray(...);
+		}*/
+		// render objects
+		/*for (auto obj : scene->object)
+		{
+			renderObject(obj);
+			int stencilID = (*it)->getID();
+			std::cout << "Stencil ID: " << stencilID << std::endl;
+			glStencilFunc(GL_ALWAYS, obj->getID(), 0xFF);
+			//glStencilFunc(GL_ALWAYS, ++drawableObjects, 0xFF);
+		}*/
+		for (int i = 0; i < scene->object.size(); i++)
+		{
+			glStencilFunc(GL_ALWAYS, i + 1, 0xFF);
+
+			renderObject(scene->object[i]);
 		}
 
+
+		//glStencilFunc(GL_ALWAYS, ++drawableObjects, 0xFF);
+		//glStencilFunc(GL_ALWAYS, scene->light->getID(), 0xFF);
+		//glStencilFunc(GL_ALWAYS, 11, 0xFF);
 		// render lights
 		scene->light->getModel().bindVAO();
 		scene->light->useShader();
@@ -152,7 +177,7 @@ void Renderer::renderLoop()
 	glfwTerminate();
 }
 
-void Renderer::renderObject(Object* object)
+void Renderer::renderObject(std::shared_ptr<Object> object)
 {
 	object->getModel().bindVAO();
 	object->useShader();

@@ -10,7 +10,7 @@ int main()
 {
 	Application* app = nullptr;
 	app = app->getInstance();
-	app->setWindowSize(800, 600);
+	app->setWindowSize(1024, 768);	// [800,600]
 	app->init();
 
 	return(EXIT_SUCCESS);

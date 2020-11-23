@@ -21,6 +21,7 @@ Model::Model(std::string modelName/*, Shader shader*/, GLuint vertCount)
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
+
     if (modelName == "plain") {
         vertexCount = 6;
         glBufferData(GL_ARRAY_BUFFER, sizeof(plain), plain, GL_STATIC_DRAW);
@@ -37,6 +38,14 @@ Model::Model(std::string modelName/*, Shader shader*/, GLuint vertCount)
     else if (modelName == "suzi_flat") {
         vertexCount = 2904;
         glBufferData(GL_ARRAY_BUFFER, sizeof(suziFlat), suziFlat, GL_STATIC_DRAW);
+    }
+    else if (modelName == "bedna") {
+        vertexCount = 522;
+        glBufferData(GL_ARRAY_BUFFER, sizeof(bedna), bedna, GL_STATIC_DRAW);
+    }
+    else if (modelName == "worker") {
+        vertexCount = 30681;
+        glBufferData(GL_ARRAY_BUFFER, sizeof(workerVertices), workerVertices, GL_STATIC_DRAW);
     }
     
     glBindVertexArray(VAO);

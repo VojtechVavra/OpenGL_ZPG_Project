@@ -14,22 +14,22 @@
 
 //https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.4.camera_class/camera_class.cpp
 
-Shader::Shader() {
+//Shader::Shader() {
+//}
 
-}
 /*Shader::Shader(int i) {
     createShader(ShaderType::PHONG);
     //createShader();
     glUseProgram(shaderProgram);
 }*/
 
-Shader::Shader(Camera* camera, ShaderType shaderType)
+/*Shader::Shader(Camera* camera, ShaderType shaderType)
 {
-    m_camera = camera;
+    //m_camera = camera;
     type = shaderType;
     //createShader();
     createShader(shaderType);
-}
+}*/
 
 GLuint Shader::createShader(ShaderType fragmentShaderType)
 {
@@ -195,16 +195,8 @@ void Shader::use(GLuint shaderProgram)
     glUseProgram(shaderProgram);
 }
 
-void Shader::update(std::string change)
+/*void Shader::update(std::string change)
 {
-    /*if (change == "camera") {
-        //std::printf("Camera has changed\n");
-        //std::cout << "Camera has changed\n"; // << std::endl;
-    }
-    else if (change == "projection") {
-        //std::printf("Projection has changed\n");
-        //std::cout << "Projection has changed\n"; // << std::endl;
-    }*/
 
     this->use();
     if (change == "camera") {
@@ -245,9 +237,7 @@ void Shader::update(std::string change)
         sendUniform("projectionMatrix", m_camera[0].getProjectionMatrix());
         //std::cout << "Projection has changed" << std::endl;
     }
-
-
-}
+}*/
 
 //void Shader::createMe()
 //{

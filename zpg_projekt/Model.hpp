@@ -8,6 +8,9 @@
 #include "models/2/suzi_smooth.hpp"
 #include "models/2/plain.hpp"
 
+#include "models/1/bedna.hpp"
+#include "models/1/worker.hpp"
+
 //#include "Shader.hpp"
 #include <GLFW/glfw3.h>
 

@@ -12,6 +12,9 @@ ModelPrefabs::ModelPrefabs()
 		{ "suzi_smooth", Model("suzi_smooth") },
 		{ "suzi_flat",	 Model("suzi_flat")	  },
 		{ "sphere",		 Model("sphere")	  },
+
+		{ "bedna",		 Model("bedna")		  },
+		{ "worker",		 Model("worker")	  }
 	};
 }
 

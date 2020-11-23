@@ -106,6 +106,8 @@ void Application::PrintInfo()
 }
 
 void Application::callbackFunctions() {
+	Callback::setWindow(window);
+
 	glfwSetErrorCallback([](int error, const char* description) { Callback::error_callback(error, description); });
 	//glfwSetCursorPosCallback(this->GetWindow(), [](GLFWwindow* window, double mouseXPos, double mouseYPos) -> void { Callback::cursor_pos_callback(window, mouseXPos, mouseYPos); });
 	glfwSetCursorPosCallback(window.get(), Callback::cursor_pos_callback);
@@ -133,6 +135,7 @@ void Application::draw()
 {
 	std::shared_ptr<Scene> scene = std::shared_ptr<Scene>(new Scene());
 	Renderer renderer = Renderer();
+	Callback::scene = scene;
 
 	renderer.renderScene(scene, window);
 }
