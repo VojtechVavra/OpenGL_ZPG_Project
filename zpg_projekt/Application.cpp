@@ -113,7 +113,8 @@ void Application::callbackFunctions() {
 	glfwSetCursorPosCallback(window.get(), Callback::cursor_pos_callback);
 	glfwSetKeyCallback(this->GetWindow().get(), [](GLFWwindow* window, int key, int scancode, int action, int mods) { Callback::key_callback(window, key, scancode, action, mods); });
 	glfwSetMouseButtonCallback(this->GetWindow().get(), [](GLFWwindow* window, int button, int action, int mode) { Callback::button_callback(window, button, action, mode); });
-	glfwSetWindowFocusCallback(this->GetWindow().get(), [](GLFWwindow* window, int focused) { Callback::window_focus_callback(window, focused); });
+	//glfwSetWindowFocusCallback(this->GetWindow().get(), [](GLFWwindow* window, int focused) { Callback::window_focus_callback(window, focused); });
+	glfwSetWindowFocusCallback(window.get(), Callback::window_focus_callback);
 	glfwSetWindowIconifyCallback(this->GetWindow().get(), [](GLFWwindow* window, int iconified) { Callback::window_iconify_callback(window, iconified); });
 
 	//int* windSize[2]{ &this->windowWidth, &this->windowHeight };

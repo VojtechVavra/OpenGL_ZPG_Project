@@ -47,6 +47,23 @@ Model::Model(std::string modelName/*, Shader shader*/, GLuint vertCount)
         vertexCount = 30681;
         glBufferData(GL_ARRAY_BUFFER, sizeof(workerVertices), workerVertices, GL_STATIC_DRAW);
     }
+    else if (modelName == "cube") {
+        vertexCount = 36;
+        glBufferData(GL_ARRAY_BUFFER, sizeof(cube_simple2), cube_simple2, GL_STATIC_DRAW);
+
+        glBindVertexArray(VAO);
+
+        // position attribute
+        // Vezni 3 hodnoty z pole (typu float) z sesti. Zacni brat od nulteho prvku.
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);   //enable vertex attributes
+        // normal attribute
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
+        // Vezni 3 hodnoty typu float z sesti hodnot. Zacni od 3. pozice tzn 4. hodnota
+        glEnableVertexAttribArray(1);
+
+        return;
+    }
     
     glBindVertexArray(VAO);
 

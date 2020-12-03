@@ -71,6 +71,8 @@ ShaderType Shader::getType()
 }
 
 
+
+
 void Shader::sendUniform(const GLchar* name, GLfloat value)
 {
     GLint uniformID = glGetUniformLocation(this->shaderProgram, name);  // check for -1, nepouzita uniformni promenna (otestovano)
@@ -120,7 +122,22 @@ void Shader::sendUniform(const GLchar* name, glm::mat4 data) {
 }
 
 
+//
 // static functions
+//
+
+void Shader::sendUniform(GLuint shaderProgram, const GLchar* name, GLint value)
+{
+    GLint uniformID = glGetUniformLocation(shaderProgram, name);  // check for -1, nepouzita uniformni promenna (otestovano)
+    if (uniformID >= 0) {
+        glUniform1i(uniformID, value);
+    }
+    else {
+        // in shader doesn't exist uniform variable 
+        std::cout << "promenna neexistuje(static 0) " << name << std::endl;
+    }
+}
+
 void Shader::sendUniform(GLuint shaderProgram, const GLchar* name, GLfloat value)
 {
     GLint uniformID = glGetUniformLocation(shaderProgram, name);  // check for -1, nepouzita uniformni promenna (otestovano)
@@ -167,23 +184,6 @@ void Shader::sendUniform(GLuint shaderProgram, const GLchar* name, glm::mat4 dat
 }
 // end static functions
 
-
-/*
-void Shader::Update()
-{
-    //this->m_camera->updateCameraVectors();
-
-    GLint uniformID = glGetUniformLocation(this->shaderProgram, "viewMatrix");
-    //glm::mat4 MVP = transform.GetMVP(camera);
-
-    glm::mat4 VP = m_camera->getCamera();
-    //glm::mat4 VP = m_camera->GetViewMatrix();
-
-    glUniformMatrix4fv(uniformID, 1, GL_FALSE, glm::value_ptr(VP));
-    //glUniformMatrix4fv(uniformID, 1, GL_FALSE, &MVP[0][0]);
-
-    sendUniform("projectionMatrix", m_camera->getProjectionMatrix());
-}*/
 
 void Shader::use()
 {

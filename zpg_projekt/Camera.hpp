@@ -35,7 +35,8 @@ namespace cameraDefaultValues {
 
 enum camChange {
 	MOVE_ROTATE,
-	PROJECTION
+	PROJECTION,
+	FLASHLIGHT
 };
 
 struct Resolution;
@@ -65,14 +66,15 @@ public:
 	Resolution getResolution();
 	void setResolution(Resolution resolution);
 
-	// added 14. 11
+	
 	void updateHoldObject(float velocity);
-	void rotateHoldObjectToCamera(float x, float y);
+	//void rotateHoldObjectToCamera(float x, float y);
 	void setHoldObject(std::shared_ptr<Object> object);
 	void dropObject();
 	std::shared_ptr<Object> holdObject;
 	// end
-
+	void flashLightOnOff();
+	bool isFlashLightOn();
 	glm::mat4 projection;
 	glm::vec3 target;
 
@@ -97,6 +99,9 @@ private:
 	float fov;
 	bool firstMouse;
 	
+	bool flashLight;
+
+
 	void updateCameraVectors();
 };
 

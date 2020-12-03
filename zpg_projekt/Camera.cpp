@@ -27,6 +27,8 @@ Camera::Camera(glm::vec3 position) : Object(position)
 	this->width = 800;
 	this->height = 600;
 
+	this->flashLight = false;
+
 	setPerspectiveCamera();
 	updateCameraVectors();
 }
@@ -144,7 +146,7 @@ void Camera::processKeyboard(float deltaTime)
 	if (holdObject != nullptr)
 	{
 		//added
-		updateHoldObject(velocity);	// funguje 
+		updateHoldObject(velocity);	// posun drziciho objektu
 	}
 
 	if (movingDirection == (FORWARD | STRAFE_RIGHT)) {
@@ -221,7 +223,7 @@ void Camera::setResolution(Resolution resolution)
 
 void Camera::updateHoldObject(float velocity)
 {
-	// spocitat vektor od kamerz k objketu
+	//TODO: spocitat vektor od kamery k objketu
 	// pozice kamery + vektor
 
 	glm::vec3 shiftPosition(0.0f, 0.0f, 0.0f);
@@ -270,44 +272,16 @@ void Camera::updateHoldObject(float velocity)
 
 	if (move)
 	{
-		//holdObject->setPositionWithoutTranslate(shiftPosition);// added smazat
-		//holdObject->setMatrix(glm::lookAt(holdObject->getPosition() * 2.0f, holdObject->getPosition() * 2.0f + target, up));	// added smazat
-
-		holdObject->Translate(shiftPosition);	 // funguje
+		holdObject->Translate(shiftPosition);
 
 		printf("Object shifted by: %f, %f, %f\n", shiftPosition.x, shiftPosition.y, shiftPosition.z);
-
-		//glBindVertexArray(0);	 // comment
-		//holdObject->getModel().bindVAO();
 
 		holdObject->useShader();
 		Shader::sendUniform(holdObject->getShader(), "modelMatrix", holdObject->getMatrix());
 		Shader::sendUniform(holdObject->getShader(), "fragmentColor", holdObject->getColor());
 	}
-
-	/*if (movingDirection & FORWARD) {
-		glm::vec3 shiftPosition = velocity * target * 0.5f;
-		shiftPosition += glm::normalize(glm::cross(target, up)) * velocity * 0.5f;
-
-		holdObject->Translate(shiftPosition);
-		//position += velocity * target * 0.5f;
-		//position += glm::normalize(glm::cross(target, up)) * velocity * 0.5f;
-
-		printf("Object shifted by: %f, %f, %f\n", shiftPosition.x, shiftPosition.y, shiftPosition.z);
-		Shader::sendUniform(holdObject->getShader(), "modelMatrix", holdObject->getMatrix());
-		//Shader::sendUniform(scene->object[i]->getShader(), "fragmentColor", scene->object[i]->getColor());
-	}*/
 }
 
-void  Camera::rotateHoldObjectToCamera(float x, float y)
-{
-	holdObject->setMatrix(glm::lookAt(holdObject->getPosition() * 2.0f, holdObject->getPosition() * 2.0f + target, up));
-
-	//holdObject->setMatrix(glm::lookAt(holdObject->getPosition() , holdObject->getPosition() - target, up));
-	//holdObject->setMatrix(glm::lookAt(position * 1.0f, position * 1.0f - target, up));
-	//glm::mat4 lookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up);
-	//holdObject->LookAt(this->target, x, y);
-}
 
 void Camera::setHoldObject(std::shared_ptr<Object> object)
 {
@@ -317,6 +291,18 @@ void Camera::setHoldObject(std::shared_ptr<Object> object)
 void Camera::dropObject()
 {
 	this->holdObject = nullptr;
+}
+
+void Camera::flashLightOnOff()
+{
+	this->flashLight = this->flashLight ? false : true;
+	notifyObservers(this, camChange::FLASHLIGHT);
+	printf("Flashlight %s\n", flashLight ? "on" : "off");
+}
+
+bool Camera::isFlashLightOn()
+{
+	return this->flashLight;
 }
 
 /*void update2(Subject* subject)

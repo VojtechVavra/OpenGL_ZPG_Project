@@ -44,7 +44,9 @@ public:
     void Translate(glm::vec3 shift);
     void Scale(glm::mat4 mat4x4, glm::vec3 scale);
     void Scale(glm::vec3 scale);
-    void LookAt(glm::vec3 target, float x, float y);
+    //void LookAt(glm::vec3 target, float x, float y);
+
+    void render();
 
     glm::vec3 getColor();
     void setNewColor(glm::vec3 newColor);

@@ -72,6 +72,12 @@
     <ClCompile Include="ModelPrefabs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpotLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp">
@@ -152,6 +158,15 @@
     <ClInclude Include="vertex.hpp">
       <Filter>models</Filter>
     </ClInclude>
+    <ClInclude Include="PointLight.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpotLight.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="models\2\cube.hpp">
+      <Filter>models\2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\ambient.frag">
@@ -170,6 +185,9 @@
       <Filter>shaders</Filter>
     </None>
     <None Include="shaders\vertex.glsl">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\phong2_zaloha.frag">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

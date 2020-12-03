@@ -2,8 +2,6 @@
 
 out vec4 out_color;
 
-//in vec3 fragmentColor;
-
 uniform vec3 fragmentColor;
 uniform float ambientStrength = 0.2;
 

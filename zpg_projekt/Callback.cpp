@@ -65,41 +65,16 @@ void Callback::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 
 	Callback::camera->processMouseMovement(xoffset, yoffset);
 
-	if (isObjectHold && indexObject > 0 && false)
+	/*if (isObjectHold && indexObject > 0 && false)
 	{
 		printf("object camera move\n");
-		//scene->object[indexObject - 1]->setMatrix(scene->camera[0]->getMatrix());
-		//scene->object[indexObject - 1]->Scale(glm::vec3(0.2f, 0.2f, 0.2f));
 		glm::vec3 objPos = scene->object[indexObject - 1]->getPosition();
 		glm::vec3 camPos = scene->camera[0]->getPosition();
 
-		//camera->rotateHoldObjectToCamera(1.f, 1.f);
-
-		/*scene->object[indexObject - 1]->Translate(glm::mat4(1.0f), camPos);
-		scene->object[indexObject - 1]->Scale(glm::vec3(0.2f, 0.2f, 0.2f));
-		scene->object[indexObject - 1]->Rotate(scene->camera[0]->yaw2, glm::vec3(1.0f, 0.0f, 0.0f));
-		float abc = scene->camera[0]->pitch2;
-		float abc2 = (int)abc % 360;
-		scene->object[indexObject - 1]->Rotate(abc, glm::vec3(0.0f, 1.0f, 0.0f));
-		//scene->object[indexObject - 1]->Rotate(yoffset * 0.1f, glm::vec3(0.0f, 1.0f, 0.0f));
-		scene->object[indexObject - 1]->setPosition(objPos);
-		*/
-
-		//scene->object[indexObject - 1]->setMatrix(scene->camera[0]->getMatrix()  );
-		//scene->object[indexObject - 1]->Scale(glm::vec3(0.2f, 0.2f, 0.2f));
-		//scene->object[indexObject - 1]->Translate(scene->camera[0]->getPosition() * 2.0f);
-
 		scene->object[indexObject - 1]->useShader();
 		Shader::sendUniform(scene->object[indexObject - 1]->getShader(), "modelMatrix", scene->object[indexObject - 1]->getMatrix());
-		//scene->updateObject(indexObject, newPosition);
-	}
-	/*if (isObjectHold && indexObject > 0)
-	{
-		glm::vec3 newPosition = glm::vec3(xoffset, yoffset, 0.0f);
-
-		scene->rotateObject(indexObject, 10, newPosition);
-		//scene->updateObject(indexObject, newPosition);
 	}*/
+
 }
 
 void Callback::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -172,6 +147,9 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 					}
 				}
 				break;
+			case GLFW_KEY_F:
+				scene->camera[0]->flashLightOnOff();
+				break;
 			case GLFW_KEY_DELETE:
 				if (indexObject != -1) {
 					scene->deleteObject(indexObject);
@@ -227,9 +205,6 @@ void Callback::window_size_callback(GLFWwindow* window, int width, int height) {
 	windSize[1] = height;
 
 	Callback::camera->setPerspectiveCamera(width, height);
-
-	//printf("windWidth: %d\n", my_data[0]);
-	//printf("windHeight: %d\n", my_data[1]);
 }
 
 // new
@@ -263,13 +238,8 @@ void Callback::button_callback(GLFWwindow* window, int button, int action, int m
 
 		///
 		printf("x: %d\ny: %d\n", camera->getResolution().x, camera->getResolution().y);
-		//GLint x = camera->getResolution().x / 2.0f;  //(GLint)xpos;
-		//GLint y = camera->getResolution().y / 2.0f;  //(GLint)ypos;
 		GLint x = width / 2;
 		GLint y = height / 2;
-
-		//int newy = (int)camera->getResolution().y;
-		//newy -= y;
 
 		glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
 		glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
@@ -300,25 +270,6 @@ void Callback::button_callback(GLFWwindow* window, int button, int action, int m
 			//scene->object.push_back(objectFactory.createObject);
 			scene->addObject("sphere", ShaderType::PHONG, newPosition, glm::vec3(1.0f, 1.0f, 0.5f), camera, sphereScale);
 		}
-		
-
-		
-		
-
-		///
-		/*glReadPixels(xpos, height - ypos - 1, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
-		glReadPixels(xpos, height - ypos - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
-		glReadPixels(xpos, height - ypos - 1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
-
-		printf("Clicked on pixel %d, %d, color %02hhx%02hhx%02hhx%02hhx, depth %f, stencil index %u\n",
-			xpos, ypos, color[0], color[1], color[2], color[3], depth, index);
-
-		glm::vec4 viewport = glm::vec4(0, 0, width, height);
-		glm::vec3 wincoord = glm::vec3(xpos, height - ypos - 1, depth);
-		glm::vec3 objcoord = glm::unProject(wincoord, glm::mat4(1.0f) * camera->target, camera->projection, viewport);
-		glm::un
-		printf("Coordinates in object space: %f, %f, %f\n",
-			objcoord.x, objcoord.y, objcoord.z);*/
 	}
 
 	printf("button_callback up? [%d,%d,%d]\n", button, action, mode);

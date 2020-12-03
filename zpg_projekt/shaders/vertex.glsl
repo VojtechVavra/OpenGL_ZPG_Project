@@ -1,27 +1,19 @@
 #version 420   // 330
 
-out vec3 ex_worldPosition;
-out vec3 ex_worldNormal;
-//out vec3 fragmentColor;
-//out vec3 lightPosition;
+out vec3 fragPos;		// ex_worldPosition;
+out vec3 normal;		// ex_worldNormal;
 
-layout(location = 0) in vec3 vp;
-layout(location = 1) in vec3 vertNormal;
+layout(location = 0) in vec3 vertexPosition;
+layout(location = 1) in vec3 vertexNormal;
 //layout(location=1) in vec3 vertexColor; //  // Notice that the 1 here equals the 1 in glVertexAttribPointer
 
-uniform mat4 modelMatrix;           // = mat4(1.0f);
-uniform mat4 viewMatrix;			// = mat4(1.0f);	// camera.getViewMatrix()
-uniform mat4 projectionMatrix;		// = mat4(1.0f);   // perspective or orthographic effect
-//uniform vec3 fragColor;
-//uniform vec3 newLightPos;
-
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;			// camera.getViewMatrix()
+uniform mat4 projectionMatrix;		// perspective or orthographic effect
 
 void main () {
-// gl_Position = mProj * mView * mModel * vec4(position, 1.0);
-   gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * vec4(vp, 1.0);  // gl_position became normalized device coordinates (ranging from -1 to +1)
-   ex_worldPosition = vec4(modelMatrix * vec4(vp, 1.0f)).xyz;
-   ex_worldNormal = vertNormal;
-
-   //fragmentColor = fragColor;
-   //lightPosition = newLightPos;
+	// gl_Position = mProj * mView * mModel * vec4(position, 1.0);
+	gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * vec4(vertexPosition, 1.0);  // gl_position became normalized device coordinates (ranging from -1 to +1)
+	fragPos = vec4(modelMatrix * vec4(vertexPosition, 1.0f)).xyz;
+	normal = vertexNormal;
 };

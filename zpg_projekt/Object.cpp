@@ -138,48 +138,6 @@ void Object::Scale(glm::vec3 scale)
     this->m_matrix = glm::scale(m_matrix, scale);
 }
 
-void Object::LookAt(glm::vec3 targetPosition, float anglex, float angley)
-{
-    // move camera a distance r away from the center
-    //glTranslatef(0.f, 0.f, 2.0f);
-    Translate(targetPosition);
-
-    Rotate(angley, glm::vec3(0.0f, 1.0f, 0.0f));
-    Rotate(anglex, glm::vec3(1.0f, 0.0f, 0.0f));
-    // rotate 
-
-
-    // move to center of circle  
-    Translate(-targetPosition);
-    //glTranslatef(-cx, -cy, -cz)
-
-    //glm::vec3 up(1.0f, 1.0f, 1.0f);
-   // this->m_matrix = glm::lookAt(position, -(position + targetPosition), up);
-
-    //Rotate(x, glm::vec3(1.0f, 0.0f, 0.0f));
-    //Rotate(y, glm::vec3(0.0f, 1.0f, 0.0f));
-
-    /*glm::vec3 up(1.0f, 1.0f, 1.0f);
-    glm::mat4 newLook = glm::lookAt(this->position, target, up);
-    this->m_matrix *= newLook;*/
-
-    //Double_t RadToDeg()
-    //{
-    //    return 180.0 / Pi();
-    //}
-
-    /*double radToDeg = 180.0 / 3.141592653589;
-    if ((targetPosition - position) == glm::vec3(0, 0, 0)) return;
-    glm::vec3 direction = glm::normalize(targetPosition - position);
-    float m_rotation_x = asinf(-direction.y) * radToDeg;
-    float m_rotation_y = -atan2f(-direction.x, -direction.z) * radToDeg;
-
-    Rotate(m_rotation_x, glm::vec3(1.0f, 0.0f, 0.0f));
-    Rotate(m_rotation_y, glm::vec3(0.0f, 1.0f, 0.0f));*/
-
-    //NormalizeAngles();
-}
-
 
 glm::vec3 Object::getColor()
 {
@@ -207,48 +165,6 @@ GLuint Object::getID()
     return this->objID;
 }
 
-/*void Object::update(std::string change)
-{
-    //this->use();
-    Shader::use(this->getShader());
-    if (change == "camera") {
-        // nepridavat vypisy/printy sekala by se scena
-        if (this->shaderType == ShaderType::AMBIENT)
-        {
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
-        }
-        else if (shaderType == ShaderType::DIFFUSE)
-        {
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
-        }
-        else if (shaderType == ShaderType::SPECULAR)
-        {
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
-            Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
-        }
-        else if (shaderType == ShaderType::PHONG)
-        {
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
-            Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
-        }
-        else if (shaderType == ShaderType::BLINN)
-        {
-            //Shader::sendUniform(shaderProgram, "modelMatrix", scene->object[i].getMatrix());
-            //Shader::sendUniform(shaderProgram, "viewMatrix", m_camera->getCamera());
-            //Shader::sendUniform(shaderProgram, "viewPos", m_camera->getPosition());
-        }
-        //std::cout << "Camera has changed" << std::endl;
-    }
-    else if (change == "projection") {
-        // zoom / fov changed
-        Shader::sendUniform(shaderProgram, "projectionMatrix", camera->getProjectionMatrix());
-        //std::cout << "Projection has changed" << std::endl;
-    }
-}*/
 
 void Object::update(Camera* camera, camChange change)
 {
@@ -280,6 +196,18 @@ void Object::update(Camera* camera, camChange change)
             //sendUniform("modelMatrix", scene->object[i].getMatrix());
             Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
             Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
+
+            // SpotLight
+            //Shader::sendUniform(shaderProgram, "spotLight[0].position", camera->getPosition());
+            //Shader::sendUniform(shaderProgram, "spotLight[0].direction", camera->target);
+
+            // flashlight(as Spotlight) on Camera 
+            if (camera->isFlashLightOn()) {
+                
+                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
+                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
+            }
+            
         }
         else if (shaderType == ShaderType::BLINN)
         {
@@ -294,4 +222,22 @@ void Object::update(Camera* camera, camChange change)
         Shader::sendUniform(shaderProgram, "projectionMatrix", camera->getProjectionMatrix());
         //std::cout << "Projection has changed" << std::endl;
     }
+    else if (change == FLASHLIGHT) {
+        if (shaderType == ShaderType::PHONG)
+        {
+            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
+            if (camera->isFlashLightOn()) {
+                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
+                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
+            }
+        }
+    }
+}
+
+
+void Object::render()
+{
+    this->getModel().bindVAO();
+    this->useShader();
+    this->getModel().render();		// glDrawArrays()
 }

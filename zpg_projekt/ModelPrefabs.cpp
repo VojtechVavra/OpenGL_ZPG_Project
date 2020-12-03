@@ -7,12 +7,15 @@
 ModelPrefabs::ModelPrefabs()
 {
 	this->modelPrefabs = {
+		// 1
 		{ "plain",		 Model("plain")		  },
 		{ "sphere",		 Model("sphere")	  },
 		{ "suzi_smooth", Model("suzi_smooth") },
 		{ "suzi_flat",	 Model("suzi_flat")	  },
 		{ "sphere",		 Model("sphere")	  },
+		{ "cube",		 Model("cube")		  },
 
+		// 2
 		{ "bedna",		 Model("bedna")		  },
 		{ "worker",		 Model("worker")	  }
 	};

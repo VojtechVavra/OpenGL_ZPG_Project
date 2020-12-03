@@ -1,9 +1,7 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>  
-
 #include "Light.hpp"
 
 Light::Light(glm::vec3 position, Model model, glm::vec3 modelColor, GLuint shaderID, glm::vec3 lightColor, ShaderType shaderType, std::shared_ptr<Camera> camera) : Object(position, model, modelColor, shaderID, shaderType) {
+
 	this->lightColor = lightColor;
 	this->lightIntensity = 1.0f;
 	
@@ -33,4 +31,9 @@ Light::~Light() {
 
 void Light::render() {
 	//glBindVertexArray(VAO);
+}
+
+Light::LightType Light::getLightType()
+{
+	return Light::LightType(1); // this->lightType;
 }

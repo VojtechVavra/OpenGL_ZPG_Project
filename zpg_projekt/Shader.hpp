@@ -38,18 +38,19 @@ public:
     //Shader();
     //Shader(Camera* camera, ShaderType shaderType);
 
+    
     void sendUniform(const GLchar* name, GLfloat value);
     void sendUniform(const GLchar* name, glm::vec3 dataVec3);
     void sendUniform(const GLchar* name, glm::vec4 dataVec4);
     void sendUniform(const GLchar* name, glm::mat4 dataMat4);
 
+    static void sendUniform(GLuint shaderProgram, const GLchar* name, GLint value);
     static void sendUniform(GLuint shaderProgram, const GLchar* name, GLfloat value);
     static void sendUniform(GLuint shaderProgram, const GLchar* name, glm::vec3 dataVec3);
     static void sendUniform(GLuint shaderProgram, const GLchar* name, glm::vec4 dataVec4);
     static void sendUniform(GLuint shaderProgram, const GLchar* name, glm::mat4 dataMat4);
 
     //void Update();
-    //void createMe();
 
     GLuint createShader(ShaderType fragmentShaderType = ShaderType::PHONG);
     static GLuint createShader(ShaderType fragmentShaderType, int i);

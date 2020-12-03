@@ -155,10 +155,12 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
     <ClCompile Include="Observer.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Subject.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +176,7 @@
     <ClInclude Include="models\1\suzi_flat2.hpp" />
     <ClInclude Include="models\1\suzi_smooth2.hpp" />
     <ClInclude Include="models\1\worker.hpp" />
+    <ClInclude Include="models\2\cube.hpp" />
     <ClInclude Include="models\2\plain.hpp" />
     <ClInclude Include="models\2\sphere.hpp" />
     <ClInclude Include="models\2\suzi_flat.hpp" />
@@ -181,11 +184,13 @@
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="ObjectFactory.hpp" />
     <ClInclude Include="Observer.hpp" />
+    <ClInclude Include="PointLight.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="ShaderLoader.hpp" />
+    <ClInclude Include="SpotLight.hpp" />
     <ClInclude Include="Subject.hpp" />
     <ClInclude Include="vertex.hpp" />
   </ItemGroup>
@@ -194,6 +199,7 @@
     <None Include="shaders\blinn.frag" />
     <None Include="shaders\diffuse.frag" />
     <None Include="shaders\phong.frag" />
+    <None Include="shaders\phong2_zaloha.frag" />
     <None Include="shaders\specular.frag" />
     <None Include="shaders\vertex.glsl" />
   </ItemGroup>
