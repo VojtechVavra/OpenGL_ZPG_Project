@@ -25,7 +25,8 @@ class Object : public virtual Observer
 {
 public:
     Object(glm::vec3 position); // pouzivam jen pro kameru
-    Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderID, ShaderType shaderType);
+    Object(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType); // For lights without model
+    Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType);
     //Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderID, ShaderType shaderType, std::shared_ptr<Camera> camera);
     //Object(glm::vec3 position, Model model, GLuint shaderID, ShaderType shaderType);
     Object();

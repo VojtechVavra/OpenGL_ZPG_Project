@@ -4,6 +4,18 @@
 
 //std::unordered_map<std::string, Model> ModelPrefabs::
 
+std::shared_ptr<ModelPrefabs> ModelPrefabs::instance = nullptr;
+
+std::shared_ptr<ModelPrefabs> ModelPrefabs::getInstance()
+{
+	if (ModelPrefabs::instance == nullptr) {
+		//ObjectFactory::instance = std::make_shared<ObjectFactory>();
+		std::shared_ptr<ModelPrefabs> inst(new ModelPrefabs());
+		ModelPrefabs::instance = inst;
+	}
+	return ModelPrefabs::instance;
+}
+
 ModelPrefabs::ModelPrefabs()
 {
 	this->modelPrefabs = {

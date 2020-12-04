@@ -27,7 +27,7 @@ Camera::Camera(glm::vec3 position) : Object(position)
 	this->width = 800;
 	this->height = 600;
 
-	this->flashLight = false;
+	this->flashLightBool = false;
 
 	setPerspectiveCamera();
 	updateCameraVectors();
@@ -295,14 +295,14 @@ void Camera::dropObject()
 
 void Camera::flashLightOnOff()
 {
-	this->flashLight = this->flashLight ? false : true;
+	this->flashLightBool = this->flashLightBool ? false : true;
 	notifyObservers(this, camChange::FLASHLIGHT);
-	printf("Flashlight %s\n", flashLight ? "on" : "off");
+	printf("Flashlight %s\n", flashLightBool ? "on" : "off");
 }
 
 bool Camera::isFlashLightOn()
 {
-	return this->flashLight;
+	return this->flashLightBool;
 }
 
 /*void update2(Subject* subject)

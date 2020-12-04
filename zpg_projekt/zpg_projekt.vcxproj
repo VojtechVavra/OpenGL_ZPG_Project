@@ -148,6 +148,7 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Callback.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Application.hpp" />
     <ClInclude Include="Callback.hpp" />
     <ClInclude Include="Camera.hpp" />
+    <ClInclude Include="DirectionalLight.hpp" />
     <ClInclude Include="FPSCounter.hpp" />
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="Model.hpp" />

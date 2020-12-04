@@ -19,8 +19,10 @@ uniform float specularStrength = 0.5f;  // 0.5
 
 
 #define MAX_LIGHTS 64
-uniform int lightCount;
-uniform struct Light {
+uniform int pointLightCount;
+uniform int spotLightCount;
+
+/*uniform struct Light {
    int lightType;
    vec4 position;
    vec3 color; //intensities a.k.a the color of the light
@@ -28,11 +30,10 @@ uniform struct Light {
    float ambientCoefficient;
    float coneAngle;
    vec3 coneDirection;
-} lights[MAX_LIGHTS];
+} lights[MAX_LIGHTS];*/
 
 uniform struct PointLight {
     int lightType;
-
     vec3 position;
     
     float constant;
@@ -49,7 +50,8 @@ struct DirLight {
     int lightType;
 
     vec3 direction;
-  
+    vec3 color;
+
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -59,6 +61,8 @@ uniform DirLight dirLight;
 uniform struct SpotLight {
     vec3 position;
     vec3 direction;
+    vec3 color;
+
     float cutOff;
     float outerCutOff;
   
@@ -75,7 +79,7 @@ uniform struct SpotLight {
 
 uniform SpotLight flashLight;
 
-vec3 calculateAmbient(Light light);
+//vec3 calculateAmbient(Light light);
 vec3 calculateDiffuse(vec3 position, vec3 _lightColor);
 vec3 calculateSpecular(vec3 position, vec3 _lightColor);
 
@@ -100,14 +104,12 @@ void main()
     // phase 1: Directional lighting
     vec3 result = CalcDirLight(dirLight, norm, normalize(viewPos));
     // phase 2: Point lights
-    for(int i = 0; i < lightCount - 1; i++) {
+    for(int i = 0; i < pointLightCount; i++) {
         result += CalcPointLight(pointLight[i], norm, fragPos, viewDir);
     }
     // phase 3: Spot lights
-    for(int i = 0; i < lightCount - 1; i++) {
-        if(spotLight[0].isActive == 1) {
-        //result += CalcSpotLight(spotLight[0], norm, ex_worldPosition, viewDir);
-        }
+    for(int i = 0; i < spotLightCount; i++) {
+        result += CalcSpotLight(spotLight[i], norm, fragPos, viewDir);
     }
     // phase 4: FlashLight
     if(flashLight.isActive == 1) {
@@ -142,6 +144,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     ambient *= attenuation;
     diffuse *= attenuation;
     specular *= attenuation;
+
     return (ambient + diffuse + specular);
 }
 
@@ -156,12 +159,10 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 lightDir = normalize(light.direction);
     float diff = max(dot(norm, lightDir), 0.0);  // dot product?
 
-    vec3 lightColor = vec3(1.0f, 1.0f, 1.0f);
+    vec3 ambient  = ambientStrength * light.ambient;     // vec3(1.0f, 1.0f, 1.0f);
+    vec3 diffuse  =  diff * light.color;
 
-    vec3 ambient  = ambientStrength * vec3(1.0f, 1.0f, 1.0f);
-    vec3 diffuse  =  diff * lightColor;
-
-     return (ambient + diffuse) * fragmentColor;
+    return (ambient + diffuse) * fragmentColor;
 }
 
 // calculates the color when using a spot light.
@@ -183,7 +184,7 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     float epsilon = light.cutOff - light.outerCutOff;
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
     // combine results
-    vec3 ambient  = ambientStrength * vec3(1.0f, 1.0f, 1.0f); // * fragmentColor;
+    vec3 ambient  = ambientStrength * vec3(1.0f, 1.0f, 1.0f); // light.color // * fragmentColor;
     vec3 diffuse  = light.diffuse  * diff; // * fragmentColor;
     vec3 specular = light.specular * spec; // * fragmentColor;
     //vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
@@ -196,11 +197,11 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     return (ambient + diffuse + specular) * fragmentColor;
 }
 
-vec3 calculateAmbient(Light light)
+/*vec3 calculateAmbient(Light light)
 {
     // ambient - constant
     return ambientStrength * light.color;
-}
+}*/
 
 vec3 calculateDiffuse(vec3 position, vec3 _lightColor)
 {

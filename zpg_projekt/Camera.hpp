@@ -12,6 +12,7 @@
 
 #include "Subject.hpp"
 #include "Object.hpp"
+#include "SpotLight.hpp"
 
 //class Shader;
 class Object;
@@ -80,6 +81,8 @@ public:
 
 	float yaw2;
 	float pitch2;
+
+	std::shared_ptr<SpotLight> flashLight;
 private:
 	//glm::mat4 projection;
 	glm::vec3 up;
@@ -99,7 +102,7 @@ private:
 	float fov;
 	bool firstMouse;
 	
-	bool flashLight;
+	bool flashLightBool;
 
 
 	void updateCameraVectors();

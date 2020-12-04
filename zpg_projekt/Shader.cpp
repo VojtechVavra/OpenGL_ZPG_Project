@@ -31,7 +31,7 @@
     createShader(shaderType);
 }*/
 
-GLuint Shader::createShader(ShaderType fragmentShaderType)
+/*GLuint Shader::createShader(ShaderType fragmentShaderType)
 {
     ShaderLoader loader;
     const std::string fragmentShaderName = fragShaderPath[fragmentShaderType];
@@ -40,9 +40,9 @@ GLuint Shader::createShader(ShaderType fragmentShaderType)
     this->shaderProgram = loader.loadShader("./shaders/vertex.glsl", fragmentShaderName.c_str());
 
     return this->shaderProgram;
-}
+}*/
 
-GLuint Shader::createShader(ShaderType fragmentShaderType, int i)
+GLuint Shader::createShader(ShaderType fragmentShaderType)
 {
     ShaderLoader loader;
     const std::string fragmentShaderName = fragShaderPath[fragmentShaderType];

@@ -33,12 +33,8 @@ static std::unordered_map<ShaderType, std::string> fragShaderPath(
 
 class Camera;
 
-class Shader { // : public Observer {
+class Shader {
 public:
-    //Shader();
-    //Shader(Camera* camera, ShaderType shaderType);
-
-    
     void sendUniform(const GLchar* name, GLfloat value);
     void sendUniform(const GLchar* name, glm::vec3 dataVec3);
     void sendUniform(const GLchar* name, glm::vec4 dataVec4);
@@ -50,10 +46,8 @@ public:
     static void sendUniform(GLuint shaderProgram, const GLchar* name, glm::vec4 dataVec4);
     static void sendUniform(GLuint shaderProgram, const GLchar* name, glm::mat4 dataMat4);
 
-    //void Update();
-
-    GLuint createShader(ShaderType fragmentShaderType = ShaderType::PHONG);
-    static GLuint createShader(ShaderType fragmentShaderType, int i);
+    //GLuint createShader(ShaderType fragmentShaderType = ShaderType::PHONG);
+    static GLuint createShader(ShaderType fragmentShaderType);  // , int i);
 
     //GLuint createShader();
 
@@ -64,8 +58,6 @@ public:
     static void use(GLuint shaderProgram);
 private:
     GLuint shaderProgram;
-    
-    //Camera* m_camera;
     ShaderType type;
 };
 

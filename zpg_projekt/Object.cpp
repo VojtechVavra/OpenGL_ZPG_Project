@@ -13,6 +13,7 @@
 
 GLuint Object::objectCount = 0;
 
+// Constructor for camera
 Object::Object(glm::vec3 position)
 {   // pouzivam jen pro kameru
     this->m_matrix = glm::mat4(1.0f);
@@ -21,6 +22,24 @@ Object::Object(glm::vec3 position)
 
     this->color = glm::vec3(1.0f, 1.0f, 1.0f);
     std::cout << "Object type 1 - camera only" << std::endl;
+}
+
+// Constructor for lights without model
+Object::Object(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType)
+{
+    this->m_matrix = glm::mat4(1.0f);
+    this->position = glm::vec3(0.0f, 0.0f, 0.0f);
+    //this->color = color;
+    //this->model = nullptr;
+    this->shaderProgram = shaderProgram;
+    this->shaderType = shaderType;
+    //this->camera = camera;
+
+    //this->objID = Object::objectCount += 1;
+
+    Translate(position);
+
+    std::cout << "Object type 2 - light without model" << std::endl;
 }
 
 Object::Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType)
@@ -37,7 +56,7 @@ Object::Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderPr
 
     Translate(position);
 
-    std::cout << "Object type 2 - other model objects" << std::endl;
+    std::cout << "Object type 3 - other model objects" << std::endl;
 }
 
 /*Object::Object(glm::vec3 position, Model model, GLuint shaderProgram, ShaderType shaderType)
@@ -182,6 +201,13 @@ void Object::update(Camera* camera, camChange change)
             Shader::sendUniform(shaderProgram, "modelMatrix", getMatrix());
             //sendUniform("modelMatrix", scene->object[i].getMatrix());
             Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
+
+            // flashlight(as Spotlight) on Camera 
+            if (camera->isFlashLightOn()) {
+
+                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
+                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
+            }
         }
         else if (shaderType == ShaderType::SPECULAR)
         {
@@ -223,7 +249,15 @@ void Object::update(Camera* camera, camChange change)
         //std::cout << "Projection has changed" << std::endl;
     }
     else if (change == FLASHLIGHT) {
-        if (shaderType == ShaderType::PHONG)
+        if (shaderType == ShaderType::DIFFUSE)
+        {
+            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
+            if (camera->isFlashLightOn()) {
+                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
+                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
+            }
+        }
+        else if (shaderType == ShaderType::PHONG)
         {
             Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
             if (camera->isFlashLightOn()) {

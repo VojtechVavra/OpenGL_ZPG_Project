@@ -265,6 +265,8 @@ void Renderer::renderLoop()
 			scene->light[i]->getModel().render();*/
 		}
 
+		scene->directionalLight[0]->render();
+
 		// update other events like input handling
 		glfwPollEvents();
 		// put the stuff we’ve been drawing onto the display

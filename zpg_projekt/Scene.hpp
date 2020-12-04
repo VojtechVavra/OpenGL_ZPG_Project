@@ -6,6 +6,7 @@
 #include "Shader.hpp"
 #include "Object.hpp"
 #include "Light.hpp"
+#include "DirectionalLight.hpp"
 #include "Model.hpp"
 #include "Camera.hpp"
 
@@ -30,7 +31,11 @@ public:
 	std::vector<std::shared_ptr<Object>> object;
 	std::vector<std::shared_ptr<Camera>> camera;
 	std::vector<std::shared_ptr<Light>> light;
+	std::vector<std::shared_ptr<SpotLight>> spotLight;
+	std::vector<std::shared_ptr<DirectionalLight>> directionalLight;
 	std::vector<std::shared_ptr<Light2>> light2;
+
+	
 	//std::unique_ptr<Light> light;
 
 	Shader shaderLight;
@@ -43,6 +48,12 @@ public:
 	//void moveObject(int index, glm::vec3 newPosition);
 	void setNewColor(int index);
 	void setLastColor(int index);
+
+private:
+	void cameraSection();
+	void lightSection();
+	void objectSection();
+	void objectTransformSection();
 };
 
 #endif // !SCENE_HPP

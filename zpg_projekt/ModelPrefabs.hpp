@@ -10,12 +10,15 @@
 class ModelPrefabs
 {
 public:
-	ModelPrefabs();
+	static std::shared_ptr<ModelPrefabs> getInstance();
+	
 	Model getModel(std::string modelName);
 	~ModelPrefabs();
 private:
+	ModelPrefabs();
+	static std::shared_ptr<ModelPrefabs> instance;
+	
 	std::unordered_map<std::string, Model> modelPrefabs;
-	// Disallow creating an instance of this object - not now, not here
 };
 
 #endif // !MODELPREFABS_HPP
