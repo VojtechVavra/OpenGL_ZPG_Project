@@ -17,7 +17,7 @@ private:
 	void renderObject(std::shared_ptr<Object> object);
 	std::shared_ptr<Scene> scene;
 	std::shared_ptr<GLFWwindow> window;
-
+	void renderModel();
 	// timing
 	float currentFrame;
 	float deltaTime;	// time between current frame and last frame

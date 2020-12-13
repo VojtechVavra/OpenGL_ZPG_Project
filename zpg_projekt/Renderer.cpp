@@ -2,6 +2,8 @@
 
 #include "Renderer.hpp"
 #include "FPSCounter.hpp"
+#include "LoadModel.hpp"	// smazat
+#include "ObjLoader.hpp"
 
 Renderer::Renderer()
 {
@@ -16,6 +18,7 @@ void Renderer::renderScene(std::shared_ptr<Scene> scene, std::shared_ptr<GLFWwin
 	this->window = window;
 
 	glEnable(GL_DEPTH_TEST);
+	//glDisable(GL_DEPTH_TEST);
 	//renderInit();
 	renderLoop();
 }
@@ -186,11 +189,13 @@ void Renderer::renderInit()
 				Shader::sendUniform(scene->object[i]->getShader(), buff, glm::vec3(0, 0, 1));
 				*/
 
-				Shader::sendUniform(scene->object[i]->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].lightType").c_str(), scene->light2[lightIndex]->lightType);
-				Shader::sendUniform(scene->object[i]->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].position").c_str(), scene->light2[lightIndex]->position);
+				/*Shader::sendUniform(scene->object[i]->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].lightType").c_str(), scene->light[lightIndex]->lightType);
+				Shader::sendUniform(scene->object[i]->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].position").c_str(), scene->light[lightIndex]->position);
 				Shader::sendUniform(scene->object[i]->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].constant").c_str(), 1.0f);
 				Shader::sendUniform(scene->object[i]->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].linear").c_str(), 0.09f);
 				Shader::sendUniform(scene->object[i]->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].quadratic").c_str(), 0.032f);
+				*/
+
 
 				/*
 				Shader::sendUniform(scene->object[i]->getShader(), ("lights[" + std::to_string(lightIndex) + "].lightType").c_str(), scene->light2[lightIndex]->lightType);
@@ -251,21 +256,60 @@ void Renderer::renderLoop()
 		{
 			// cubemap oblohy nedavat do stencilu
 
+			/*glStencilFunc(GL_ALWAYS, -1, 0xFF);
+			glDepthMask(GL_FALSE);
+			scene->skybox->draw(scene->skyboxshader, scene->camera[0]);
+			//scene->skybox2->renderSkybox(scene->camera[0]);
+			glDepthMask(GL_TRUE);
+			*/
+			glDepthMask(GL_FALSE);
+			scene->skybox->draw(scene->skyboxshader, scene->camera[0]);
+			glDepthMask(GL_TRUE);
+
+
 			glStencilFunc(GL_ALWAYS, i + 1, 0xFF);
 			//glStencilFunc(GL_ALWAYS, scene->object[i]->getID(), 0xFF);
-
 			renderObject(scene->object[i]);
-		}
+			/*if (i == 9)
+			{
+				glDepthMask(GL_FALSE);
+				//scene->skybox->draw(scene->skyboxshader, scene->camera[0]);
+				//scene->object[i]->renderSkybox2(scene->camera[0]);
+				renderObject(scene->object[i]);
+				glDepthMask(GL_TRUE);
+			}*/
 
-		// render lights
-		for (int i = 0; i < scene->light.size(); i++) {
-			scene->light[i]->render();
-			/*scene->light[i]->getModel().bindVAO();
-			scene->light[i]->useShader();
-			scene->light[i]->getModel().render();*/
-		}
+			
+			//  vykresleni pomoci index bufferu
+			/**glBindVertexArray(scene->newModel);
+			glActiveTexture(GL_TEXTURE0);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+			glBindTexture(GL_TEXTURE_2D, 0);
+			scene->object[3]->loadTexture();
+			Shader::sendUniform(scene->object[3]->getShader(), "hasTexture", 1);
+			Shader::sendUniform(scene->object[3]->getShader(), "textureUnitID", 0);
+			//shader.passUniformLocation("textureUnitID", std::int32_t(0));
+			glDrawElements(GL_TRIANGLES, scene->indicesCount, GL_UNSIGNED_INT, NULL);
+			glBindVertexArray(0);**/
 
-		scene->directionalLight[0]->render();
+			//glDepthMask(GL_FALSE);
+			renderModel();
+			//glDepthMask(GL_TRUE);
+
+			// render the loaded model
+			/*glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+			ourShader.setMat4("model", model);
+			ourModel.Draw(ourShader);
+			*/
+
+
+			//glDisable(GL_DEPTH_TEST);
+			//scene->skybox->draw(scene->skyboxshader, scene->camera[0]);
+			//glEnable(GL_DEPTH_TEST);
+		}
 
 		// update other events like input handling
 		glfwPollEvents();
@@ -283,6 +327,99 @@ void Renderer::renderObject(std::shared_ptr<Object> object)
 	/*object->getModel().bindVAO();
 	object->useShader();
 	object->getModel().render();		// glDrawArrays()*/
+}
+
+
+void Renderer::renderModel()
+{
+	glUseProgram(scene->programID);
+	scene->newMeshModel->Draw(scene->programID);
+	glm::mat4 ProjectionMatrix = scene->camera[0]->getProjectionMatrix();
+	glm::mat4 ViewMatrix = scene->camera[0]->getCamera();
+	glm::mat4 ModelMatrix = glm::mat4(1.0);
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, -0.5f, 0.0f));
+	glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
+	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "modelMatrix"), 1, GL_FALSE, &ModelMatrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "viewMatrix"), 1, GL_FALSE, &ViewMatrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "projectionMatrix"), 1, GL_FALSE, &ProjectionMatrix[0][0]);
+	return;
+	/*
+	glBindVertexArray(scene->VertexArrayID);
+	// Use our shader
+	glUseProgram(scene->programID);
+
+	// Compute the MVP matrix from keyboard and mouse input
+	glm::mat4 ProjectionMatrix = scene->camera[0]->getProjectionMatrix();
+	glm::mat4 ViewMatrix = scene->camera[0]->getCamera();
+	glm::mat4 ModelMatrix = glm::mat4(1.0);
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, -0.5f, 0.0f));
+	glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+	
+	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "modelMatrix"), 1, GL_FALSE, &ModelMatrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "viewMatrix"), 1, GL_FALSE, &ViewMatrix[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "projectionMatrix"), 1, GL_FALSE, &ProjectionMatrix[0][0]);
+	*/
+
+
+	//send3DobjUniforms(scene->programID, scene->camera[0], scene->light, scene->directionalLight, scene->spotLight, scene->texture, ModelMatrix);
+	// Send our transformation to the currently bound shader, 
+	// in the "MVP" uniform
+
+	//glUniformMatrix4fv(scene->MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+	// Bind our texture in Texture Unit 0
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, scene->texture);
+	// Set our "myTextureSampler" sampler to use Texture Unit 0
+	glUniform1i(scene->TextureID, 0);
+
+	/*
+	// vertex position
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)0);
+	// normal attribute
+	// vezne 3 floaty z osmi ale vezne je s posunem vuci zacatku
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
+	// uv - texture coordinates
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(6 * sizeof(float)));
+	*/
+
+
+	// funguje
+	// 1rst attribute buffer : vertices
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, scene->vertexbuffer);
+	glVertexAttribPointer(
+		0,                  // attribute
+		3,                  // size
+		GL_FLOAT,           // type
+		GL_FALSE,           // normalized?
+		0,                  // stride
+		(void*)0            // array buffer offset
+	);
+
+	// 2nd attribute buffer : UVs
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, scene->uvbuffer);
+	glVertexAttribPointer(
+		1,                                // attribute
+		2,                                // size
+		GL_FLOAT,                         // type
+		GL_FALSE,                         // normalized?
+		0,                                // stride
+		(void*)0                          // array buffer offset
+	);
+	
+	// Draw the triangle !
+	glDrawArrays(GL_TRIANGLES, 0, scene->vertices.size());
+
+	//glDisableVertexAttribArray(0);
+	//glDisableVertexAttribArray(1);
 }
 
 Renderer::~Renderer()

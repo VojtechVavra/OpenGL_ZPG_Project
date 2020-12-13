@@ -1,5 +1,8 @@
 #include <iostream>
 #include <memory>
+#include <filesystem>
+
+#include "SOIL.h"
 
 #include "Scene.hpp"
 #include "Camera.hpp"
@@ -12,6 +15,11 @@
 
 #include "SpotLight.hpp"
 #include "DirectionalLight.hpp"
+#include "TextureManager.hpp"
+#include "ShaderLoader.hpp"
+
+//#include "ObjLoader.hpp"
+
 
 
 Scene::Scene()
@@ -38,6 +46,19 @@ void Scene::InitializeScene()
 
 	// Objects transformations and scales
 	objectTransformSection();
+
+	modelSection();
+
+	// Skybox creation
+	skyboxSection();
+
+	shaderPrograms = Shader::getShaderPrograms();
+	
+	for (ShaderProgram shaderProgram : shaderPrograms)
+	{
+		camera[0]->registerObserver(std::make_shared<ShaderProgram>(shaderProgram));
+	}
+
 }
 
 void Scene::cameraSection()
@@ -91,6 +112,7 @@ void Scene::lightSection()
 	auto newDirectionalLightSun = std::static_pointer_cast<DirectionalLight>(directionalLightSun);
 	directionalLight.push_back(newDirectionalLightSun);
 
+
 	/*auto directionalLight = std::shared_ptr<Light2>(new Light2());
 	directionalLight->lightType = 0;
 	directionalLight->position = glm::vec4(0.0, 0.0, 0.0, 0.0); //w == 0 indications a directional light
@@ -103,7 +125,23 @@ void Scene::lightSection()
 
 
 	// light
-	Model lightModel("sphere");
+	// Point light
+	position = glm::vec3(0.0f, 0.0f, 0.0f);
+	lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+	attenuation = 0.1f;
+	ambientCoefficient = 0.1f;
+	glm::vec3 objectColor(1.0f, 1.0f, 1.0f);
+
+	std::shared_ptr<Light> pointLight1 = objectFactory->createPointLight("sphere", ShaderType::AMBIENT, position, objectColor, lightColor, attenuation, ambientCoefficient);
+	pointLight1->Scale(glm::vec3(0.02f, 0.02f, 0.02f));
+
+	auto pointLight1p = std::static_pointer_cast<PointLight>(pointLight1);
+	//object.push_back(pointLight1p);
+	//camera[0]->registerObserver(pointLight1p);
+	light.push_back(pointLight1p);
+
+
+	/*Model lightModel("sphere");
 	lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 	shaderLightProgram = Shader::createShader(ShaderType::AMBIENT);
 
@@ -114,21 +152,22 @@ void Scene::lightSection()
 	light1->Scale(glm::vec3(0.02f, 0.02f, 0.02f));
 
 	//object.push_back(light1);
-	light.push_back(light1);
+	light.push_back(light1);*/
+
 
 	//camera[0]->registerObserver(light1);
 
 	// light 2 - spot light
-	position = glm::vec3(1.0f, 1.0f, 0.0f);
+	position = glm::vec3(1.0f, 0.3f, 0.0f);
 	lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 	attenuation = 0.1f;
 	ambientCoefficient = 0.1f;
 	coneAngle = 15.0f;
 	coneDirection = glm::vec3(0.0f, -1.0f, 0.0f); // direction_up_down;
-	glm::vec3 objectColor(0.5f, 1.0f, 0.5f);
+	objectColor = glm::vec3(0.5f, 1.0f, 0.5f);
 
 	std::shared_ptr<Light> newSpotLight1 = objectFactory->createSpotLight("cube", ShaderType::AMBIENT, position, objectColor, lightColor, attenuation, ambientCoefficient, coneAngle, coneDirection);
-	newSpotLight1->Scale(glm::vec3(0.02f, 0.02f, 0.02f));
+	newSpotLight1->Scale(glm::vec3(0.03f, 0.01f, 0.03f));
 	auto newSpotLight11 = std::static_pointer_cast<SpotLight>(newSpotLight1);
 	spotLight.push_back(newSpotLight11);
 	//object.push_back(newSpotLight11);	// added
@@ -165,11 +204,11 @@ void Scene::lightSection()
 		light[i]->getModel().bindVAO();
 		light[i]->useShader();
 
-		Shader::sendUniform(shaderLightProgram, "viewMatrix", camera[0]->getCamera());
-		Shader::sendUniform(shaderLightProgram, "modelMatrix", light[i]->getMatrix());
-		Shader::sendUniform(shaderLightProgram, "fragmentColor", light[i]->lightColor);	// getColor()
-		Shader::sendUniform(shaderLightProgram, "ambientStrength", 1.0f);
-		Shader::sendUniform(shaderLightProgram, "projectionMatrix", camera[0]->getProjectionMatrix());
+		Shader::sendUniform(light[i]->getShader(), "viewMatrix", camera[0]->getCamera());	// shaderLightProgram
+		Shader::sendUniform(light[i]->getShader(), "modelMatrix", light[i]->getMatrix());
+		Shader::sendUniform(light[i]->getShader(), "fragmentColor", light[i]->lightColor);	// getColor()
+		Shader::sendUniform(light[i]->getShader(), "ambientStrength", 1.0f);
+		Shader::sendUniform(light[i]->getShader(), "projectionMatrix", camera[0]->getProjectionMatrix());
 		light[i]->getModel().render();	//	glDrawArrays(GL_TRIANGLES, 0, 2880);
 	}
 }
@@ -177,7 +216,7 @@ void Scene::lightSection()
 void Scene::objectSection()
 {
 	glm::vec3 pos = glm::vec3(-0.25f, 0.f, 0.25f);
-	glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec3 color = glm::vec3(0.8f, 0.8f, 0.8f);
 	addObject("sphere", ShaderType::AMBIENT, pos, color, camera[0], glm::vec3(1.0f));
 
 	pos = glm::vec3(0.25f, 0.f, 0.25f);
@@ -190,21 +229,30 @@ void Scene::objectSection()
 
 	pos = glm::vec3(0.25f, 0.f, -0.25f);
 	color = glm::vec3(0.8f, 0.0f, 0.0f);
-	addObject("sphere", ShaderType::PHONG, pos, color, camera[0], glm::vec3(1.0f));
+	addObject("sphere", /*ShaderType::DIFFUSE*/ShaderType::PHONG, pos, color, camera[0], glm::vec3(1.0f));
 
 	pos = glm::vec3(0.0f, 0.0f, 0.0f);
 	color = glm::vec3(0.2f, 1.0f, 0.2f);
-	addObject("plain", ShaderType::PHONG, pos, color, camera[0], glm::vec3(1.0f));
+	//addObject("plain", ShaderType::PHONG, pos, color, camera[0], glm::vec3(1.0f));
+	std::string texture1 = "floor\\floor2.jpg";
+	addObject("plainTextured", ShaderType::PHONG, pos, color, camera[0], glm::vec3(1.0f), texture1);
 
 	addObject("suzi_smooth", ShaderType::PHONG, pos, glm::vec3(1.0f, 1.0f, 0.2f), camera[0], glm::vec3(1.0f));
 
 	addObject("suzi_flat", ShaderType::PHONG, pos, glm::vec3(0.2f, 0.5f, 1.0f), camera[0], glm::vec3(1.0f));
 
-	addObject("bedna", ShaderType::PHONG, pos, glm::vec3(0.2f, 0.1f, 1.0f), camera[0], glm::vec3(1.0f));
+	std::string texture2 = "floor\\floor1.jpg";
+	addObject("plainTextured", ShaderType::PHONG, pos, glm::vec3(0.2f, 0.1f, 1.0f), camera[0], glm::vec3(1.0f), texture2);
+
+	/*std::string texture1 = "floor\\floor1.jpg";
+	addObject("bedna", ShaderType::PHONG, pos, glm::vec3(0.2f, 0.1f, 1.0f), camera[0], glm::vec3(1.0f), texture1);*/
 
 	addObject("worker", ShaderType::PHONG, pos, glm::vec3(0.2f, 0.3f, 0.7f), camera[0], glm::vec3(1.0f));
 
+	//std::string texture3 = "floor\\floor1.jpg";
+	//addObject("cube", ShaderType::SKYBOX, pos, color, camera[0], glm::vec3(1.0f));
 
+	
 	
 }
 
@@ -240,24 +288,33 @@ void Scene::objectTransformSection()
 	// end translate, scale
 
 
-	object.push_back(light[0]);
-	camera[0]->registerObserver(light[0]);
+	object.push_back(light[0]);	// <- odkomentovat
+	//camera[0]->registerObserver(light[0]);
 
 	object.push_back(spotLight[0]);	// added
-	camera[0]->registerObserver(spotLight[0]);
+	//camera[0]->registerObserver(spotLight[0]);
 
 	object.push_back(directionalLight[0]);
-	camera[0]->registerObserver(directionalLight[0]);
+	//camera[0]->registerObserver(directionalLight[0]);
 
 	// Apply initial transformations and scales on objects
 	camera[0]->notifyObservers(camera[0].get(), camChange::MOVE_ROTATE);
 }
 
-void Scene::addObject(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 color, std::shared_ptr<Camera> camera, glm::vec3 scale)
+void Scene::addObject(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 color, std::shared_ptr<Camera> camera, glm::vec3 scale, std::string texturePath)
 {	// pouzito pro vytvareni objektu za runtimu
 	//ObjectFactory objectFactory;
 	std::shared_ptr<ObjectFactory> objectFactory = ObjectFactory::getInstance();
-	std::shared_ptr<Object> newObject = objectFactory->createObject(modelName, shaderType, position, color);
+	std::shared_ptr<Object> newObject;
+	if (texturePath == "")
+	{
+		newObject = objectFactory->createObject(modelName, shaderType, position, color);
+	}
+	else	// textured model
+	{
+		newObject = objectFactory->createObject(modelName, shaderType, position, texturePath);
+	}
+
 	object.push_back(newObject);
 	
 
@@ -267,119 +324,128 @@ void Scene::addObject(std::string modelName, ShaderType shaderType, glm::vec3 po
 	glBindVertexArray(0);
 	object.back()->getModel().bindVAO();
 	object.back()->useShader();		//glUseProgram(scene->shaderProgram);
+
+
+	GLuint objShaderProgram = object.back()->getShader();
+
 	ShaderType shadType = object.back()->getShaderType();
-	
 	if (shadType == ShaderType::AMBIENT)
 	{
 		// vertex scene->shader uniforms
-		Shader::sendUniform(object.back()->getShader(), "modelMatrix", object.back()->getMatrix());
-		Shader::sendUniform(object.back()->getShader(), "viewMatrix", camera->getCamera());
-		Shader::sendUniform(object.back()->getShader(), "projectionMatrix", camera->getProjectionMatrix());
+		Shader::sendUniform(objShaderProgram, "modelMatrix", object.back()->getMatrix());
+		Shader::sendUniform(objShaderProgram, "viewMatrix", camera->getCamera());
+		Shader::sendUniform(objShaderProgram, "projectionMatrix", camera->getProjectionMatrix());
 
 		// fragment scene->shader uniforms
-		Shader::sendUniform(object.back()->getShader(), "fragmentColor", object.back()->getColor());
+		Shader::sendUniform(objShaderProgram, "fragmentColor", object.back()->getColor());
 	}
 	else if (shadType == ShaderType::DIFFUSE)
 	{
 		// vertex scene->shader uniforms
-		Shader::sendUniform(object.back()->getShader(), "modelMatrix", object.back()->getMatrix());
-		Shader::sendUniform(object.back()->getShader(), "viewMatrix", camera->getCamera());
-		Shader::sendUniform(object.back()->getShader(), "projectionMatrix", camera->getProjectionMatrix());
+		Shader::sendUniform(objShaderProgram, "modelMatrix", object.back()->getMatrix());
+		Shader::sendUniform(objShaderProgram, "viewMatrix", camera->getCamera());
+		Shader::sendUniform(objShaderProgram, "projectionMatrix", camera->getProjectionMatrix());
 
 		// fragment scene->shader uniforms
-		Shader::sendUniform(object.back()->getShader(), "fragmentColor", object.back()->getColor());
+		Shader::sendUniform(objShaderProgram, "fragmentColor", object.back()->getColor());
 
-		Shader::sendUniform(object.back()->getShader(), "lightPosition", light[0]->getPosition());
-		Shader::sendUniform(object.back()->getShader(), "lightColor", light[0]->lightColor);
+		Shader::sendUniform(objShaderProgram, "lightPosition", light[0]->getPosition());
+		Shader::sendUniform(objShaderProgram, "lightColor", light[0]->lightColor);
 
 
 		// added
 		// direction light
 		for (int dirIndex = 0; dirIndex < directionalLight.size(); dirIndex++) {
-			Shader::sendUniform(object.back()->getShader(), "dirLight.direction", directionalLight[dirIndex]->direction);
-			Shader::sendUniform(object.back()->getShader(), "dirLight.color", directionalLight[dirIndex]->lightColor);
-			Shader::sendUniform(object.back()->getShader(), "dirLight.ambient", directionalLight[dirIndex]->ambientCoefficient);
-			Shader::sendUniform(object.back()->getShader(), "dirLight.diffuse", glm::vec3(0.2f, 0.2f, 0.2f));	// glm::vec3(0.2f, 0.2f, 0.2f)
-			Shader::sendUniform(object.back()->getShader(), "dirLight.specular", glm::vec3(0.2f, 0.2f, 0.2f));
+			Shader::sendUniform(objShaderProgram, "dirLight.direction", directionalLight[dirIndex]->direction);
+			Shader::sendUniform(objShaderProgram, "dirLight.color", directionalLight[dirIndex]->lightColor);
+			Shader::sendUniform(objShaderProgram, "dirLight.ambient", directionalLight[dirIndex]->ambientCoefficient);
+			Shader::sendUniform(objShaderProgram, "dirLight.diffuse", glm::vec3(0.2f, 0.2f, 0.2f));	// glm::vec3(0.2f, 0.2f, 0.2f)
+			Shader::sendUniform(objShaderProgram, "dirLight.specular", glm::vec3(0.2f, 0.2f, 0.2f));
 		}
 
 		// spotLight
-		Shader::sendUniform(object.back()->getShader(), "spotLightCount", static_cast<GLint>(spotLight.size()));
+		Shader::sendUniform(objShaderProgram, "spotLightCount", static_cast<GLint>(spotLight.size()));
 
 		for (int spotIndex = 0; spotIndex < spotLight.size(); spotIndex++) {
-			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].position").c_str(), spotLight[spotIndex]->getPosition());
-			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].direction").c_str(), spotLight[spotIndex]->coneDirection);
-			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].color").c_str(), spotLight[spotIndex]->lightColor);
-			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].ambient").c_str(), glm::vec3(0.0f, 0.0f, 0.0f));
-			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].diffuse").c_str(), glm::vec3(0.5f, 0.0f, 0.5f));
-			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].specular").c_str(), glm::vec3(0.5f, 0.0f, 0.5f));
+			Shader::sendUniform(objShaderProgram, ("spotLight[" + std::to_string(spotIndex) + "].position").c_str(), spotLight[spotIndex]->getPosition());
+			Shader::sendUniform(objShaderProgram, ("spotLight[" + std::to_string(spotIndex) + "].direction").c_str(), spotLight[spotIndex]->coneDirection);
+			Shader::sendUniform(objShaderProgram, ("spotLight[" + std::to_string(spotIndex) + "].color").c_str(), spotLight[spotIndex]->lightColor);
+			Shader::sendUniform(objShaderProgram, ("spotLight[" + std::to_string(spotIndex) + "].ambient").c_str(), glm::vec3(0.0f, 0.0f, 0.0f));
+			Shader::sendUniform(objShaderProgram, ("spotLight[" + std::to_string(spotIndex) + "].diffuse").c_str(), glm::vec3(0.5f, 0.0f, 0.5f));
+			Shader::sendUniform(objShaderProgram, ("spotLight[" + std::to_string(spotIndex) + "].specular").c_str(), glm::vec3(0.5f, 0.0f, 0.5f));
 
-			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].constant").c_str(), 1.0f);
-			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].linear").c_str(), 0.09f);
-			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].quadratic").c_str(), 0.032f);
+			Shader::sendUniform(objShaderProgram, ("spotLight[" + std::to_string(spotIndex) + "].constant").c_str(), 1.0f);
+			Shader::sendUniform(objShaderProgram, ("spotLight[" + std::to_string(spotIndex) + "].linear").c_str(), 0.09f);
+			Shader::sendUniform(objShaderProgram, ("spotLight[" + std::to_string(spotIndex) + "].quadratic").c_str(), 0.032f);
 
-			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].cutOff").c_str(), glm::cos(glm::radians(12.5f)));
-			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].outerCutOff").c_str(), glm::cos(glm::radians(15.0f)));
+			Shader::sendUniform(objShaderProgram, ("spotLight[" + std::to_string(spotIndex) + "].cutOff").c_str(), glm::cos(glm::radians(12.5f)));
+			Shader::sendUniform(objShaderProgram, ("spotLight[" + std::to_string(spotIndex) + "].outerCutOff").c_str(), glm::cos(glm::radians(15.0f)));
 		}
 
 		// FlashLight
-		Shader::sendUniform(object.back()->getShader(), "flashLight.position", camera->getPosition() + camera->flashLight->getPosition());
-		Shader::sendUniform(object.back()->getShader(), "flashLight.direction", camera->target);
-		Shader::sendUniform(object.back()->getShader(), "flashLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-		Shader::sendUniform(object.back()->getShader(), "flashLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-		Shader::sendUniform(object.back()->getShader(), "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-		Shader::sendUniform(object.back()->getShader(), "flashLight.constant", 1.0f);
-		Shader::sendUniform(object.back()->getShader(), "flashLight.linear", 0.09f);
-		Shader::sendUniform(object.back()->getShader(), "flashLight.quadratic", 0.032f);
-		Shader::sendUniform(object.back()->getShader(), "flashLight.cutOff", glm::cos(glm::radians(12.5f)));
-		Shader::sendUniform(object.back()->getShader(), "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+		Shader::sendUniform(objShaderProgram, "flashLight.position", camera->getPosition() + camera->flashLight->getPosition());
+		Shader::sendUniform(objShaderProgram, "flashLight.direction", camera->target);
+		Shader::sendUniform(objShaderProgram, "flashLight.color", camera->flashLight->lightColor);
+
+		Shader::sendUniform(objShaderProgram, "flashLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+		Shader::sendUniform(objShaderProgram, "flashLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+		Shader::sendUniform(objShaderProgram, "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+		Shader::sendUniform(objShaderProgram, "flashLight.constant", 1.0f);
+		Shader::sendUniform(objShaderProgram, "flashLight.linear", 0.09f);
+		Shader::sendUniform(objShaderProgram, "flashLight.quadratic", 0.032f);
+
+		Shader::sendUniform(objShaderProgram, "flashLight.cutOff", glm::cos(glm::radians(12.5f)));
+		Shader::sendUniform(objShaderProgram, "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
 
-		Shader::sendUniform(object.back()->getShader(), "pointLightCount", static_cast<GLint>(light.size()));
+		Shader::sendUniform(objShaderProgram, "pointLightCount", static_cast<GLint>(light.size()));
 
 		// point lights
 		for (int lightIndex = 0; lightIndex < light.size(); lightIndex++) {
-			Shader::sendUniform(object.back()->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].lightType").c_str(), static_cast<int>(light[lightIndex]->getLightType()));
-			Shader::sendUniform(object.back()->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].position").c_str(), light[lightIndex]->getPosition());
-			Shader::sendUniform(object.back()->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].constant").c_str(), 1.0f);
-			Shader::sendUniform(object.back()->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].linear").c_str(), 0.09f);
-			Shader::sendUniform(object.back()->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].quadratic").c_str(), 0.032f);
+			Shader::sendUniform(objShaderProgram, ("pointLight[" + std::to_string(lightIndex) + "].lightType").c_str(), static_cast<int>(light[lightIndex]->getLightType()));
+			Shader::sendUniform(objShaderProgram, ("pointLight[" + std::to_string(lightIndex) + "].position").c_str(), light[lightIndex]->getPosition());
+			Shader::sendUniform(objShaderProgram, ("pointLight[" + std::to_string(lightIndex) + "].color").c_str(), light[lightIndex]->lightColor);
+			Shader::sendUniform(objShaderProgram, ("pointLight[" + std::to_string(lightIndex) + "].constant").c_str(), 1.0f);
+			Shader::sendUniform(objShaderProgram, ("pointLight[" + std::to_string(lightIndex) + "].linear").c_str(), 0.09f);
+			Shader::sendUniform(objShaderProgram, ("pointLight[" + std::to_string(lightIndex) + "].quadratic").c_str(), 0.032f);
 		}
 		// end added
 	}
 	else if (shadType == ShaderType::SPECULAR)
 	{
 		// vertex scene->shader uniforms
-		Shader::sendUniform(object.back()->getShader(), "modelMatrix", object.back()->getMatrix());
-		Shader::sendUniform(object.back()->getShader(), "viewMatrix", camera->getCamera());
-		Shader::sendUniform(object.back()->getShader(), "projectionMatrix", camera->getProjectionMatrix());
+		Shader::sendUniform(objShaderProgram, "modelMatrix", object.back()->getMatrix());
+		Shader::sendUniform(objShaderProgram, "viewMatrix", camera->getCamera());
+		Shader::sendUniform(objShaderProgram, "projectionMatrix", camera->getProjectionMatrix());
 
 		// fragment scene->shader uniforms
-		Shader::sendUniform(object.back()->getShader(), "fragmentColor", object.back()->getColor());
+		Shader::sendUniform(objShaderProgram, "fragmentColor", object.back()->getColor());
 
-		Shader::sendUniform(object.back()->getShader(), "lightPosition", light[0]->getPosition());
-		Shader::sendUniform(object.back()->getShader(), "lightColor", light[0]->lightColor);
+		Shader::sendUniform(objShaderProgram, "lightPosition", light[0]->getPosition());
+		Shader::sendUniform(objShaderProgram, "lightColor", light[0]->lightColor);
 
-		Shader::sendUniform(object.back()->getShader(), "viewPos", camera->getPosition());
-		Shader::sendUniform(object.back()->getShader(), "specularStrength", 0.5f);
+		Shader::sendUniform(objShaderProgram, "viewPos", camera->getPosition());
+		Shader::sendUniform(objShaderProgram, "specularStrength", 0.5f);
 	}
 	else if (shadType == ShaderType::PHONG)
 	{
-		Shader::sendUniform(object.back()->getShader(), "modelMatrix", object.back()->getMatrix());
-		Shader::sendUniform(object.back()->getShader(), "fragmentColor", object.back()->getColor());
-		Shader::sendUniform(object.back()->getShader(), "viewPos", camera->getPosition());
+		Shader::sendUniform(objShaderProgram, "modelMatrix", object.back()->getMatrix());
+		Shader::sendUniform(objShaderProgram, "fragmentColor", object.back()->getColor()); //glm::vec3(1.f, 0.f, 0.f)); // 
+		std::cout << "Fragment color: " << object.back()->getColor().x << " " << object.back()->getColor().y << " " << object.back()->getColor().z << "\n";
 
-		Shader::sendUniform(object.back()->getShader(), "viewMatrix", camera->getCamera());
-		Shader::sendUniform(object.back()->getShader(), "projectionMatrix", camera->getProjectionMatrix());
+		Shader::sendUniform(objShaderProgram, "viewPos", camera->getPosition());
+
+		Shader::sendUniform(objShaderProgram, "viewMatrix", camera->getCamera());
+		Shader::sendUniform(objShaderProgram, "projectionMatrix", camera->getProjectionMatrix());
 
 
 		// direction light
 		for (int dirIndex = 0; dirIndex < directionalLight.size(); dirIndex++) {
-			Shader::sendUniform(object.back()->getShader(), "dirLight.direction", directionalLight[dirIndex]->direction);
-			Shader::sendUniform(object.back()->getShader(), "dirLight.color", directionalLight[dirIndex]->lightColor);
-			Shader::sendUniform(object.back()->getShader(), "dirLight.ambient", directionalLight[dirIndex]->ambientCoefficient);
-			Shader::sendUniform(object.back()->getShader(), "dirLight.diffuse", glm::vec3(0.2f, 0.2f, 0.2f));	// glm::vec3(0.2f, 0.2f, 0.2f)
-			Shader::sendUniform(object.back()->getShader(), "dirLight.specular", glm::vec3(0.2f, 0.2f, 0.2f));
+			Shader::sendUniform(objShaderProgram, "dirLight.direction", directionalLight[dirIndex]->direction);
+			Shader::sendUniform(objShaderProgram, "dirLight.color", directionalLight[dirIndex]->lightColor);
+			Shader::sendUniform(objShaderProgram, "dirLight.ambient", directionalLight[dirIndex]->ambientCoefficient);
+			Shader::sendUniform(objShaderProgram, "dirLight.diffuse", glm::vec3(0.2f, 0.2f, 0.2f));	// glm::vec3(0.2f, 0.2f, 0.2f)
+			Shader::sendUniform(objShaderProgram, "dirLight.specular", glm::vec3(0.2f, 0.2f, 0.2f));
 		}
 		/*Shader::sendUniform(object.back()->getShader(), "dirLight.direction", direction_front_to_back);
 		Shader::sendUniform(object.back()->getShader(), "dirLight.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
@@ -387,7 +453,7 @@ void Scene::addObject(std::string modelName, ShaderType shaderType, glm::vec3 po
 		Shader::sendUniform(object.back()->getShader(), "dirLight.specular", glm::vec3(0.2f, 0.2f, 0.2f));*/
 
 		// spotLight
-		Shader::sendUniform(object.back()->getShader(), "spotLightCount", static_cast<GLint>(spotLight.size()));
+		Shader::sendUniform(objShaderProgram, "spotLightCount", static_cast<GLint>(spotLight.size()));
 
 		for (int spotIndex = 0; spotIndex < spotLight.size(); spotIndex++) {
 			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].position").c_str(), spotLight[spotIndex]->getPosition());
@@ -405,21 +471,12 @@ void Scene::addObject(std::string modelName, ShaderType shaderType, glm::vec3 po
 			Shader::sendUniform(object.back()->getShader(), ("spotLight[" + std::to_string(spotIndex) + "].outerCutOff").c_str(), glm::cos(glm::radians(15.0f)));
 		}
 
-		/*Shader::sendUniform(object.back()->getShader(), "spotLight[0].position", camera->getPosition());
-		Shader::sendUniform(object.back()->getShader(), "spotLight[0].direction", camera->target);
-		Shader::sendUniform(object.back()->getShader(), "spotLight[0].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-		Shader::sendUniform(object.back()->getShader(), "spotLight[0].diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-		Shader::sendUniform(object.back()->getShader(), "spotLight[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-		Shader::sendUniform(object.back()->getShader(), "spotLight[0].constant", 1.0f);
-		Shader::sendUniform(object.back()->getShader(), "spotLight[0].linear", 0.09f);
-		Shader::sendUniform(object.back()->getShader(), "spotLight[0].quadratic", 0.032f);
-		Shader::sendUniform(object.back()->getShader(), "spotLight[0].cutOff", glm::cos(glm::radians(12.5f)));
-		Shader::sendUniform(object.back()->getShader(), "spotLight[0].outerCutOff", glm::cos(glm::radians(15.0f)));*/
-
 		// FlashLight
 		Shader::sendUniform(object.back()->getShader(), "flashLight.position", camera->getPosition() + camera->flashLight->getPosition());
 		Shader::sendUniform(object.back()->getShader(), "flashLight.direction", camera->target);
-		Shader::sendUniform(object.back()->getShader(), "flashLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+		Shader::sendUniform(object.back()->getShader(), "flashLight.color", camera->flashLight->lightColor);
+
+		Shader::sendUniform(object.back()->getShader(), "flashLight.ambient", glm::vec3(1.0f, 0.0f, 0.0f));
 		Shader::sendUniform(object.back()->getShader(), "flashLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
 		Shader::sendUniform(object.back()->getShader(), "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 		Shader::sendUniform(object.back()->getShader(), "flashLight.constant", 1.0f);
@@ -435,15 +492,160 @@ void Scene::addObject(std::string modelName, ShaderType shaderType, glm::vec3 po
 		for (int lightIndex = 0; lightIndex < light.size(); lightIndex++) {
 			Shader::sendUniform(object.back()->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].lightType").c_str(), static_cast<int>(light[lightIndex]->getLightType()));
 			Shader::sendUniform(object.back()->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].position").c_str(), light[lightIndex]->getPosition());
+			Shader::sendUniform(object.back()->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].color").c_str(), light[lightIndex]->lightColor);
 			Shader::sendUniform(object.back()->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].constant").c_str(), 1.0f);
 			Shader::sendUniform(object.back()->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].linear").c_str(), 0.09f);
 			Shader::sendUniform(object.back()->getShader(), ("pointLight[" + std::to_string(lightIndex) + "].quadratic").c_str(), 0.032f);
 		}
+
+		// texture load
+		if (newObject->hasTexture())
+		{
+			newObject->loadTexture();
+			Shader::sendUniform(newObject->getShader(), "hasTexture", 1);
+			//Set texture unit to fragment shader
+
+			// newObject->texture->getID()
+			Shader::sendUniform(newObject->getShader(), "textureUnitID", 0);
+			//GLint uniformID = glGetUniformLocation(object.back()->getShader(), "textureUnitID");
+			//glUniform1i(uniformID, 0);
+			//glUniform1i(uniformID, 0);
+			//newObject->hasTexture = true;
+		}
+		else
+		{
+			Shader::sendUniform(object.back()->getShader(), "hasTexture", 0);
+		}
+		// end added
 	}
 
-	camera->registerObserver(object.back());
+	//camera->registerObserver(object.back());	// funguje s timto
 	object.back()->getModel().render();
 }
+
+void Scene::skyboxSection()
+{
+	//std::unordered_map<GLenum, std::string> shaders;
+	//shaders[GL_VERTEX_SHADER] = "../shaders/sky_vertex.glsl";
+	//shaders[GL_FRAGMENT_SHADER] = "../shaders/sky_fragment.glsl";
+
+	skybox = std::make_shared<SkyBox>();
+	skybox->Init(30, "countryside2");
+	GLuint shaderProgram = Shader::getShader(ShaderType::SKYBOX);
+	ShaderProgram new_skyboxshader(ShaderType::SKYBOX, shaderProgram);
+	skyboxshader = new_skyboxshader;
+	
+
+	//auto of = ObjectFactory::getInstance();
+	//skybox2 = of->createSkybox("countryside2");
+
+	//auto of = ObjectFactory::getInstance();
+	//skybox2 = of->createSkybox("countryside2");
+}
+
+void Scene::modelSection()
+{
+	// build and compile shaders
+// -------------------------
+	//ShaderLoader sl;
+	//modelShader = sl.loadShader("model_loading.vert", "model_loading.frag");
+
+	// load models
+	// -----------
+	//LoadModel ourModel("models/Cube/cube.obj");
+
+	/*LoadModel lm;
+	lm.load("models/Cube/cube.obj");
+	newModel = lm.VAO;
+	indicesCount = lm.indicesCount;
+	*/
+	
+
+
+	//
+	
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
+
+	ShaderLoader sl;
+	// Create and compile our GLSL program from the shaders
+	programID = sl.loadShader("shaders\\TransformVertexShader.vert", "shaders\\TextureFragmentShader.frag");
+
+	// Get a handle for our "MVP" uniform
+	MatrixID = glGetUniformLocation(programID, "MVP");
+
+	// Load the texture
+	auto textureManager = TextureManager::getInstance();
+	// test.png
+	auto t = textureManager->getTexture("..\\models\\cube\\test.png");	// "floor\\floor1.jpg"
+	texture = t->getTextureId();
+	//GLuint Texture = loadDDS("uvmap.DDS");
+
+	// Get a handle for our "myTextureSampler" uniform
+	TextureID = glGetUniformLocation(programID, "myTextureSampler");
+
+	// Read our .obj file
+	
+	//bool res = loadOBJ("models\\cube\\test.obj", vertices, uvs, normals);	// "smazat\\cube.obj"
+	bool res2 = loadAssImp("models\\cube\\test.obj", indices, vertices, uvs, normals, material);	// "smazat\\cube.obj"
+	// Load it into a VBO
+
+	// added mesh
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		Vertex newVertex;
+
+		newVertex.Position = vertices[i];
+		newVertex.Normal = normals[i];
+		if (uvs.size() != 0)
+		{
+			newVertex.TexCoords = uvs[i];
+		}
+		
+		//newVertex.Position[0] = vertices[i].x;
+		//newVertex.Position[1] = vertices[i].y;
+		//newVertex.Position[2] = vertices[i].z;
+
+		//newVertex.Normal[0] = normals[i].x;
+		//newVertex.Normal[1] = normals[i].y;
+		//newVertex.Normal[2] = normals[i].z;
+
+		//newVertex.Texture[0] = uvs[i].x;
+		//newVertex.Texture[1] = uvs[i].y;
+
+		//newVertex.Tangent[0] = 0.0f;
+		//newVertex.Tangent[1] = 0.0f;
+		//newVertex.Tangent[2] = 0.0f;
+
+		vertices2.push_back(newVertex);
+	}
+	
+
+	
+
+	newMeshModel = new Mesh(vertices2, indices, t);
+	//
+	
+	/*glGenBuffers(1, &vertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
+
+	// added
+	//glGenBuffers(1, &normalbuffer);
+	//glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+	//glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
+	// end
+
+	if (uvs.size() != 0)
+	{
+		glGenBuffers(1, &uvbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+		glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
+	}*/
+	
+}
+
+//void Scene::skybox
 
 void Scene::deleteObject(int stencilID)
 {
@@ -451,7 +653,7 @@ void Scene::deleteObject(int stencilID)
 
 	for (int i = 0; i < object.size(); i++) {
 		if (object[i]->getID() == (stencilID - 1)) {
-			camera[0]->removeObserver(object[i]);
+			//camera[0]->removeObserver(object[i]);
 			object.erase(object.begin() + i);
 			return;
 		}
@@ -483,6 +685,8 @@ void Scene::setNewColor(int _index)
 	std::cout << _index << std::endl;
 	int index = _index - 1;// -1;
 	this->object[index]->setNewColor(glm::vec3(1.0f, 0.0f, 0.0f));
+
+	this->object[index]->useShader();	 // added mb smazat
 	Shader::sendUniform(this->object[index]->getShader(), "fragmentColor", this->object[index]->getColor());
 
 	/*if (std::dynamic_pointer_cast<Light>(this->object[index]))
@@ -501,5 +705,8 @@ void Scene::setLastColor(int _index)
 
 	int index = _index - 1;// -1;
 	this->object[index]->setLastColor();
+
+	this->object[index]->useShader();	 // added mb smazat
 	Shader::sendUniform(this->object[index]->getShader(), "fragmentColor", this->object[index]->getColor());
 }
+

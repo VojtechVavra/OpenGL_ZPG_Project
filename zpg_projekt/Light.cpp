@@ -19,9 +19,9 @@ Light::Light(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType, gl
 Light::~Light() {
 }*/
 
-void Light::render() {
+/*void Light::render() {
 	//glBindVertexArray(VAO);
-}
+}*/
 
 Light::LightType Light::getLightType()
 {

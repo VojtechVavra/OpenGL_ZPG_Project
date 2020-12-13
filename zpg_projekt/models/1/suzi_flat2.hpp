@@ -1,14 +1,14 @@
 #pragma once
-typedef struct Vertex
+typedef struct Vertex2
 {
 	float Position[3];
 	float Normal[3];
-} Vertex;
+} Vertex2;
 float pocetPrvku = 2904;
 
 //glDrawArrays(GL_TRIANGLES, 0, pocetPrvku);;
 
-const Vertex VERTICES[2904] = {
+const Vertex2 VERTICES[2904] = {
 {{0.468750 , 0.242187 , 0.757812 },{ 0.663036 , -0.192883 , 0.723312}},
 {{0.437500 , 0.164062 , 0.765625 },{ 0.663036 , -0.192883 , 0.723312}},
 {{0.562500 , 0.242187 , 0.671875 },{ 0.663036 , -0.192883 , 0.723312}},

@@ -56,6 +56,7 @@ vec3 calculateDiffuse(vec3 position, vec3 _lightColor);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos);
 //vec3 CalcDirLight(DirLight light, vec3 normal);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos);
+vec3 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos);
 
 // end added
 
@@ -78,7 +79,7 @@ void main()
     }
     // phase 4: FlashLight
     if(flashLight.isActive == 1) {
-        result += CalcSpotLight(flashLight, norm, fragPos);
+        result += CalcFlashLight(flashLight, norm, fragPos);
     }
     //diffuse
     /*vec3 norm = normalize(normal);
@@ -142,6 +143,31 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos)
     return (ambient + diffuse) * fragmentColor;
 }
 
+vec3 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos)
+{
+    //light.position = viewPos;
+
+    vec3 lightDir = normalize(light.position - fragPos);
+    // diffuse shading
+    float diff = max(dot(normal, lightDir), 0.0);
+    // attenuation
+    float distance = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    // spotlight intensity
+    float theta = dot(lightDir, normalize(-light.direction)); 
+    float epsilon = light.cutOff - light.outerCutOff;
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+    // combine results
+    vec3 ambient  = ambientStrength * vec3(1.0f, 1.0f, 1.0f); // light.color // * fragmentColor;
+    vec3 diffuse  = light.diffuse  * diff; // * fragmentColor;
+    //vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
+    //vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
+    //vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+    ambient *= attenuation * intensity;
+    diffuse *= attenuation * intensity;
+
+    return (ambient + diffuse) * fragmentColor;
+}
 
 vec3 calculateDiffuse(vec3 position, vec3 _lightColor)
 {

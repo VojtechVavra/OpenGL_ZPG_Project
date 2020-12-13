@@ -86,15 +86,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models\2;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models\1;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\shaders;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\include;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glm;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glfw-3.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\textures\floor;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\textures;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\soil\include;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models\2;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models\1;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\shaders;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\include;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glm;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glfw-3.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\bin\Release\Win32;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glfw-3.3.2\lib-vc2019;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\soil\lib;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\bin\Release\Win32;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glfw-3.3.2\lib-vc2019;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -103,17 +103,18 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models\2;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models\1;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\shaders;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\include;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glm;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glfw-3.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\textures\floor;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\textures;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\soil\include;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models\2;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models\1;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\shaders;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\zpg_projekt\zpg_projekt\models;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\include;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glm;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glfw-3.3.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\bin\Release\Win32;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glfw-3.3.2\lib-vc2019;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\soil\lib;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\bin\Release\Win32;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glfw-3.3.2\lib-vc2019;C:\Users\Vooja\Documents\Skola\VSB\5_semestr\ZPG\projekt\libraries\glew-2.1.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glew32.lib;glfw3.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -150,19 +151,26 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Light.cpp" />
+    <ClCompile Include="LoadModel.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelPrefabs.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
+    <ClCompile Include="ObjLoader.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderLoader.cpp" />
+    <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Subject.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp" />
@@ -171,6 +179,8 @@
     <ClInclude Include="DirectionalLight.hpp" />
     <ClInclude Include="FPSCounter.hpp" />
     <ClInclude Include="Light.hpp" />
+    <ClInclude Include="LoadModel.hpp" />
+    <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Model.hpp" />
     <ClInclude Include="ModelPrefabs.hpp" />
     <ClInclude Include="models\1\bedna.hpp" />
@@ -183,8 +193,10 @@
     <ClInclude Include="models\2\sphere.hpp" />
     <ClInclude Include="models\2\suzi_flat.hpp" />
     <ClInclude Include="models\2\suzi_smooth.hpp" />
+    <ClInclude Include="models\vertex2.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="ObjectFactory.hpp" />
+    <ClInclude Include="ObjLoader.hpp" />
     <ClInclude Include="Observer.hpp" />
     <ClInclude Include="PointLight.hpp" />
     <ClInclude Include="Renderer.hpp" />
@@ -192,23 +204,43 @@
     <ClInclude Include="Scene.hpp" />
     <ClInclude Include="Shader.hpp" />
     <ClInclude Include="ShaderLoader.hpp" />
+    <ClInclude Include="ShaderProgram.hpp" />
+    <ClInclude Include="SkyBox.hpp" />
     <ClInclude Include="SpotLight.hpp" />
     <ClInclude Include="Subject.hpp" />
-    <ClInclude Include="vertex.hpp" />
+    <ClInclude Include="Texture.hpp" />
+    <ClInclude Include="TextureManager.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="shaders\ambient.frag" />
     <None Include="shaders\blinn.frag" />
     <None Include="shaders\diffuse.frag" />
     <None Include="shaders\phong.frag" />
     <None Include="shaders\phong2_zaloha.frag" />
+    <None Include="shaders\skybox.frag" />
+    <None Include="shaders\skybox.vert" />
     <None Include="shaders\specular.frag" />
+    <None Include="shaders\TextureFragmentShader.frag" />
+    <None Include="shaders\TransformVertexShader.vert" />
     <None Include="shaders\vertex.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="zpg_projekt.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\floor1.jpg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets" Condition="Exists('..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" />
+    <Import Project="..\packages\Assimp.3.0.0\build\native\Assimp.targets" Condition="Exists('..\packages\Assimp.3.0.0\build\native\Assimp.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\Assimp.3.0.0\build\native\Assimp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Assimp.3.0.0\build\native\Assimp.targets'))" />
+  </Target>
 </Project>

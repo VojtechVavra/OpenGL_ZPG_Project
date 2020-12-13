@@ -1,6 +1,6 @@
 #pragma once
 
-struct Vertex
+struct Vertex2
 {
 	float Position[3];
 	float Normal[3];

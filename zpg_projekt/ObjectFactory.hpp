@@ -16,8 +16,11 @@ public:
 
 	std::shared_ptr<Object> createObject(std::string modelName, ShaderType shaderType);
 	std::shared_ptr<Object> createObject(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 color);
-
+	std::shared_ptr<Object> createObject(std::string modelName, ShaderType shaderType, glm::vec3 position, std::string texture);
 	
+	// skybox
+	std::shared_ptr<Object> createSkybox(std::string texturePath);
+
 	// Point light
 	std::shared_ptr<Light> createPointLight(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 objectColor, glm::vec3 lightColor, float attenuation, float ambientCoefficient);
 	// light without model

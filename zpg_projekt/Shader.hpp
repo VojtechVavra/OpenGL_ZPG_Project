@@ -9,16 +9,20 @@
 #include <glm/mat4x4.hpp> 
 
 #include "Observer.hpp"
+
+//#include "Subject.hpp"
 // http://www.cplusplus.com/forum/beginner/146499/
 //#include "Camera.hpp" //The problem is that you can't include an object of a derived class in its parent . Reason being
 
+class ShaderProgram;
 
 enum class ShaderType {
     AMBIENT,    // Constant
     DIFFUSE,    // Lambert
     SPECULAR,
     PHONG,      // Phong = Constant + Lambert + Specular
-    BLINN
+    BLINN,
+    SKYBOX
 };
 
 static std::unordered_map<ShaderType, std::string> fragShaderPath(
@@ -27,13 +31,23 @@ static std::unordered_map<ShaderType, std::string> fragShaderPath(
         { ShaderType::DIFFUSE,  "./shaders/diffuse.frag" },
         { ShaderType::SPECULAR, "./shaders/specular.frag" },
         { ShaderType::PHONG,    "./shaders/phong.frag" },
-        { ShaderType::BLINN,    "./shaders/blinn.frag" }
+        { ShaderType::BLINN,    "./shaders/blinn.frag" },
+        { ShaderType::SKYBOX,   "./shaders/skybox.frag" }
 });
 
+static std::unordered_map<ShaderType, GLuint> shaderPrograms(
+    {
+        { ShaderType::AMBIENT,  0 },
+        { ShaderType::DIFFUSE,  0 },
+        { ShaderType::SPECULAR, 0 },
+        { ShaderType::PHONG,    0 },
+        { ShaderType::BLINN,    0 },
+        { ShaderType::SKYBOX,    0 }
+    });
 
 class Camera;
 
-class Shader {
+class Shader { //: public virtual Observer {
 public:
     void sendUniform(const GLchar* name, GLfloat value);
     void sendUniform(const GLchar* name, glm::vec3 dataVec3);
@@ -48,15 +62,21 @@ public:
 
     //GLuint createShader(ShaderType fragmentShaderType = ShaderType::PHONG);
     static GLuint createShader(ShaderType fragmentShaderType);  // , int i);
+    static GLuint getShader(ShaderType fragmentShaderType);
+    static std::vector<ShaderProgram> getShaderPrograms();
 
     //GLuint createShader();
+
+    //void update(Camera* camera, camChange cameraChange) override;
 
     GLuint getShader();
     ShaderType getType();
     //void update(std::string change) override;
     void use();
     static void use(GLuint shaderProgram);
-private:
+
+private:  
+    //std::vector<GLuint> shaderProgram;
     GLuint shaderProgram;
     ShaderType type;
 };

@@ -15,18 +15,21 @@
 #include "Shader.hpp"
 #include "Subject.hpp"
 
+#include "Texture.hpp"
 
 //#include "Camera.hpp"   // added, maybe throw error
 //class Shader;
 class camera;
 
 // Object model space
-class Object : public virtual Observer
+class Object // : public virtual Observer
 {
 public:
     Object(glm::vec3 position); // pouzivam jen pro kameru
     Object(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType); // For lights without model
     Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType);
+    Object(glm::vec3 position, Model model, std::shared_ptr<Texture> texture, GLuint shaderProgram, ShaderType shaderType);
+    
     //Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderID, ShaderType shaderType, std::shared_ptr<Camera> camera);
     //Object(glm::vec3 position, Model model, GLuint shaderID, ShaderType shaderType);
     Object();
@@ -48,6 +51,11 @@ public:
     //void LookAt(glm::vec3 target, float x, float y);
 
     void render();
+    void renderSkybox(std::shared_ptr<Camera> camera);
+    void renderSkybox2(std::shared_ptr<Camera> camera);
+
+    bool hasTexture();
+    void loadTexture();
 
     glm::vec3 getColor();
     void setNewColor(glm::vec3 newColor);
@@ -55,8 +63,10 @@ public:
     ShaderType getShaderType();
     GLuint getID();
     //void update(std::string change) override;
-    void update(Camera* camera, camChange cameraChange) override;
+    //void update(Camera* camera, camChange cameraChange) override;
     void setPositionWithoutTranslate(glm::vec3 newPosition);
+
+    //bool hasTexture = false;
 protected:
     glm::vec3 position;
     glm::mat4 m_matrix;   // model matrix
@@ -64,6 +74,9 @@ protected:
     GLuint shaderProgram;   // originally shaderID
     ShaderType shaderType;
     //std::shared_ptr<Camera> camera;
+public:
+    std::shared_ptr<Texture> texture;
+protected:
     glm::vec3 color;
     glm::vec3 lastColor;
     static GLuint objectCount;

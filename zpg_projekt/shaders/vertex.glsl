@@ -1,10 +1,13 @@
 #version 420   // 330
 
-out vec3 fragPos;		// ex_worldPosition;
-out vec3 normal;		// ex_worldNormal;
+out vec3 fragPos;				// ex_worldPosition;
+out vec3 normal;				// ex_worldNormal;
+out vec2 textureCoords;			// textureCoords = uv
 
 layout(location = 0) in vec3 vertexPosition;
 layout(location = 1) in vec3 vertexNormal;
+layout(location = 2) in vec2 uv;
+
 //layout(location=1) in vec3 vertexColor; //  // Notice that the 1 here equals the 1 in glVertexAttribPointer
 
 uniform mat4 modelMatrix;
@@ -16,4 +19,5 @@ void main () {
 	gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * vec4(vertexPosition, 1.0);  // gl_position became normalized device coordinates (ranging from -1 to +1)
 	fragPos = vec4(modelMatrix * vec4(vertexPosition, 1.0f)).xyz;
 	normal = vertexNormal;
+	textureCoords = uv;
 };

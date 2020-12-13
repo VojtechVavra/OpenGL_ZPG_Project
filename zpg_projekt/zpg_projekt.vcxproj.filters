@@ -25,6 +25,12 @@
     <Filter Include="models\2">
       <UniqueIdentifier>{ff36c5f8-68d6-4900-b12e-ce2f07019f36}</UniqueIdentifier>
     </Filter>
+    <Filter Include="textures">
+      <UniqueIdentifier>{49524092-52b1-4014-baab-e1d7c39adf4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="models\cube">
+      <UniqueIdentifier>{b5f45c8d-b66c-4ebe-98e0-3d99eb65f774}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
@@ -79,6 +85,27 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DirectionalLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderProgram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -158,9 +185,6 @@
     <ClInclude Include="ModelPrefabs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vertex.hpp">
-      <Filter>models</Filter>
-    </ClInclude>
     <ClInclude Include="PointLight.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -171,6 +195,30 @@
       <Filter>models\2</Filter>
     </ClInclude>
     <ClInclude Include="DirectionalLight.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderProgram.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="models\vertex2.hpp">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadModel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjLoader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -196,10 +244,28 @@
     <None Include="shaders\phong2_zaloha.frag">
       <Filter>shaders</Filter>
     </None>
+    <None Include="shaders\skybox.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\skybox.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="packages.config" />
+    <None Include="shaders\TextureFragmentShader.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\TransformVertexShader.vert">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="zpg_projekt.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\floor1.jpg">
+      <Filter>textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

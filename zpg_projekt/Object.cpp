@@ -30,11 +30,12 @@ Object::Object(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType)
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
     //this->color = color;
+    this->color = glm::vec3(1.0f, 1.0f, 1.0f);
     //this->model = nullptr;
     this->shaderProgram = shaderProgram;
     this->shaderType = shaderType;
     //this->camera = camera;
-
+    //this->hasTexture = false;
     //this->objID = Object::objectCount += 1;
 
     Translate(position);
@@ -51,12 +52,31 @@ Object::Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderPr
     this->shaderProgram = shaderProgram;
     this->shaderType = shaderType;
     //this->camera = camera;
-    
+    //this->hasTexture = false;
+
     this->objID = Object::objectCount += 1;
 
     Translate(position);
 
     std::cout << "Object type 3 - other model objects" << std::endl;
+}
+
+Object::Object(glm::vec3 position, Model model, std::shared_ptr<Texture> texture, GLuint shaderProgram, ShaderType shaderType)
+{
+    this->m_matrix = glm::mat4(1.0f);
+    this->position = glm::vec3(0.0f, 0.0f, 0.0f);
+    this->texture = texture;
+    this->model = model;
+    this->shaderProgram = shaderProgram;
+    this->shaderType = shaderType;
+    //this->hasTexture = false;
+    //this->hasTexture = true;
+
+    this->objID = Object::objectCount += 1;
+
+    Translate(position);
+
+    std::cout << "Object type 4 - texture model object" << std::endl;
 }
 
 /*Object::Object(glm::vec3 position, Model model, GLuint shaderProgram, ShaderType shaderType)
@@ -158,6 +178,17 @@ void Object::Scale(glm::vec3 scale)
 }
 
 
+bool Object::hasTexture()
+{
+    return texture != nullptr;
+}
+
+void Object::loadTexture()
+{
+    if(texture != nullptr)
+        texture->Load();
+}
+
 glm::vec3 Object::getColor()
 {
     return this->color;
@@ -185,7 +216,7 @@ GLuint Object::getID()
 }
 
 
-void Object::update(Camera* camera, camChange change)
+/*void Object::update(Camera* camera, camChange change)
 {
     Shader::use(this->getShader());
     if (change == camChange::MOVE_ROTATE) {
@@ -222,6 +253,8 @@ void Object::update(Camera* camera, camChange change)
             //sendUniform("modelMatrix", scene->object[i].getMatrix());
             Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
             Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
+
+            //Shader::sendUniform(shaderProgram, "fragmentColor", glm::vec3(0.f, 0.f, 1.0f));
 
             // SpotLight
             //Shader::sendUniform(shaderProgram, "spotLight[0].position", camera->getPosition());
@@ -266,12 +299,70 @@ void Object::update(Camera* camera, camChange change)
             }
         }
     }
-}
+}*/
 
 
 void Object::render()
 {
     this->getModel().bindVAO();
-    this->useShader();
+    
+    this->useShader();  // use shaderProgram
+    //glUseProgram(Shader::getShader(getShaderType()));
+    
+    //Shader::sendUniform(Shader::getShader(getShaderType()), "modelMatrix", getMatrix());
+    Shader::sendUniform(getShader(), "modelMatrix", getMatrix());
+
+    if (getShaderType() == ShaderType::PHONG /*|| (getShaderType() == ShaderType::DIFFUSE)*/)
+    {
+        //if (hasTexture()) {
+        if (hasTexture()) {
+            loadTexture();
+            Shader::sendUniform(getShader(), "hasTexture", 1);
+
+            Shader::sendUniform(getShader(), "textureUnitID", 0);
+            //GLint uniformID = glGetUniformLocation(getShader(), "textureUnitID");
+            //glUniform1i(uniformID, 0);
+        }
+        else {
+            Shader::sendUniform(getShader(), "hasTexture", 0);
+            Shader::sendUniform(getShader(), "fragmentColor", getColor());
+        }
+    }
+    
+    
+    //Shader::sendUniform(getShader(), "fragmentColor", glm::vec3(1.f, 0.0f, 0.0f));
+
     this->getModel().render();		// glDrawArrays()
+}
+
+
+void Object::renderSkybox(std::shared_ptr<Camera> camera)
+{
+    this->getModel().bindVAO();
+
+    this->useShader();  // use shaderProgram
+    //glUseProgram(Shader::getShader(getShaderType()));
+
+    //Shader::sendUniform(Shader::getShader(getShaderType()), "modelMatrix", getMatrix());
+    Shader::sendUniform(getShader(), "modelMatrix", getMatrix());
+    Shader::sendUniform(getShader(), "projectionMatrix", camera->getProjectionMatrix());
+    Shader::sendUniform(getShader(), "skybox", 0);
+
+    texture->LoadCubemap();
+
+
+    this->getModel().render();		// glDrawArrays()
+    //glBindVertexArray(0);
+}
+
+void Object::renderSkybox2(std::shared_ptr<Camera> camera)
+{
+    glDepthMask(GL_FALSE);
+    this->useShader();  // use shaderProgram -  glUseProgram(shaderProgram);
+    //cubeMap->bind(shader);
+    glStencilFunc(GL_ALWAYS, -1, 0xFF);
+    this->getModel().bindVAO();  //glBindVertexArray(vao);
+    //glDrawArrays(GL_TRIANGLES, 0, points.size());
+    this->getModel().render();		// glDrawArrays()
+    glDepthMask(GL_TRUE);
 }

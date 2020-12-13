@@ -21,6 +21,7 @@ ModelPrefabs::ModelPrefabs()
 	this->modelPrefabs = {
 		// 1
 		{ "plain",		 Model("plain")		  },
+		{ "plainTextured",		 Model("plainTextured") },
 		{ "sphere",		 Model("sphere")	  },
 		{ "suzi_smooth", Model("suzi_smooth") },
 		{ "suzi_flat",	 Model("suzi_flat")	  },

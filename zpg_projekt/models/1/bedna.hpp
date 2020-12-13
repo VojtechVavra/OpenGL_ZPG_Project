@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../vertex.hpp"
+#include "../vertex2.hpp"
 
 //float bednaPocetPrvku = 522;
 //glDrawArrays(GL_TRIANGLES, 0, pocetPrvku);;
-const Vertex bedna[522] = {
+const Vertex2 bedna[522] = {
 {{-1.000000 , -1.000000 , 1.000000 },{ -1.000000 , 0.000000 , 0.000000}},
 {{-1.000000 , -0.800000 , 0.800000 },{ -1.000000 , 0.000000 , 0.000000}},
 {{-1.000000 , -0.800000 , 0.600000 },{ -1.000000 , 0.000000 , 0.000000}},
