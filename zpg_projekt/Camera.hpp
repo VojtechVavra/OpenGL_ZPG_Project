@@ -1,6 +1,9 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
+// Vysvetleni kamery a vyznamu jednotlivych slozek v ni
+// https://homel.vsb.cz/~dol75/Pgrafika/Prednaska/KameraSvetlo.php
+
 #include <string>
 
 #include <GL/glew.h>	// must be always included first!

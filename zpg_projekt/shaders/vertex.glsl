@@ -18,6 +18,6 @@ void main () {
 	// gl_Position = mProj * mView * mModel * vec4(position, 1.0);
 	gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * vec4(vertexPosition, 1.0);  // gl_position became normalized device coordinates (ranging from -1 to +1)
 	fragPos = vec4(modelMatrix * vec4(vertexPosition, 1.0f)).xyz;
-	normal = vertexNormal;
+	normal = vertexNormal;	// normal = normalize( N * vertexNormal ); // N = normal matrix
 	textureCoords = uv;
 };

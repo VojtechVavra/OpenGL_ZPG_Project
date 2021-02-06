@@ -16,6 +16,8 @@
 
 #include "Mesh.hpp"
 
+// added new
+#include "MeshLoader.hpp"
 
 struct Material;
 
@@ -62,8 +64,11 @@ public:
 	GLuint normalbuffer;
 
 	Mesh* newMeshModel;
+	std::vector<Mesh*> meshes;	// added 2021
+	// aded new MeshLoader
+	MeshLoader* meshModel1;
+	MeshLoader* meshModel2;
 	//
-
 	//std::unique_ptr<Light> light;
 
 	//Shader shaderLight;

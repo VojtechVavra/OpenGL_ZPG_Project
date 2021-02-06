@@ -13,7 +13,7 @@ uniform float ambientStrength = 0.0;
 
 
 // added
-#define MAX_LIGHTS 64
+#define MAX_LIGHTS 12
 uniform int pointLightCount;
 uniform int spotLightCount;
 
@@ -63,8 +63,7 @@ vec3 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos);
 
 void main() 
 {
-    //pointLightCount = 0;
-    //spotLightCount = 0;
+
     vec3 norm = normalize(normal);
 
     vec3 result = vec3(0.0f, 0.0f, 0.0f);
@@ -81,14 +80,7 @@ void main()
     if(flashLight.isActive == 1) {
         result += CalcFlashLight(flashLight, norm, fragPos);
     }
-    //diffuse
-    /*vec3 norm = normalize(normal);
-    vec3 lightDir = normalize(lightPosition - fragPos);
-    float diff = max(dot(norm, lightDir), 0.0);  // dot product - jak jsou si 2 vektory podobne
-    vec3 diffuse = diff * lightColor;
 
-    vec3 result = (ambientStrength + diffuse) * fragmentColor; // fragmentColor = objectColor
-    */
     out_color = vec4(result, 1.0f);
 };
 
@@ -106,11 +98,6 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos)
     vec3 ambient = ambientStrength * vec3(1.0f, 1.0f, 1.0f) * fragmentColor;
     vec3 diffuse = calculateDiffuse(light.position, vec3(1.0f, 1.0f, 1.0f)) * fragmentColor;
 
-    //vec3 diffuse  = light.diffuse  * diff * fragmentColor;
-    //vec3 specular = light.specular * spec * fragmentColor;
-    //vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
-    //vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
-    //vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
     ambient *= attenuation;
     diffuse *= attenuation;
 
@@ -134,9 +121,7 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos)
     // combine results
     vec3 ambient  = ambientStrength * vec3(1.0f, 1.0f, 1.0f); // light.color // * fragmentColor;
     vec3 diffuse  = light.diffuse  * diff; // * fragmentColor;
-    //vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
-    //vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
-    //vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+
     ambient *= attenuation * intensity;
     diffuse *= attenuation * intensity;
 
@@ -160,9 +145,7 @@ vec3 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos)
     // combine results
     vec3 ambient  = ambientStrength * vec3(1.0f, 1.0f, 1.0f); // light.color // * fragmentColor;
     vec3 diffuse  = light.diffuse  * diff; // * fragmentColor;
-    //vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
-    //vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
-    //vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+
     ambient *= attenuation * intensity;
     diffuse *= attenuation * intensity;
 
@@ -174,6 +157,6 @@ vec3 calculateDiffuse(vec3 position, vec3 _lightColor)
     //diffuse
     vec3 norm = normalize(normal);
     vec3 lightDir = normalize(position - fragPos);
-    float diff = max(dot(norm, lightDir), 0.0);  // dot product?
+    float diff = max(dot(norm, lightDir), 0.0);
     return diff * _lightColor;
 }

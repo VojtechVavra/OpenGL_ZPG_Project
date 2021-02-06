@@ -59,9 +59,9 @@ GLuint Shader::getShader(ShaderType fragmentShaderType)
     auto it = shaderPrograms.find(fragmentShaderType);
     if (it != shaderPrograms.end()) {   // shader found
         if (it->second == 0) {
-            std::cout << "Shader PRED program: " << it->second << "\n";
+            //std::cout << "Shader program PRED: " << it->second << "\n";
             it->second = Shader::createShader(fragmentShaderType);
-            std::cout << "Shader PO program: " << it->second << "\n";
+            //std::cout << "Shader program PO: " << it->second << "\n";
         }
         return it->second;
     }

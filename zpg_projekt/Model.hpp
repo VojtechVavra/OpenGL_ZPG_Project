@@ -25,6 +25,7 @@
 //#include "Shader.hpp"
 #include <GLFW/glfw3.h>
 
+// https://www.cs.utexas.edu/~fussell/courses/cs384g-spring2017/lectures/Lecture9-Zbuffer_pipeline.pdf
 
 class Model
 {

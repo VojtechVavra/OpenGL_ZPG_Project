@@ -224,7 +224,15 @@ void Renderer::renderLoop()
 
 	glEnable(GL_DEPTH_TEST);
 
-	// added stencil
+	// Deprecated way how to render alpha channel image. Instead of this is implemented in fragment shader, to discard alpha channel for example if value is < 0.1
+	// https://stackoverflow.com/questions/24302152/opengl-alpha-test-how-to-replace-alphafunc-deprecated/24312267
+	// This function render the image with alpha blending to display only the alpha pixels.
+	//glEnable(GL_BLEND);
+	//glEnable(GL_ALPHA_TEST);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glAlphaFunc(GL_GREATER, 0.1f);
+	// end alpha rendering
+
 	//pøidání ID do stencil bufferu
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
@@ -239,7 +247,7 @@ void Renderer::renderLoop()
 		lastFrame = currentFrame;
 
 		// FPSCounter
-		//fpsCounter.drawFps(currentFrame);
+		fpsCounter.drawFps(currentFrame);
 
 		// input
 		scene->camera[0]->processKeyboard(deltaTime);
@@ -250,66 +258,31 @@ void Renderer::renderLoop()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
+		glStencilFunc(GL_ALWAYS, -1, 0xFF);
+		glDepthMask(GL_FALSE);
+		scene->skybox->draw(scene->skyboxshader, scene->camera[0]);
+		glDepthMask(GL_TRUE);
+		//glClear(GL_DEPTH_BUFFER_BIT);
 
 		// render objects
 		for (int i = 0; i < scene->object.size(); i++)
 		{
-			// cubemap oblohy nedavat do stencilu
-
-			/*glStencilFunc(GL_ALWAYS, -1, 0xFF);
-			glDepthMask(GL_FALSE);
-			scene->skybox->draw(scene->skyboxshader, scene->camera[0]);
-			//scene->skybox2->renderSkybox(scene->camera[0]);
-			glDepthMask(GL_TRUE);
-			*/
-			glDepthMask(GL_FALSE);
-			scene->skybox->draw(scene->skyboxshader, scene->camera[0]);
-			glDepthMask(GL_TRUE);
-
-
 			glStencilFunc(GL_ALWAYS, i + 1, 0xFF);
 			//glStencilFunc(GL_ALWAYS, scene->object[i]->getID(), 0xFF);
 			renderObject(scene->object[i]);
-			/*if (i == 9)
-			{
-				glDepthMask(GL_FALSE);
-				//scene->skybox->draw(scene->skyboxshader, scene->camera[0]);
-				//scene->object[i]->renderSkybox2(scene->camera[0]);
-				renderObject(scene->object[i]);
-				glDepthMask(GL_TRUE);
-			}*/
-
-			
-			//  vykresleni pomoci index bufferu
-			/**glBindVertexArray(scene->newModel);
-			glActiveTexture(GL_TEXTURE0);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-			glBindTexture(GL_TEXTURE_2D, 0);
-			scene->object[3]->loadTexture();
-			Shader::sendUniform(scene->object[3]->getShader(), "hasTexture", 1);
-			Shader::sendUniform(scene->object[3]->getShader(), "textureUnitID", 0);
-			//shader.passUniformLocation("textureUnitID", std::int32_t(0));
-			glDrawElements(GL_TRIANGLES, scene->indicesCount, GL_UNSIGNED_INT, NULL);
-			glBindVertexArray(0);**/
-
-			//glDepthMask(GL_FALSE);
-			renderModel();
-			//glDepthMask(GL_TRUE);
-
-			// render the loaded model
-			/*glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-			ourShader.setMat4("model", model);
-			ourModel.Draw(ourShader);
-			*/
-
-
-			//glDisable(GL_DEPTH_TEST);
-			//scene->skybox->draw(scene->skyboxshader, scene->camera[0]);
-			//glEnable(GL_DEPTH_TEST);
 		}
+
+		// render 3D objects
+		//renderModel();
+
+		// 2021 new
+		//glDepthMask(GL_FALSE);
+
+		renderModel2(1);
+		renderModel2(2);
+		//glDisable(GL_ALPHA_TEST);
+		//glDepthMask(GL_TRUE);
+		//scene->meshModel1->render();
 
 		// update other events like input handling
 		glfwPollEvents();
@@ -333,10 +306,19 @@ void Renderer::renderObject(std::shared_ptr<Object> object)
 void Renderer::renderModel()
 {
 	glUseProgram(scene->programID);
-	scene->newMeshModel->Draw(scene->programID);
+	//scene->newMeshModel->Draw2(scene->programID);
+
+	for (auto mesh : scene->meshes) {
+		mesh->Draw2(scene->programID);
+	}
+	
+	//scene->meshes[1]->Draw2(scene->programID);
+	//scene->meshes[2]->Draw2(scene->programID);
+
 	glm::mat4 ProjectionMatrix = scene->camera[0]->getProjectionMatrix();
 	glm::mat4 ViewMatrix = scene->camera[0]->getCamera();
 	glm::mat4 ModelMatrix = glm::mat4(1.0);
+
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
 	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, -0.5f, 0.0f));
 	glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
@@ -344,82 +326,58 @@ void Renderer::renderModel()
 	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "modelMatrix"), 1, GL_FALSE, &ModelMatrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "viewMatrix"), 1, GL_FALSE, &ViewMatrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "projectionMatrix"), 1, GL_FALSE, &ProjectionMatrix[0][0]);
-	return;
-	/*
-	glBindVertexArray(scene->VertexArrayID);
-	// Use our shader
+
+}
+
+void Renderer::renderModel2(int model)
+{
 	glUseProgram(scene->programID);
 
-	// Compute the MVP matrix from keyboard and mouse input
 	glm::mat4 ProjectionMatrix = scene->camera[0]->getProjectionMatrix();
 	glm::mat4 ViewMatrix = scene->camera[0]->getCamera();
 	glm::mat4 ModelMatrix = glm::mat4(1.0);
+
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, -0.5f, 0.0f));
-	glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
+	if (model == 1) {
+		scene->meshModel1->render();
+		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, -0.5f, 0.0f));
+	}	
+	else {
+		scene->meshModel2->render2();
+		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 0.1f, 0.0f));
+	}
+		
+
+	Shader::sendUniform(scene->programID, "myTextureSampler", (GLint)0);
+	/*for (auto mesh : scene->meshes) {
+		mesh->Draw2(scene->programID);
+	}*/
+
+	//scene->meshes[1]->Draw2(scene->programID);
+	//scene->meshes[2]->Draw2(scene->programID);
+
 	
+	glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
 	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "modelMatrix"), 1, GL_FALSE, &ModelMatrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "viewMatrix"), 1, GL_FALSE, &ViewMatrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "projectionMatrix"), 1, GL_FALSE, &ProjectionMatrix[0][0]);
-	*/
 
+	//Shader::sendUniform(scene->programID, "lightPosition", scene->light[0]->getPosition());
+	//Shader::sendUniform(scene->programID, "lightColor", scene->light[0]->lightColor);
 
-	//send3DobjUniforms(scene->programID, scene->camera[0], scene->light, scene->directionalLight, scene->spotLight, scene->texture, ModelMatrix);
-	// Send our transformation to the currently bound shader, 
-	// in the "MVP" uniform
+	// FlashLight
+	Shader::sendUniform(scene->programID, "flashLight.position", scene->camera[0]->getPosition() + scene->camera[0]->flashLight->getPosition());
+	Shader::sendUniform(scene->programID, "flashLight.direction", scene->camera[0]->target);
+	Shader::sendUniform(scene->programID, "flashLight.color", scene->camera[0]->flashLight->lightColor);
 
-	//glUniformMatrix4fv(scene->MatrixID, 1, GL_FALSE, &MVP[0][0]);
+	Shader::sendUniform(scene->programID, "flashLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+	Shader::sendUniform(scene->programID, "flashLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(scene->programID, "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
-	// Bind our texture in Texture Unit 0
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, scene->texture);
-	// Set our "myTextureSampler" sampler to use Texture Unit 0
-	glUniform1i(scene->TextureID, 0);
-
-	/*
-	// vertex position
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)0);
-	// normal attribute
-	// vezne 3 floaty z osmi ale vezne je s posunem vuci zacatku
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
-	// uv - texture coordinates
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(6 * sizeof(float)));
-	*/
-
-
-	// funguje
-	// 1rst attribute buffer : vertices
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, scene->vertexbuffer);
-	glVertexAttribPointer(
-		0,                  // attribute
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-	);
-
-	// 2nd attribute buffer : UVs
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, scene->uvbuffer);
-	glVertexAttribPointer(
-		1,                                // attribute
-		2,                                // size
-		GL_FLOAT,                         // type
-		GL_FALSE,                         // normalized?
-		0,                                // stride
-		(void*)0                          // array buffer offset
-	);
-	
-	// Draw the triangle !
-	glDrawArrays(GL_TRIANGLES, 0, scene->vertices.size());
-
-	//glDisableVertexAttribArray(0);
-	//glDisableVertexAttribArray(1);
+	Shader::sendUniform(scene->programID, "flashLight.cutOff", glm::cos(glm::radians(12.5f)));
+	Shader::sendUniform(scene->programID, "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 }
 
 Renderer::~Renderer()

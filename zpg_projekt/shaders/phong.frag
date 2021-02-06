@@ -24,7 +24,7 @@ uniform float specularStrength = 0.5f;  // 0.5
 
 
 
-#define MAX_LIGHTS 64
+#define MAX_LIGHTS 12
 uniform int pointLightCount;
 uniform int spotLightCount;
 
@@ -86,9 +86,6 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 vec3 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
-//in vec2 fragTexCoord;
-//n vec3 ex_worldNormal; // fragNormal
-//in vec3 fragVert;
 
 out vec4 out_Color;
 
@@ -136,8 +133,8 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
     if(hasTexture == 1) {
         ambient = ambientStrength * vec3(texture(textureUnitID, textureCoords)) * light.color; // TexCoords = uv
-        diffuse = /*light.diffuse **/ diff * vec3(texture(textureUnitID, textureCoords)) * light.color;
-        specular = /*light.specular **/ spec * vec3(texture(textureUnitID, textureCoords)) * light.color;
+        diffuse = diff * vec3(texture(textureUnitID, textureCoords)) * light.color;
+        specular = spec * vec3(texture(textureUnitID, textureCoords)) * light.color;
     }
     else {
         
@@ -261,11 +258,6 @@ vec3 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     return (ambient + diffuse + specular);
 }
 
-/*vec3 calculateAmbient(Light light)
-{
-    // ambient - constant
-    return ambientStrength * light.color;
-}*/
 
 vec3 calculateDiffuse(vec3 position, vec3 _lightColor)
 {

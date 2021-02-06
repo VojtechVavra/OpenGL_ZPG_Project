@@ -154,6 +154,7 @@
     <ClCompile Include="LoadModel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelPrefabs.cpp" />
     <ClCompile Include="Object.cpp" />
@@ -180,7 +181,9 @@
     <ClInclude Include="FPSCounter.hpp" />
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="LoadModel.hpp" />
+    <ClInclude Include="Material.hpp" />
     <ClInclude Include="Mesh.hpp" />
+    <ClInclude Include="MeshLoader.hpp" />
     <ClInclude Include="Model.hpp" />
     <ClInclude Include="ModelPrefabs.hpp" />
     <ClInclude Include="models\1\bedna.hpp" />

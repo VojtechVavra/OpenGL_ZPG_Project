@@ -251,9 +251,6 @@ void Scene::objectSection()
 
 	//std::string texture3 = "floor\\floor1.jpg";
 	//addObject("cube", ShaderType::SKYBOX, pos, color, camera[0], glm::vec3(1.0f));
-
-	
-	
 }
 
 void Scene::objectTransformSection()
@@ -530,7 +527,7 @@ void Scene::skyboxSection()
 	//shaders[GL_FRAGMENT_SHADER] = "../shaders/sky_fragment.glsl";
 
 	skybox = std::make_shared<SkyBox>();
-	skybox->Init(30, "countryside2");
+	skybox->Init(10, "countryside2");
 	GLuint shaderProgram = Shader::getShader(ShaderType::SKYBOX);
 	ShaderProgram new_skyboxshader(ShaderType::SKYBOX, shaderProgram);
 	skyboxshader = new_skyboxshader;
@@ -559,71 +556,73 @@ void Scene::modelSection()
 	newModel = lm.VAO;
 	indicesCount = lm.indicesCount;
 	*/
-	
+
 
 
 	//
-	
+
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
 	ShaderLoader sl;
 	// Create and compile our GLSL program from the shaders
 	programID = sl.loadShader("shaders\\TransformVertexShader.vert", "shaders\\TextureFragmentShader.frag");
+	ShaderProgram spModelID = ShaderProgram(ShaderType::DIFFUSE, programID);
+	camera[0]->registerObserver(std::make_shared<ShaderProgram>(spModelID));
+	//programID = sl.loadShader("shaders\\vertex.glsl", "shaders\\phong.frag");
 
 	// Get a handle for our "MVP" uniform
-	MatrixID = glGetUniformLocation(programID, "MVP");
+	//MatrixID = glGetUniformLocation(programID, "MVP");
 
 	// Load the texture
-	auto textureManager = TextureManager::getInstance();
+	//auto textureManager = TextureManager::getInstance();
 	// test.png
-	auto t = textureManager->getTexture("..\\models\\cube\\test.png");	// "floor\\floor1.jpg"
-	texture = t->getTextureId();
+
+	// funguje
+	//auto t = textureManager->getTexture("..\\models\\cube\\test.png");	// "floor\\floor1.jpg"
+	//std::vector<std::shared_ptr<Texture>> texture;
+	//texture.push_back(t);
+
+	//texture = t->getTextureId();
 	//GLuint Texture = loadDDS("uvmap.DDS");
 
 	// Get a handle for our "myTextureSampler" uniform
-	TextureID = glGetUniformLocation(programID, "myTextureSampler");
+	//TextureID = glGetUniformLocation(programID, "myTextureSampler");
+	//TextureID = glGetUniformLocation(programID, "textureUnitID");
 
 	// Read our .obj file
-	
+
 	//bool res = loadOBJ("models\\cube\\test.obj", vertices, uvs, normals);	// "smazat\\cube.obj"
-	bool res2 = loadAssImp("models\\cube\\test.obj", indices, vertices, uvs, normals, material);	// "smazat\\cube.obj"
+	//bool res2 = loadAssImp("models\\cube\\2\\Crate1.obj", indices, vertices, uvs, normals, material);	// "smazat\\cube.obj"
+
+	//bool res2 = loadAssImp("models\\cube\\dum2\\dum2.obj", indices, vertices, uvs, normals, material, meshes);	// funguje - "models\\cube\\test.obj"
+	//bool res2 = loadAssImp("models\\cube\\test.obj", indices, vertices, uvs, normals, material, meshes);
+	//bool res2 = loadAssImp("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj", indices, vertices, uvs, normals, material, meshes); // pouzite dnes 6. 2. 2021
+
+	meshModel1 = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
+	meshModel2 = new MeshLoader("models\\cube\\dum2\\dum2.obj");
 	// Load it into a VBO
 
 	// added mesh
-	for (int i = 0; i < vertices.size(); i++)
+	/*for (int i = 0; i < vertices.size(); i++)
 	{
 		Vertex newVertex;
 
 		newVertex.Position = vertices[i];
-		newVertex.Normal = normals[i];
+		if (normals.size() > 0) {
+			newVertex.Normal = normals[i];
+		}
 		if (uvs.size() != 0)
 		{
 			newVertex.TexCoords = uvs[i];
 		}
-		
-		//newVertex.Position[0] = vertices[i].x;
-		//newVertex.Position[1] = vertices[i].y;
-		//newVertex.Position[2] = vertices[i].z;
-
-		//newVertex.Normal[0] = normals[i].x;
-		//newVertex.Normal[1] = normals[i].y;
-		//newVertex.Normal[2] = normals[i].z;
-
-		//newVertex.Texture[0] = uvs[i].x;
-		//newVertex.Texture[1] = uvs[i].y;
-
-		//newVertex.Tangent[0] = 0.0f;
-		//newVertex.Tangent[1] = 0.0f;
-		//newVertex.Tangent[2] = 0.0f;
 
 		vertices2.push_back(newVertex);
 	}
-	
 
-	
-
-	newMeshModel = new Mesh(vertices2, indices, t);
+	//newMeshModel = new Mesh(vertices2, indices, texture);		// funguje
+	std::vector<Material> mat{material};
+	newMeshModel = new Mesh(vertices2, indices, mat);*/
 	//
 	
 	/*glGenBuffers(1, &vertexbuffer);

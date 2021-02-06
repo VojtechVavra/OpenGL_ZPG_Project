@@ -4,6 +4,7 @@
 #include "Model.hpp"
 //#include "Shader.hpp"
 
+// https://www.cs.utexas.edu/~fussell/courses/cs384g-spring2017/lectures/Lecture9-Zbuffer_pipeline.pdf
 
 Model::Model()
 {

@@ -42,7 +42,7 @@ void Callback::error_callback(int error, const char* description) {
 }
 
 void Callback::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
-	printf("cursor_pos_callback ax:%d, ay:%d\n", (int)xpos, (int)ypos);
+	//printf("cursor_pos_callback ax:%d, ay:%d\n", (int)xpos, (int)ypos);
 
 	if (firstMouse)
 	{
@@ -81,7 +81,7 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
-	printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
+	//printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
 	//if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	//	glfwSetWindowShouldClose(window, true);
 

@@ -18,6 +18,7 @@ private:
 	std::shared_ptr<Scene> scene;
 	std::shared_ptr<GLFWwindow> window;
 	void renderModel();
+	void renderModel2(int meshModel); // 2021 - repairing loading models
 	// timing
 	float currentFrame;
 	float deltaTime;	// time between current frame and last frame
