@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include <GL/glew.h>	    // must be always included first!
 #include <glm/vec3.hpp>// glm::vec3
 
@@ -12,8 +14,14 @@
 
 
 struct Material {
+    // materials
     glm::vec3 ambient;
     glm::vec3 diffuse;
     glm::vec3 specular;
     float shininess;
+
+    // textures
+    std::string diffuseMap;
+    std::string specularMap;
+    std::string heightMap;
 };

@@ -52,13 +52,21 @@ void Scene::InitializeScene()
 	// Skybox creation
 	skyboxSection();
 
-	shaderPrograms = Shader::getShaderPrograms();
+	// Register to Observer only used shaders. Unused shaders we will skip. This will prevent us from manually registering shaders.
+	registerUsedShaders();
 	
+}
+
+void Scene::registerUsedShaders()
+{
+	shaderPrograms = Shader::getShaderPrograms();
+
 	for (ShaderProgram shaderProgram : shaderPrograms)
 	{
-		camera[0]->registerObserver(std::make_shared<ShaderProgram>(shaderProgram));
+		if (shaderProgram.shaderProgram > 0) {
+			camera[0]->registerObserver(std::make_shared<ShaderProgram>(shaderProgram));
+		}
 	}
-
 }
 
 void Scene::cameraSection()
@@ -542,53 +550,20 @@ void Scene::skyboxSection()
 
 void Scene::modelSection()
 {
-	// build and compile shaders
-// -------------------------
-	//ShaderLoader sl;
-	//modelShader = sl.loadShader("model_loading.vert", "model_loading.frag");
-
-	// load models
-	// -----------
-	//LoadModel ourModel("models/Cube/cube.obj");
-
-	/*LoadModel lm;
-	lm.load("models/Cube/cube.obj");
-	newModel = lm.VAO;
-	indicesCount = lm.indicesCount;
-	*/
-
-
-
-	//
-
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
+	//glGenVertexArrays(1, &VertexArrayID);
+	//glBindVertexArray(VertexArrayID);
 
 	ShaderLoader sl;
 	// Create and compile our GLSL program from the shaders
-	programID = sl.loadShader("shaders\\TransformVertexShader.vert", "shaders\\TextureFragmentShader.frag");
-	ShaderProgram spModelID = ShaderProgram(ShaderType::DIFFUSE, programID);
+	//programID = sl.loadShader("shaders\\TransformVertexShader.vert", "shaders\\TextureFragmentShader.frag");
+	programID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
+	Shader::use(programID);
+
+	ShaderProgram spModelID = ShaderProgram(ShaderType::DIFFUSE_MODEL, programID);
 	camera[0]->registerObserver(std::make_shared<ShaderProgram>(spModelID));
+
 	//programID = sl.loadShader("shaders\\vertex.glsl", "shaders\\phong.frag");
 
-	// Get a handle for our "MVP" uniform
-	//MatrixID = glGetUniformLocation(programID, "MVP");
-
-	// Load the texture
-	//auto textureManager = TextureManager::getInstance();
-	// test.png
-
-	// funguje
-	//auto t = textureManager->getTexture("..\\models\\cube\\test.png");	// "floor\\floor1.jpg"
-	//std::vector<std::shared_ptr<Texture>> texture;
-	//texture.push_back(t);
-
-	//texture = t->getTextureId();
-	//GLuint Texture = loadDDS("uvmap.DDS");
-
-	// Get a handle for our "myTextureSampler" uniform
-	//TextureID = glGetUniformLocation(programID, "myTextureSampler");
-	//TextureID = glGetUniformLocation(programID, "textureUnitID");
 
 	// Read our .obj file
 
@@ -599,48 +574,29 @@ void Scene::modelSection()
 	//bool res2 = loadAssImp("models\\cube\\test.obj", indices, vertices, uvs, normals, material, meshes);
 	//bool res2 = loadAssImp("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj", indices, vertices, uvs, normals, material, meshes); // pouzite dnes 6. 2. 2021
 
-	meshModel1 = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
-	meshModel2 = new MeshLoader("models\\cube\\dum2\\dum2.obj");
-	// Load it into a VBO
 
-	// added mesh
-	/*for (int i = 0; i < vertices.size(); i++)
-	{
-		Vertex newVertex;
+	//meshModel1 = new MeshLoader("models\\downloaded\\Grass\\Grass.obj");
 
-		newVertex.Position = vertices[i];
-		if (normals.size() > 0) {
-			newVertex.Normal = normals[i];
-		}
-		if (uvs.size() != 0)
-		{
-			newVertex.TexCoords = uvs[i];
-		}
 
-		vertices2.push_back(newVertex);
-	}
-
-	//newMeshModel = new Mesh(vertices2, indices, texture);		// funguje
-	std::vector<Material> mat{material};
-	newMeshModel = new Mesh(vertices2, indices, mat);*/
-	//
+	// exporting from Blender into .obj with right coordinates:
+	// Z forward
+	// Y up
+		   // .3DS
+	//MeshLoader* newMeshModel = new MeshLoader("models\\downloaded\\open3dmodel\\Aylin\\Aylin.obj");
+	MeshLoader* newMeshModel = new MeshLoader("models\\downloaded\\open3dmodel\\Character_A1008A325\\mm3.obj");
+	glm::mat4 ModelMatrix = glm::mat4(1.0);
+	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 0.2f, 0.0f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.01f, 0.01f, 0.01f));
+	newMeshModel->ModelMatrix = ModelMatrix;
+	//ModelMatrix = glm::rotate(ModelMatrix, 90.0f, glm::vec3(-1, 1, 1));
+	meshObjects.push_back(newMeshModel);
 	
-	/*glGenBuffers(1, &vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
-
-	// added
-	//glGenBuffers(1, &normalbuffer);
-	//glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-	//glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3), &normals[0], GL_STATIC_DRAW);
-	// end
-
-	if (uvs.size() != 0)
-	{
-		glGenBuffers(1, &uvbuffer);
-		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-		glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(glm::vec2), &uvs[0], GL_STATIC_DRAW);
-	}*/
+	//meshModel1 = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
+	newMeshModel = new MeshLoader("models\\cube\\dum2\\dum2.obj");
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, -0.4f, 0.0f));
+	newMeshModel->ModelMatrix = ModelMatrix;
+	meshObjects.push_back(newMeshModel);
+	//meshModel1 = new MeshLoader("models\\downloaded\\Grass\\Grass.obj");
 	
 }
 
@@ -684,7 +640,7 @@ void Scene::setNewColor(int _index)
 	std::cout << _index << std::endl;
 	int index = _index - 1;// -1;
 	this->object[index]->setNewColor(glm::vec3(1.0f, 0.0f, 0.0f));
-
+	
 	this->object[index]->useShader();	 // added mb smazat
 	Shader::sendUniform(this->object[index]->getShader(), "fragmentColor", this->object[index]->getColor());
 
@@ -702,7 +658,7 @@ void Scene::setLastColor(int _index)
 		return;
 	}
 
-	int index = _index - 1;// -1;
+	int index = _index - 1; // -1;
 	this->object[index]->setLastColor();
 
 	this->object[index]->useShader();	 // added mb smazat

@@ -39,40 +39,11 @@ public:
 	std::vector<std::shared_ptr<SpotLight>> spotLight;
 	std::vector<std::shared_ptr<DirectionalLight>> directionalLight;
 	
-	//GLuint modelShader;
-	//GLuint newModel;
-	//GLint indicesCount;
 
-
-	//
-	GLuint VertexArrayID;
 	GLuint programID;
-	GLuint MatrixID;
-	//std::shared_ptr<Texture> texture;
-	GLuint texture;
-	GLuint TextureID;
-
-	std::vector<unsigned short> indices;
-	std::vector<glm::vec3> vertices;
-	std::vector<Vertex> vertices2;
-	std::vector<glm::vec2> uvs;
-	std::vector<glm::vec3> normals; // Won't be used at the moment.
-	Material material;
-	
-	GLuint vertexbuffer;
-	GLuint uvbuffer;
-	GLuint normalbuffer;
-
-	Mesh* newMeshModel;
 	std::vector<Mesh*> meshes;	// added 2021
-	// aded new MeshLoader
-	MeshLoader* meshModel1;
-	MeshLoader* meshModel2;
-	//
-	//std::unique_ptr<Light> light;
-
+	std::vector<MeshLoader*> meshObjects;
 	//Shader shaderLight;
-	//GLuint shaderLightProgram;
 
 	void InitializeScene();
 	void addObject(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 color, std::shared_ptr<Camera> camera, glm::vec3 scale = glm::vec3(1.0f), std::string texturePath = "");
@@ -83,6 +54,7 @@ public:
 	void setLastColor(int index);
 
 private:
+	void registerUsedShaders();
 	void cameraSection();
 	void lightSection();
 	void objectSection();

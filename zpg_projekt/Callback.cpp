@@ -20,6 +20,10 @@ bool Callback::firstMouse = true;
 
 bool Callback::isObjectHold = false;
 unsigned int Callback::indexObject = 0;
+bool Callback::fullscreen = false;
+int Callback::width = 640;
+int Callback::height = 480;
+int Callback::refreshRate = 60;
 
 void Callback::setCamera(std::shared_ptr<Camera> camera) {
 	Callback::camera = camera;
@@ -160,6 +164,40 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 					isObjectHold = false;
 					indexObject = -1;
 				}
+				break;
+			case GLFW_KEY_F10:
+				if (!fullscreen)
+				{
+					// backup window position and window size
+					//glfwGetWindowPos(window, &xPos, &_wndPos[1]);
+					glfwGetWindowSize(window, &width, &height);
+					printf("saving width: %d, height: %d\n", width, height);
+
+					// get resolution of monitor
+					GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+					const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+					// switch to full screen
+					glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+
+					fullscreen = true;
+				}
+				else
+				{
+					printf("loading width: %d, height: %d\n", width, height);
+					//Callback::window_size_callback(window, width, height);
+					glfwSetWindowMonitor(window, nullptr, 50, 50, width, height, refreshRate);
+					fullscreen = false;
+
+					// restore last window size and position
+					//glfwSetWindowMonitor(window, nullptr, _wndPos[0], _wndPos[1], _wndSize[0], _wndSize[1], 0);
+				}
+
+				//GLint m_viewport[4];
+				//glGetIntegerv(GL_VIEWPORT, m_viewport);
+				//GLint m_maxViewport[4];
+				//glGetIntegerv(GL_MAX_VIEWPORT_DIMS, m_maxViewport);
+				//Callback::window_size_callback(window, int width, int height);
 				break;
 			default:
 				break;

@@ -12,6 +12,9 @@ public:
 	std::shared_ptr<Texture> getTexture(std::string textureName);
 	std::shared_ptr<Texture> createTexture(std::string texturePath);
 
+	std::shared_ptr<Texture> getModelTexture(std::string textureName);
+	std::shared_ptr<Texture> createModelTexture(std::string texturePath);
+
 	std::shared_ptr<Texture> createCubemap(std::vector<std::string> faces, const std::string sky);
 
 	std::shared_ptr<Texture> createCubemap2(std::vector<std::string> faces, const std::string sky);

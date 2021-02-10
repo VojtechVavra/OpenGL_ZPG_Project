@@ -17,6 +17,8 @@ private:
     static std::shared_ptr<Camera> camera;
     static bool isObjectHold;
     static unsigned int indexObject;
+    static bool fullscreen;
+    static int width, height, refreshRate;
 public:
     static std::shared_ptr<Scene> scene;
     static float lastX, lastY;

@@ -28,5 +28,6 @@ void main(){
 	fragPos = vec3(modelMatrix * vec4(vertexPosition, 1.0f));
 	mat3 normal_matrix = transpose(inverse(mat3(modelMatrix)));
 	normal = normalize(normal_matrix * vertexNormal);	// normal = normalize( N * vertexNormal ); // N = normal matrix
+	// normal = normalize(mat3(viewMatrix) * normal_matrix * vertexNormal); // ??? 
 	//normal = vertexNormal;
 }

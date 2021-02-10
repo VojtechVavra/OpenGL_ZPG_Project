@@ -22,7 +22,9 @@ enum class ShaderType {
     SPECULAR,
     PHONG,      // Phong = Constant + Lambert + Specular
     BLINN,
-    SKYBOX
+    SKYBOX,
+    DIFFUSE_MODEL,
+    SPECULAR_MODEL
 };
 
 static std::unordered_map<ShaderType, std::string> fragShaderPath(
@@ -32,7 +34,10 @@ static std::unordered_map<ShaderType, std::string> fragShaderPath(
         { ShaderType::SPECULAR, "./shaders/specular.frag" },
         { ShaderType::PHONG,    "./shaders/phong.frag" },
         { ShaderType::BLINN,    "./shaders/blinn.frag" },
-        { ShaderType::SKYBOX,   "./shaders/skybox.frag" }
+        { ShaderType::SKYBOX,   "./shaders/skybox.frag" },
+        { ShaderType::DIFFUSE_MODEL,  "./shaders/TextureFragmentShader.frag" },
+        { ShaderType::SPECULAR_MODEL, "./shaders/------" }    // dodelat specularni shader pro 3d modely/objekty
+        // DIFFUSE_MODEL a SPECULAR_MODEL are shaders for imported models
 });
 
 static std::unordered_map<ShaderType, GLuint> shaderPrograms(
@@ -42,7 +47,9 @@ static std::unordered_map<ShaderType, GLuint> shaderPrograms(
         { ShaderType::SPECULAR, 0 },
         { ShaderType::PHONG,    0 },
         { ShaderType::BLINN,    0 },
-        { ShaderType::SKYBOX,    0 }
+        { ShaderType::SKYBOX,   0 },
+        { ShaderType::DIFFUSE_MODEL,    0 },
+        { ShaderType::SPECULAR_MODEL,   0 }
     });
 
 class Camera;
@@ -61,22 +68,16 @@ public:
     static void sendUniform(GLuint shaderProgram, const GLchar* name, glm::mat4 dataMat4);
 
     //GLuint createShader(ShaderType fragmentShaderType = ShaderType::PHONG);
-    static GLuint createShader(ShaderType fragmentShaderType);  // , int i);
+    static GLuint createShader(ShaderType fragmentShaderType);
     static GLuint getShader(ShaderType fragmentShaderType);
     static std::vector<ShaderProgram> getShaderPrograms();
 
-    //GLuint createShader();
-
-    //void update(Camera* camera, camChange cameraChange) override;
-
     GLuint getShader();
     ShaderType getType();
-    //void update(std::string change) override;
     void use();
     static void use(GLuint shaderProgram);
 
 private:  
-    //std::vector<GLuint> shaderProgram;
     GLuint shaderProgram;
     ShaderType type;
 };

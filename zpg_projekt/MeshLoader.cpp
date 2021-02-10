@@ -10,6 +10,11 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 	vbo[NORMAL_BUFFER] = NULL;
 	vbo[INDEX_BUFFER] = NULL;
 
+	if (mesh->mMaterialIndex >= 0)
+	{
+		materialIndex = mesh->mMaterialIndex;
+	}
+
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
@@ -70,7 +75,7 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 		delete[] normals;
 	}
 
-	// fill face infices
+	// fill face indices
 	if (mesh->HasFaces()) {
 		unsigned int* indices = new unsigned int[mesh->mNumFaces * 3];
 		for (int i = 0; i < mesh->mNumFaces; ++i) {
@@ -85,7 +90,7 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 
 		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 		glEnableVertexAttribArray(3);
-
+		
 		delete[] indices;
 	}
 
@@ -93,6 +98,8 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
+
+
 
 /**
 *	Deletes the allocated OpenGL buffers
@@ -131,17 +138,132 @@ void MeshLoader::MeshEntry::render() {
 **/
 MeshLoader::MeshLoader(const char* filename)
 {
+	ModelMatrix = glm::mat4(1.0);
 	Assimp::Importer importer;
-	unsigned int importOptionFlags = aiProcess_Triangulate | aiProcess_GenNormals;	// default NULL
+	//unsigned int importOptionFlags = aiProcess_Triangulate | aiProcess_GenNormals;	// default NULL
+	//unsigned int importOptionFlags = aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
+	unsigned int importOptionFlags = 
+		  aiProcess_OptimizeMeshes              // slouèení malých plošek
+		| aiProcess_JoinIdenticalVertices       // NUTNÉ jinak hodnì duplikuje
+		| aiProcess_Triangulate                 // prevod vsech ploch na trojuhelniky
+		| aiProcess_CalcTangentSpace;           // vypocet tangenty, nutny pro spravne pouziti normalove mapy
+
 	const aiScene* scene = importer.ReadFile(filename, importOptionFlags);
 	if (!scene) {
-		printf("Unable to laod mesh: %s\n", importer.GetErrorString());
+		printf("Unable to load mesh: %s\n", importer.GetErrorString());
 		return;
 	}
 
 	for (int i = 0; i < scene->mNumMeshes; ++i) {
-		meshEntries.push_back(new MeshLoader::MeshEntry(scene->mMeshes[i]));
+		aiMesh* mesh = scene->mMeshes[i];
+		meshEntries.push_back(new MeshLoader::MeshEntry(mesh));
+		
+		const aiMaterial* pMaterial = scene->mMaterials[i];
+
+		if (mesh->mMaterialIndex >= 0)
+		{
+			aiMaterial* pMaterial = scene->mMaterials[mesh->mMaterialIndex];
+			std::unique_ptr<Material> newMaterial = getMaterial(pMaterial, filename);
+			if (newMaterial->diffuseMap == "error")
+			{
+				continue;
+			}
+
+			
+			material.push_back(std::move(newMaterial));
+		}
+		else
+		{
+			printf("error\n");	// smazat
+		}
+		/*if (scene->mMeshes[i]->mMaterialIndex >= 0)
+		{
+			std::unique_ptr<Material> newMaterial = getMaterial(pMaterial, filename);
+			if (newMaterial->diffuseMap == "error")
+			{
+				continue;
+			}
+
+			material.push_back(std::move(newMaterial));
+		}*/
 	}
+
+	/*for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
+	//for(unsigned int i = 0; i < mat->GetTextureCount()) {
+		const aiMaterial* pMaterial = scene->mMaterials[i];
+
+		std::unique_ptr<Material> newMaterial = getMaterial(pMaterial, filename);
+		if (newMaterial->diffuseMap == "error")
+		{
+			continue;
+		}
+
+		material.push_back(std::move(newMaterial));
+	}*/
+
+	//Material material = getMaterial();
+}
+
+
+std::unique_ptr<Material> MeshLoader::getMaterial(const aiMaterial* mat, const char* filename)
+{
+	// materials
+	std::unique_ptr<Material> newMaterial = std::make_unique<Material>();
+	aiColor3D color{ 0.f, 0.f, 0.f };
+
+	mat->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+	newMaterial->diffuse = glm::vec3{ color.r, color.g, color.b };
+
+	mat->Get(AI_MATKEY_COLOR_AMBIENT, color);
+	newMaterial->ambient = glm::vec3{ color.r, color.g, color.b };
+
+	mat->Get(AI_MATKEY_COLOR_SPECULAR, color);
+	newMaterial->specular = glm::vec3{ color.r, color.g, color.b };
+
+	mat->Get(AI_MATKEY_SHININESS, newMaterial->shininess);
+
+	// textures
+	aiString path_name;
+	
+	unsigned int numTextur_Diffuser = mat->GetTextureCount(aiTextureType_DIFFUSE);
+	unsigned int numTextur_Specular = mat->GetTextureCount(aiTextureType_SPECULAR);
+	unsigned int numTextur_heightMap = mat->GetTextureCount(aiTextureType_HEIGHT);
+
+	//std::cout << mat->GetTextureCount(aiTextureType_DIFFUSE) << std::endl;
+	//mat->GetTexture(aiTextureType_DIFFUSE, 0, &path_name);
+	
+	//std::cout << path_name.C_Str() << std::endl;
+	
+	bool someTexture = false;
+
+	if (mat->GetTexture(aiTextureType_DIFFUSE, 0, &path_name) == AI_SUCCESS) {
+		newMaterial->diffuseMap = path_name.C_Str();
+
+		std::string new_path = filename;
+		new_path = new_path.substr(0, new_path.find_last_of("\\/"));
+
+		char path_buffer[1024] = { 0 };
+		new_path += '\\';
+		new_path += path_name.C_Str();
+		newMaterial->diffuseMap = new_path;
+
+		someTexture = true;
+		//std::cout << new_path << std::endl;	// TODO: make load this texture path/name
+	}
+	if (mat->GetTexture(aiTextureType_SPECULAR, 0, &path_name) == AI_SUCCESS) {
+		newMaterial->specularMap = path_name.C_Str();
+		someTexture = true;
+	}
+	if (mat->GetTexture(aiTextureType_HEIGHT, 0, &path_name) == AI_SUCCESS) {
+		newMaterial->heightMap = path_name.C_Str();
+		someTexture = true;
+	}
+
+	if (!someTexture) {
+		newMaterial->diffuseMap = "error";
+	}
+
+	return newMaterial;
 }
 
 /**
@@ -161,21 +283,45 @@ MeshLoader::~MeshLoader(void)
 void MeshLoader::render() {
 	auto textureManager = TextureManager::getInstance();
 	std::vector<std::shared_ptr<Texture>> t;
-	t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\bpng.png"));
-	
-	//t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\bpng_Schwaz_weistensel.jpg"));
-	t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\bpng.png"));
-	t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\Pot textures_col.jpg"));
 
+	//t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\bpng.png"));
+	//t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\bpng.png"));
+	//t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\Pot textures_col.jpg"));
+
+
+	//t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\bpng_Schwaz_weistensel.jpg"));
 	//auto t3 = textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\bpng_Schwaz_weistensel.jpg");
 	//auto t = textureManager->getTexture("..\\models\\cube\\test.png");	// "floor\\floor1.jpg"
 
 	//glBindTexture(GL_TEXTURE_2D, t->getTextureId());
 	//glBindTexture(GL_TEXTURE_2D + 1, t2->getTextureId());
+	glActiveTexture(GL_TEXTURE0);
+
+	for (int j = 0; j < material.size(); j++) {
+		t.emplace_back(textureManager->getModelTexture(material[j]->diffuseMap));
+		//t.emplace_back(textureManager->getModelTexture("..\\" + material[j]->diffuseMap));
+		//std::string a = "..\\" + material[j]->diffuseMap;
+
+
+		
+	}
 
 	for (int i = 0; i < meshEntries.size(); ++i) {
-		//printf("mesh entries size %d\n", meshEntries.size());
-		glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
+		/*if (material[i]->diffuseMap == "") {
+			continue;
+		}*/
+		//glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
+		//meshEntries.at(i)->render();
+
+		if (material.size() - 1 >= i) {
+			
+			//printf("texture: %s\n", "..\\" + material[i]->diffuseMap);
+			//printf("mesh entries size %d\n", meshEntries.size());
+
+			glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
+		}
+		
+
 		meshEntries.at(i)->render();
 	}
 }

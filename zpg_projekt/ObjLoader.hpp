@@ -9,8 +9,10 @@
 #include "Texture.hpp"
 #include "Mesh.hpp"
 
+#include "Material.hpp"
+
 // Material mam duplicitni v Mesh.hpp -> presunout ho do samostatneho souboru a jen ho importovat
-struct Material {
+/*struct Material {
 	glm::vec3 diffuse{ 0.f };
 	glm::vec3 specular{ 0.f };
 	glm::vec3 ambient{ 0.f };
@@ -18,7 +20,7 @@ struct Material {
 	std::string specularMap;
 	std::string heightMap;
 	float shininess = 0.f;
-};
+};*/
 
 bool loadOBJ(
 	const char* path,

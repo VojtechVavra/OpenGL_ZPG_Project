@@ -55,6 +55,41 @@ std::shared_ptr<Texture> TextureManager::getTexture(std::string textureName)
 }
 
 
+std::shared_ptr<Texture> TextureManager::createModelTexture(std::string textureName)
+{
+    //Bind the first texture to the first texture unit.
+    glActiveTexture(GL_TEXTURE0);
+
+    std::string texturePath = textureName;	// "textures\\floor\\floor1.jpg"
+    GLuint textureID = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+    if (textureID == 0) {
+        printf("[Texture model manager / loader] \"%s\" failed to load!\n", texturePath.c_str());
+    }
+
+
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureName, textureID);
+    textures.insert({ textureName, newTexture });
+
+    return newTexture;
+}
+
+std::shared_ptr<Texture> TextureManager::getModelTexture(std::string textureName)
+{
+    auto it = textures.find(textureName);
+    /*if (textures.empty())
+    {
+        return createTexture(textureName);
+    }*/
+    if (it == textures.end())
+    {
+        return createModelTexture(textureName);
+    }
+
+    return it->second;
+}
+
 std::shared_ptr<Texture> TextureManager::createCubemap(std::vector<std::string> faces, const std::string skyboxFolderName)
 {
     unsigned int textureID;

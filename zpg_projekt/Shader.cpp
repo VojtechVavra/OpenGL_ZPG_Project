@@ -15,21 +15,6 @@
 
 //https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/7.4.camera_class/camera_class.cpp
 
-
-/*Shader::Shader(int i) {
-    createShader(ShaderType::PHONG);
-    //createShader();
-    glUseProgram(shaderProgram);
-}*/
-
-/*Shader::Shader(Camera* camera, ShaderType shaderType)
-{
-    //m_camera = camera;
-    type = shaderType;
-    //createShader();
-    createShader(shaderType);
-}*/
-
 /*GLuint Shader::createShader(ShaderType fragmentShaderType)
 {
     ShaderLoader loader;
@@ -46,9 +31,14 @@ GLuint Shader::createShader(ShaderType fragmentShaderType)
     ShaderLoader loader;
     const std::string fragmentShaderName = fragShaderPath[fragmentShaderType];
 
-    if (fragmentShaderType == ShaderType::SKYBOX)
-    {
+    if (fragmentShaderType == ShaderType::SKYBOX) {
         return loader.loadShader("./shaders/skybox.vert", fragmentShaderName.c_str());
+    }
+    else if (fragmentShaderType == ShaderType::DIFFUSE_MODEL) {
+        return loader.loadShader("./shaders/TransformVertexShader.vert", fragmentShaderName.c_str());
+    }
+    else if (fragmentShaderType == ShaderType::SPECULAR_MODEL) {
+        return loader.loadShader("./shaders/TransformVertexShader.vert", fragmentShaderName.c_str());
     }
 
     return loader.loadShader("./shaders/vertex.glsl", fragmentShaderName.c_str());
@@ -72,7 +62,6 @@ std::vector<ShaderProgram> Shader::getShaderPrograms()
     std::vector<ShaderProgram> shaders;
     for (std::pair<ShaderType, GLuint> element : shaderPrograms)
     {
-
         ShaderProgram sp = ShaderProgram(element.first, element.second);
         shaders.push_back(sp);
     }
@@ -226,124 +215,6 @@ void Shader::use(GLuint shaderProgram)
 }
 
 
-/*void Shader::update(Camera* camera, camChange cameraChange)
-{
-    Shader::use(this->getShader());
-    if (change == camChange::MOVE_ROTATE) {
-        // nepridavat vypisy/printy sekala by se scena
-        if (this->shaderType == ShaderType::AMBIENT)
-        {
-            Shader::sendUniform(shaderProgram, "modelMatrix", getMatrix());
-
-            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
-        }
-        else if (shaderType == ShaderType::DIFFUSE)
-        {
-            Shader::sendUniform(shaderProgram, "modelMatrix", getMatrix());
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
-
-            // flashlight(as Spotlight) on Camera 
-            if (camera->isFlashLightOn()) {
-
-                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-            }
-        }
-        else if (shaderType == ShaderType::SPECULAR)
-        {
-            Shader::sendUniform(shaderProgram, "modelMatrix", getMatrix());
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
-            Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
-        }
-        else if (shaderType == ShaderType::PHONG)
-        {
-            Shader::sendUniform(shaderProgram, "modelMatrix", getMatrix());
-            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
-            Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
-
-            // flashlight(as Spotlight) on Camera 
-            if (camera->isFlashLightOn()) {
-
-                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-            }
-
-        }
-        else if (shaderType == ShaderType::BLINN)
-        {
-        }
-        //std::cout << "Camera has changed" << std::endl;
-    }
-    else if (change == camChange::PROJECTION) {
-        // zoom / fov changed
-        Shader::sendUniform(shaderProgram, "projectionMatrix", camera->getProjectionMatrix());
-        //std::cout << "Projection has changed" << std::endl;
-    }
-    else if (change == FLASHLIGHT) {
-        if (shaderType == ShaderType::DIFFUSE)
-        {
-            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
-            if (camera->isFlashLightOn()) {
-                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-            }
-        }
-        else if (shaderType == ShaderType::PHONG)
-        {
-            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
-            if (camera->isFlashLightOn()) {
-                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-            }
-        }
-    }
-}*/
-
-/*void Shader::update(std::string change)
-{
-
-    this->use();
-    if (change == "camera") {
-        //use();
-        // nepridavat vypisy/printy sekala by se scena
-        if (getType() == ShaderType::AMBIENT)
-        {
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            sendUniform("viewMatrix", m_camera->getCamera());
-        }
-        else if (getType() == ShaderType::DIFFUSE)
-        {
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            sendUniform("viewMatrix", m_camera->getCamera());
-        }
-        else if (getType() == ShaderType::SPECULAR)
-        {
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            sendUniform("viewMatrix", m_camera->getCamera());
-            sendUniform("viewPos", m_camera->getPosition());
-        }
-        else if (getType() == ShaderType::PHONG)
-        {
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            sendUniform("viewMatrix", m_camera->getCamera());
-            sendUniform("viewPos", m_camera->getPosition());
-        }
-        else if (getType() == ShaderType::BLINN)
-        {
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            //sendUniform("viewMatrix", m_camera->getCamera());
-            //sendUniform("viewPos", m_camera->getPosition());
-        }
-        //std::cout << "Camera has changed" << std::endl;
-    }
-    else if (change == "projection") {
-        // zoom / fov changed
-        sendUniform("projectionMatrix", m_camera[0].getProjectionMatrix());
-        //std::cout << "Projection has changed" << std::endl;
-    }
-}*/
 
 //void Shader::createMe()
 //{

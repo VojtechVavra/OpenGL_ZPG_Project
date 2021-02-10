@@ -275,11 +275,8 @@ void Renderer::renderLoop()
 		// render 3D objects
 		//renderModel();
 
-		// 2021 new
-		//glDepthMask(GL_FALSE);
+		renderModel();
 
-		renderModel2(1);
-		renderModel2(2);
 		//glDisable(GL_ALPHA_TEST);
 		//glDepthMask(GL_TRUE);
 		//scene->meshModel1->render();
@@ -303,7 +300,7 @@ void Renderer::renderObject(std::shared_ptr<Object> object)
 }
 
 
-void Renderer::renderModel()
+/*void Renderer::renderModel()
 {
 	glUseProgram(scene->programID);
 	//scene->newMeshModel->Draw2(scene->programID);
@@ -327,45 +324,23 @@ void Renderer::renderModel()
 	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "viewMatrix"), 1, GL_FALSE, &ViewMatrix[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "projectionMatrix"), 1, GL_FALSE, &ProjectionMatrix[0][0]);
 
-}
+}*/
 
-void Renderer::renderModel2(int model)
+void Renderer::renderModel()
 {
 	glUseProgram(scene->programID);
+	Shader::sendUniform(scene->programID, "myTextureSampler", (GLint)0);
 
 	glm::mat4 ProjectionMatrix = scene->camera[0]->getProjectionMatrix();
 	glm::mat4 ViewMatrix = scene->camera[0]->getCamera();
 	glm::mat4 ModelMatrix = glm::mat4(1.0);
 
-	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-
-	if (model == 1) {
-		scene->meshModel1->render();
-		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, -0.5f, 0.0f));
-	}	
-	else {
-		scene->meshModel2->render2();
-		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 0.1f, 0.0f));
-	}
-		
-
-	Shader::sendUniform(scene->programID, "myTextureSampler", (GLint)0);
-	/*for (auto mesh : scene->meshes) {
-		mesh->Draw2(scene->programID);
-	}*/
-
-	//scene->meshes[1]->Draw2(scene->programID);
-	//scene->meshes[2]->Draw2(scene->programID);
-
-	
 	glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
-	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "modelMatrix"), 1, GL_FALSE, &ModelMatrix[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "viewMatrix"), 1, GL_FALSE, &ViewMatrix[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "projectionMatrix"), 1, GL_FALSE, &ProjectionMatrix[0][0]);
 
-	//Shader::sendUniform(scene->programID, "lightPosition", scene->light[0]->getPosition());
-	//Shader::sendUniform(scene->programID, "lightColor", scene->light[0]->lightColor);
+	Shader::sendUniform(scene->programID, "viewMatrix", ViewMatrix);
+	Shader::sendUniform(scene->programID, "projectionMatrix", ProjectionMatrix);
+
 
 	// FlashLight
 	Shader::sendUniform(scene->programID, "flashLight.position", scene->camera[0]->getPosition() + scene->camera[0]->flashLight->getPosition());
@@ -378,6 +353,11 @@ void Renderer::renderModel2(int model)
 
 	Shader::sendUniform(scene->programID, "flashLight.cutOff", glm::cos(glm::radians(12.5f)));
 	Shader::sendUniform(scene->programID, "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+
+	for (auto obj : scene->meshObjects) {
+		Shader::sendUniform(scene->programID, "modelMatrix", obj->ModelMatrix);
+		obj->render();
+	}
 }
 
 Renderer::~Renderer()

@@ -38,7 +38,7 @@ uniform SpotLight flashLight;
 uniform vec3 fragmentColor = vec3(1.0f, 1.0f, 1.0f);
 
 // constant values modifiers
-uniform float ambientStrength = 0.1f;   // constatnt color - good 0.2f - 0.1f
+uniform float ambientStrength = 0.2f;   // constatnt color - good 0.2f - 0.1f
 uniform float specularStrength = 0.5f;  // 0.5
 
 
@@ -71,7 +71,8 @@ void main() {
         if (val.a < 0.1) {
             discard;
         }
-        result += val * vec4(0.3f, 0.3f, 0.3f, 0.0f);
+        //result += val * vec4(0.3f, 0.3f, 0.3f, 0.0f);
+        result += val * 0.7f; //ambientStrength;
     }
 
     //vec4 val = texture2D(myTextureSampler, texCoordUV);
