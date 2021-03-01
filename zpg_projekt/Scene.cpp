@@ -550,9 +550,6 @@ void Scene::skyboxSection()
 
 void Scene::modelSection()
 {
-	//glGenVertexArrays(1, &VertexArrayID);
-	//glBindVertexArray(VertexArrayID);
-
 	ShaderLoader sl;
 	// Create and compile our GLSL program from the shaders
 	//programID = sl.loadShader("shaders\\TransformVertexShader.vert", "shaders\\TextureFragmentShader.frag");
