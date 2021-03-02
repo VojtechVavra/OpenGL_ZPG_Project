@@ -141,9 +141,15 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 						isObjectHold = true;
 						printf("Object %u taken\n", indexObject - 1);
 
-						std::shared_ptr<Object> holdedObject = scene->object[indexObject - 1];
-						Callback::camera->setHoldObject(holdedObject);
-
+						if (scene->object.size() > indexObject - 1) {	// this is for basic models from .h file where are specified manually positions, etc.
+							std::shared_ptr<Object> holdedObject = scene->object[indexObject - 1];
+							Callback::camera->setHoldObject(holdedObject);
+						}
+						else {	// this is for mesh objects imported from .obj and other formats
+							// TODO: Create object class to assign also imported models to camera held object
+							//std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[indexObject - 1];
+							//Callback::camera->setHoldObject(holdedObject);
+						}
 						//holdedObject->setMatrix(glm::inverse(camera->getCamera()) * camera->getMatrix());
 					}
 					else {

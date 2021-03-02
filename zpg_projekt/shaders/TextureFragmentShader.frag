@@ -63,6 +63,7 @@ void main() {
         //result += CalcSpotLight(spotLight[i], norm, fragPos);
     //}
     // phase 4: FlashLight
+    //if(flashLight.isActive == 1) {
     if(flashLight.isActive == 1) {
         result += CalcFlashLight(flashLight, norm, fragPos);
     }

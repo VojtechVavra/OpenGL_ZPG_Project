@@ -13,10 +13,17 @@ layout(location = 2) in vec2 uv;
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;			// camera.getViewMatrix()
 uniform mat4 projectionMatrix;		// perspective or orthographic effect
+uniform bool isHeld;
 
 void main () {
 	// gl_Position = mProj * mView * mModel * vec4(position, 1.0);
-	gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * vec4(vertexPosition, 1.0);  // gl_position became normalized device coordinates (ranging from -1 to +1)
+	
+	if (isHeld) {
+		gl_Position = (projectionMatrix * modelMatrix) * vec4(vertexPosition, 1.0);
+	}
+	else {
+		gl_Position = (projectionMatrix * viewMatrix * modelMatrix) * vec4(vertexPosition, 1.0);  // gl_position became normalized device coordinates (ranging from -1 to +1)
+	}
 	fragPos = vec4(modelMatrix * vec4(vertexPosition, 1.0f)).xyz;
 	normal = vertexNormal;	// normal = normalize( N * vertexNormal ); // N = normal matrix
 	textureCoords = uv;

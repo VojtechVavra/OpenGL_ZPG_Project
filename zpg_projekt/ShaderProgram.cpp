@@ -56,8 +56,38 @@ void ShaderProgram::update(Camera* camera, camChange cameraChange)
         Shader::sendUniform(shaderProgram, "projectionMatrix", camera->getProjectionMatrix());
         //std::cout << "Projection has changed" << std::endl;
     }
-    else if (cameraChange == FLASHLIGHT) {
-        if (shaderType == (int)ShaderType::DIFFUSE)
+    else if (cameraChange == FLASHLIGHT) {          // camChange::FLASHLIGHT
+        Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
+        if (camera->isFlashLightOn()) {
+            Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
+            Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
+        }
+        /*switch (shaderType)
+        {
+        case (int)ShaderType::DIFFUSE:
+            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
+            if (camera->isFlashLightOn()) {
+                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
+                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
+            }
+            break;
+        case (int)ShaderType::PHONG:
+            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
+            if (camera->isFlashLightOn()) {
+                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
+                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
+            }
+            break;
+        case (int)ShaderType::DIFFUSE_MODEL:
+
+            break;
+        case (int)ShaderType::SPECULAR_MODEL:
+
+            break;
+        default:
+            break;
+        }*/
+        /*if (shaderType == (int)ShaderType::DIFFUSE)
         {
             Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
             if (camera->isFlashLightOn()) {
@@ -72,6 +102,7 @@ void ShaderProgram::update(Camera* camera, camChange cameraChange)
                 Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
                 Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
             }
-        }
+        }*/
+
     }
 }

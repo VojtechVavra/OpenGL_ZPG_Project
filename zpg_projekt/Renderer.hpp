@@ -17,7 +17,7 @@ private:
 	void renderObject(std::shared_ptr<Object> object);
 	std::shared_ptr<Scene> scene;
 	std::shared_ptr<GLFWwindow> window;
-	void renderModel();
+	void renderModel(int i_stencil_offset);
 	void renderModel2(int meshModel); // 2021 - repairing loading models
 	// timing
 	float currentFrame;

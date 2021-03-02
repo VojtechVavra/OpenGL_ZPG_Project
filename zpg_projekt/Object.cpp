@@ -18,6 +18,8 @@ Object::Object(glm::vec3 position)
 {   // pouzivam jen pro kameru
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
+    this->rotation = glm::vec3(0.0f);
+    this->scale = glm::vec3(0.0f);
     Translate(position);
 
     this->color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -29,6 +31,8 @@ Object::Object(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType)
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
+    this->rotation = glm::vec3(0.0f);
+    this->scale = glm::vec3(0.0f);
     //this->color = color;
     this->color = glm::vec3(1.0f, 1.0f, 1.0f);
     //this->model = nullptr;
@@ -47,6 +51,8 @@ Object::Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderPr
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
+    this->rotation = glm::vec3(0.0f);
+    this->scale = glm::vec3(0.0f);
     this->color = color;
     this->model = model;
     this->shaderProgram = shaderProgram;
@@ -65,6 +71,8 @@ Object::Object(glm::vec3 position, Model model, std::shared_ptr<Texture> texture
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
+    this->rotation = glm::vec3(0.0f);
+    this->scale = glm::vec3(0.0f);
     this->texture = texture;
     this->model = model;
     this->shaderProgram = shaderProgram;
@@ -159,22 +167,26 @@ void Object::Translate(glm::vec3 shift)
 void Object::Rotate(glm::mat4 mat4x4, float rotxangle, glm::vec3 axis)
 {
     this->m_matrix = glm::rotate(mat4x4, rotxangle, axis);
+    this->rotation = axis * rotxangle;
 }
 
 void Object::Rotate(float rotxangle, glm::vec3 axis)
 {
     this->m_matrix = glm::rotate(m_matrix, rotxangle, axis);
+    this->rotation += axis * rotxangle;
 }
 
 
 void Object::Scale(glm::mat4 mat4x4, glm::vec3 scale)
 {
     this->m_matrix = glm::scale(mat4x4, scale);
+    this->scale = scale;
 }
 
 void Object::Scale(glm::vec3 scale)
 {
     this->m_matrix = glm::scale(m_matrix, scale);
+    this->scale += scale;
 }
 
 
@@ -215,6 +227,15 @@ GLuint Object::getID()
     return this->objID;
 }
 
+glm::vec3 Object::getRotate() const
+{
+    return this->rotation;
+}
+
+glm::vec3 Object::getScale() const
+{
+    return this->scale;
+}
 
 /*void Object::update(Camera* camera, camChange change)
 {
@@ -314,7 +335,6 @@ void Object::render()
 
     if (getShaderType() == ShaderType::PHONG /*|| (getShaderType() == ShaderType::DIFFUSE)*/)
     {
-        //if (hasTexture()) {
         if (hasTexture()) {
             loadTexture();
             Shader::sendUniform(getShader(), "hasTexture", 1);

@@ -13,10 +13,6 @@
 
 #include "Material.hpp"
 
-//#include "include/GL/glew.h"
-//#include "include/GL/glfw3.h"
-
-
 
 class MeshLoader
 {

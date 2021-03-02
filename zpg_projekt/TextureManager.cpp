@@ -25,7 +25,7 @@ std::shared_ptr<Texture> TextureManager::createTexture(std::string textureName)
 	glActiveTexture(GL_TEXTURE0);
 
 	std::string texturePath = "textures\\" + textureName;	// "textures\\floor\\floor1.jpg"
-	GLuint textureID = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+	GLuint textureID = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_MIPMAPS);
     if (textureID == 0) {
         printf("[Texture manager / loader] \"%s\" failed to load!\n", texturePath.c_str());
     }
@@ -61,9 +61,9 @@ std::shared_ptr<Texture> TextureManager::createModelTexture(std::string textureN
     glActiveTexture(GL_TEXTURE0);
 
     std::string texturePath = textureName;	// "textures\\floor\\floor1.jpg"
-    GLuint textureID = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+    GLuint textureID = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_MIPMAPS);
     if (textureID == 0) {
-        printf("[Texture model manager / loader] \"%s\" failed to load!\n", texturePath.c_str());
+        printf("[Texture model manager/loader] \"%s\" failed to load texture!\n", texturePath.c_str());
     }
 
 

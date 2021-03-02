@@ -47,6 +47,7 @@ void Scene::InitializeScene()
 	// Objects transformations and scales
 	objectTransformSection();
 
+	// 3D models from import
 	modelSection();
 
 	// Skybox creation
@@ -65,6 +66,7 @@ void Scene::registerUsedShaders()
 	{
 		if (shaderProgram.shaderProgram > 0) {
 			camera[0]->registerObserver(std::make_shared<ShaderProgram>(shaderProgram));
+			printf("shadeprogram type register: %d\n", shaderProgram.shaderType);
 		}
 	}
 }
@@ -223,7 +225,7 @@ void Scene::lightSection()
 
 void Scene::objectSection()
 {
-	glm::vec3 pos = glm::vec3(-0.25f, 0.f, 0.25f);
+	glm::vec3 pos = glm::vec3(-0.6f, 0.f, 0.25f);	// glm::vec3 pos = glm::vec3(-0.25f, 0.f, 0.25f);
 	glm::vec3 color = glm::vec3(0.8f, 0.8f, 0.8f);
 	addObject("sphere", ShaderType::AMBIENT, pos, color, camera[0], glm::vec3(1.0f));
 
@@ -553,11 +555,15 @@ void Scene::modelSection()
 	ShaderLoader sl;
 	// Create and compile our GLSL program from the shaders
 	//programID = sl.loadShader("shaders\\TransformVertexShader.vert", "shaders\\TextureFragmentShader.frag");
+	
 	programID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
-	Shader::use(programID);
+	//Shader::use(programID);
 
-	ShaderProgram spModelID = ShaderProgram(ShaderType::DIFFUSE_MODEL, programID);
-	camera[0]->registerObserver(std::make_shared<ShaderProgram>(spModelID));
+	//ShaderProgram spModelID = ShaderProgram(ShaderType::DIFFUSE_MODEL, programID);
+	//camera[0]->registerObserver(std::make_shared<ShaderProgram>(spModelID));
+
+	//std::shared_ptr<ShaderProgram> shadPrg = std::shared_ptr<ShaderProgram>(new ShaderProgram(ShaderType::DIFFUSE_MODEL, programID));
+	//camera[0]->registerObserver(shadPrg);
 
 	//programID = sl.loadShader("shaders\\vertex.glsl", "shaders\\phong.frag");
 
@@ -580,15 +586,22 @@ void Scene::modelSection()
 	// Y up
 		   // .3DS
 	//MeshLoader* newMeshModel = new MeshLoader("models\\downloaded\\open3dmodel\\Aylin\\Aylin.obj");
-	MeshLoader* newMeshModel = new MeshLoader("models\\downloaded\\open3dmodel\\Character_A1008A325\\mm3.obj");
+
+	//MeshLoader* newMeshModel = new MeshLoader("models\\downloaded\\open3dmodel\\Character_A1008A325\\mm3.obj");
+	MeshLoader* newMeshModel = new MeshLoader("models\\chair\\chair.obj");
 	glm::mat4 ModelMatrix = glm::mat4(1.0);
-	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 0.2f, 0.0f));
-	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.01f, 0.01f, 0.01f));
+	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 1.4f, 0.0f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.1f, 0.1f, 0.1f));
 	newMeshModel->ModelMatrix = ModelMatrix;
 	//ModelMatrix = glm::rotate(ModelMatrix, 90.0f, glm::vec3(-1, 1, 1));
 	meshObjects.push_back(newMeshModel);
 	
-	//meshModel1 = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
+	newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
+	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(1.0f, 0.2f, 0.0f));
+	ModelMatrix = glm::scale(glm::mat4(1.0), glm::vec3(0.6f, 0.6f, 0.6f));
+	newMeshModel->ModelMatrix = ModelMatrix;
+	meshObjects.push_back(newMeshModel);
+
 	newMeshModel = new MeshLoader("models\\cube\\dum2\\dum2.obj");
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, -0.4f, 0.0f));
 	newMeshModel->ModelMatrix = ModelMatrix;
@@ -634,13 +647,19 @@ void Scene::setNewColor(int _index)
 	if (_index <= 0) {
 		return;
 	}
-	std::cout << _index << std::endl;
-	int index = _index - 1;// -1;
-	this->object[index]->setNewColor(glm::vec3(1.0f, 0.0f, 0.0f));
-	
-	this->object[index]->useShader();	 // added mb smazat
-	Shader::sendUniform(this->object[index]->getShader(), "fragmentColor", this->object[index]->getColor());
+	if (object.size() > _index - 1) {
+		std::cout << _index << std::endl;
+		int index = _index - 1;// -1;
+		this->object[index]->setNewColor(glm::vec3(1.0f, 0.0f, 0.0f));
 
+		this->object[index]->useShader();	 // added mb smazat
+		Shader::sendUniform(this->object[index]->getShader(), "fragmentColor", this->object[index]->getColor());
+	}
+	else {
+		int index = _index - 1;
+		//meshObjects[index].;
+
+	}
 	/*if (std::dynamic_pointer_cast<Light>(this->object[index]))
 	{
 		Shader::sendUniform(this->object[index]->getShader(), "lightColor", glm::vec3(1.0f, 0.0f, 0.0f));
@@ -654,11 +673,12 @@ void Scene::setLastColor(int _index)
 	if (_index <= 0) {
 		return;
 	}
+	if (object.size() > _index - 1) {
+		int index = _index - 1; // -1;
+		this->object[index]->setLastColor();
 
-	int index = _index - 1; // -1;
-	this->object[index]->setLastColor();
-
-	this->object[index]->useShader();	 // added mb smazat
-	Shader::sendUniform(this->object[index]->getShader(), "fragmentColor", this->object[index]->getColor());
+		this->object[index]->useShader();	 // added mb smazat
+		Shader::sendUniform(this->object[index]->getShader(), "fragmentColor", this->object[index]->getColor());
+	}
 }
 

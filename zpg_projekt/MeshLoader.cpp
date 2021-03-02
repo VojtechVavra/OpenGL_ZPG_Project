@@ -301,9 +301,6 @@ void MeshLoader::render() {
 		t.emplace_back(textureManager->getModelTexture(material[j]->diffuseMap));
 		//t.emplace_back(textureManager->getModelTexture("..\\" + material[j]->diffuseMap));
 		//std::string a = "..\\" + material[j]->diffuseMap;
-
-
-		
 	}
 
 	for (int i = 0; i < meshEntries.size(); ++i) {

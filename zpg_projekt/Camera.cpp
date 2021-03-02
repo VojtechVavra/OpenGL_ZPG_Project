@@ -123,6 +123,14 @@ void Camera::updateCameraVectors()
 	{
 		//added
 		//rotateHoldObjectToCamera(this->target.x, this->target.y);
+		//Shader::use(holdObject->getShader());
+		//Shader::sendUniform(holdObject->getShader(), "modelMatrix", position + glm::normalize(target) * 5.0f);
+		/*glm::mat4 newMatrix = glm::mat4(1.0f);
+		newMatrix = glm::rotate(newMatrix, target.x + holdObject->getRotate().x, glm::vec3(0.0f, 1.0f, 0.0f));
+		newMatrix = glm::rotate(newMatrix, target.y + holdObject->getRotate().y, glm::vec3(0.0f, 1.0f, 0.0f));
+		newMatrix = glm::rotate(newMatrix, target.z + holdObject->getRotate().z, glm::vec3(0.0f, 0.0f, 1.0f));
+		newMatrix = glm::translate(newMatrix, position + glm::normalize(target) * 5.0f);
+		Shader::sendUniform(holdObject->getShader(), "modelMatrix", newMatrix);*/
 	}
 
 	notifyObservers(this, camChange::MOVE_ROTATE);
@@ -146,7 +154,9 @@ void Camera::processKeyboard(float deltaTime)
 	if (holdObject != nullptr)
 	{
 		//added
-		updateHoldObject(velocity);	// posun drziciho objektu
+		//updateHoldObject(velocity);	// posun drziciho objektu
+		Shader::use(holdObject->getShader());
+		Shader::sendUniform(holdObject->getShader(), "modelMatrix", position + glm::normalize(target) * 5.0f);
 	}
 
 	if (movingDirection == (FORWARD | STRAFE_RIGHT)) {
@@ -221,7 +231,7 @@ void Camera::setResolution(Resolution resolution)
 	this->height = resolution.y;
 }
 
-void Camera::updateHoldObject(float velocity)
+/*void Camera::updateHoldObject(float velocity)
 {
 	//TODO: spocitat vektor od kamery k objketu
 	// pozice kamery + vektor
@@ -272,7 +282,7 @@ void Camera::updateHoldObject(float velocity)
 
 	if (move)
 	{
-		holdObject->Translate(shiftPosition);
+		//holdObject->Translate(shiftPosition);	// TODO: oddelat zakomentovani
 
 		printf("Object shifted by: %f, %f, %f\n", shiftPosition.x, shiftPosition.y, shiftPosition.z);
 
@@ -280,17 +290,58 @@ void Camera::updateHoldObject(float velocity)
 		Shader::sendUniform(holdObject->getShader(), "modelMatrix", holdObject->getMatrix());
 		Shader::sendUniform(holdObject->getShader(), "fragmentColor", holdObject->getColor());
 	}
-}
+}*/
 
 
 void Camera::setHoldObject(std::shared_ptr<Object> object)
 {
 	this->holdObject = object;
+	Shader::use(holdObject->getShader());
+	Shader::sendUniform(holdObject->getShader(), "isHeld", true);
+	//Shader::sendUniform(holdObject->getShader(), "modelMatrix", position + glm::normalize(target) + 10.0f);
+
+	glm::mat4 newMatrix = glm::mat4(1.0);
+	newMatrix = glm::translate(newMatrix, glm::vec3(5.0, 5.0, 5.0) * target);
+	//newMatrix = glm::rotate(newMatrix, holdObject->getRotate().x + target.x, glm::vec3(1.0f, 0.0f, 0.0f));
+	//newMatrix = glm::rotate(newMatrix, holdObject->getRotate().z + target.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	holdObject->Scale(newMatrix, holdObject->getScale());
+
+	holdObject->setPositionWithoutTranslate(position + target * 15.0f);
+	holdObject->setMatrix(newMatrix);
+	Shader::sendUniform(holdObject->getShader(), "modelMatrix", newMatrix);
+	//glm::lookAt(position, position + target, up);
+	Shader::use(0);
 }
 
 void Camera::dropObject()
 {
-	this->holdObject = nullptr;
+	//holdObject->setPositionWithoutTranslate(position + glm::normalize(target) * 5.0f);
+	//holdObject->setPosition(position + glm::normalize(target) * 5.0f);
+	glm::mat4 newMatrix = glm::mat4(1.0);		// ModelMatrix = T*S*R
+	//newMatrix = glm::translate(newMatrix, position + target * 5.0f);	// uncoment this
+
+	//newMatrix = glm::scale(newMatrix, holdObject->getScale());
+
+	//newMatrix = glm::rotate(newMatrix, target.x + holdObject->getRotate().x, glm::vec3(0.0f, 1.0f, 0.0f));
+	//newMatrix = glm::rotate(newMatrix, target.y + holdObject->getRotate().y, glm::vec3(0.0f, 1.0f, 0.0f));
+	//newMatrix = glm::rotate(newMatrix, target.z + holdObject->getRotate().z, glm::vec3(0.0f, 0.0f, 1.0f));
+	
+	//newMatrix = glm::lookAt(-position, position + target * (5.0f), up);
+	newMatrix = glm::translate(newMatrix, position + target * 5.0f);
+	newMatrix = glm::scale(newMatrix, holdObject->getScale());
+	//newMatrix = glm::rotate(newMatrix, holdObject->getRotate().z + target.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	holdObject->setMatrix(newMatrix);
+	holdObject->setPositionWithoutTranslate(position + target * 5.0f);
+	printf("scale: x>%f y>%f z%f", holdObject->getScale().x, holdObject->getScale().y, holdObject->getScale().z);
+
+	holdObject->Scale(newMatrix, holdObject->getScale());
+
+	Shader::use(holdObject->getShader());
+	Shader::sendUniform(holdObject->getShader(), "isHeld", false);
+	Shader::sendUniform(holdObject->getShader(), "modelMatrix", holdObject->getMatrix());
+	//Shader::sendUniform(holdObject->getShader(), "modelMatrix", position + glm::normalize(target) * 5.0f);
+
+	this->holdObject = nullptr;	
 }
 
 void Camera::flashLightOnOff()

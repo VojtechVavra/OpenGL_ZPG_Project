@@ -265,7 +265,8 @@ void Renderer::renderLoop()
 		//glClear(GL_DEPTH_BUFFER_BIT);
 
 		// render objects
-		for (int i = 0; i < scene->object.size(); i++)
+		int i;
+		for (i = 0; i < scene->object.size(); i++)
 		{
 			glStencilFunc(GL_ALWAYS, i + 1, 0xFF);
 			//glStencilFunc(GL_ALWAYS, scene->object[i]->getID(), 0xFF);
@@ -275,7 +276,7 @@ void Renderer::renderLoop()
 		// render 3D objects
 		//renderModel();
 
-		renderModel();
+		renderModel(i);
 
 		//glDisable(GL_ALPHA_TEST);
 		//glDepthMask(GL_TRUE);
@@ -326,7 +327,7 @@ void Renderer::renderObject(std::shared_ptr<Object> object)
 
 }*/
 
-void Renderer::renderModel()
+void Renderer::renderModel(int i_stencil_offset)
 {
 	glUseProgram(scene->programID);
 	Shader::sendUniform(scene->programID, "myTextureSampler", (GLint)0);
@@ -355,8 +356,10 @@ void Renderer::renderModel()
 	Shader::sendUniform(scene->programID, "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
 	for (auto obj : scene->meshObjects) {
+		//glStencilFunc(GL_ALWAYS, i_stencil_offset + 1, 0xFF);		// uncoment this for further use stencil buffer for imported objects, now not work
 		Shader::sendUniform(scene->programID, "modelMatrix", obj->ModelMatrix);
 		obj->render();
+		i_stencil_offset++;
 	}
 }
 

@@ -36,6 +36,8 @@ public:
     //~Object();
     glm::vec3 getPosition() const;
     glm::mat4 getMatrix() const;
+    glm::vec3 getRotate() const;
+    glm::vec3 getScale() const;
     Model getModel() const;
     GLuint getShader() const;
 
@@ -76,11 +78,17 @@ protected:
     //std::shared_ptr<Camera> camera;
 public:
     std::shared_ptr<Texture> texture;
+
+    glm::vec3 rotation;
+    glm::vec3 scale;
 protected:
     glm::vec3 color;
     glm::vec3 lastColor;
     static GLuint objectCount;
     GLuint objID;
+private:
+    //glm::vec3 position;
+    
 };
 
 #endif // !OBJECTSPACE_H

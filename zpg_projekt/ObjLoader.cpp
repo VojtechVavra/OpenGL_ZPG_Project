@@ -1,5 +1,5 @@
 #define USE_ASSIMP
-#include<assimp/Importer.hpp>// C++ importerinterface
+/*#include<assimp/Importer.hpp>// C++ importerinterface
 #include<assimp/scene.h>// aiSceneoutputdata structure
 #include<assimp/postprocess.h>// Post processingflags
 
@@ -144,9 +144,9 @@ bool loadAssImp(
 	Assimp::Importer importer;
 	unsigned int importOptions = aiProcess_Triangulate | aiProcess_GenNormals;
 
-	const aiScene* scene = importer.ReadFile(path, importOptions);
+	const aiScene* scene = importer.ReadFile(path, importOptions);*/
 	//const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate /*0 aiProcess_JoinIdenticalVertices | aiProcess_SortByPType*/);
-	if (!scene) {
+	/*if (!scene) {
 		fprintf(stderr, importer.GetErrorString());
 		getchar();
 		return false;
@@ -236,14 +236,6 @@ bool loadAssImp(
 			material.heightMap = path_name.C_Str();
 		}
 
-		/*int texIndex = 0;
-		if (mat->GetTexture(aiTextureType_DIFFUSE, texIndex, &path_name) == AI_SUCCESS)
-		{
-			std::string sDir = path;
-			std::string sTextureName = path_name.data;
-			std::string sFullPath = sDir + sTextureName;
-			int iTexFound = -1;
-		}*/
 
 		Mesh* newMesh = createMesh(indices, vertices, uvs, normals, material);
 		meshes.push_back(newMesh);
@@ -288,7 +280,7 @@ Mesh* createMesh(std::vector<unsigned short>& indices,
 
 
 
-void send3DobjUniforms(GLuint objShaderProgram, std::shared_ptr<Camera> camera, std::vector<std::shared_ptr<Light>> light, std::vector<std::shared_ptr<DirectionalLight>> directionalLight, std::vector<std::shared_ptr<SpotLight>> spotLight, /*std::shared_ptr<Texture>*/ GLuint texture, glm::mat4x4 modelMatrix)
+void send3DobjUniforms(GLuint objShaderProgram, std::shared_ptr<Camera> camera, std::vector<std::shared_ptr<Light>> light, std::vector<std::shared_ptr<DirectionalLight>> directionalLight, std::vector<std::shared_ptr<SpotLight>> spotLight, GLuint texture, glm::mat4x4 modelMatrix)
 {
 	if (true)
 	{
@@ -376,7 +368,7 @@ void send3DobjUniforms(GLuint objShaderProgram, std::shared_ptr<Camera> camera, 
 		}
 	// end added
 	}
-}
+} */
 
 
 
