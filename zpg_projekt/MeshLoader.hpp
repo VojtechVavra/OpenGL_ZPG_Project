@@ -12,6 +12,7 @@
 #include <GL/glew.h>
 
 #include "Material.hpp"
+#include "Shader.hpp"
 
 
 class MeshLoader
@@ -30,7 +31,7 @@ public:
 		~MeshEntry();
 
 		int materialIndex;	// added
-	
+
 		void load(aiMesh* mesh);
 		void render();
 	};
@@ -48,5 +49,8 @@ public:
 	void render2(); // TODO: Smazat tuto funkci a udelat ji obecne
 // pridat do teto classy textury a materialy
 	glm::mat4 ModelMatrix; // added
+	GLuint shaderProgramID; // added
+private:
+
 };
 

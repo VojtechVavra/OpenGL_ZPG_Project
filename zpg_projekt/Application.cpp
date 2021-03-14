@@ -29,6 +29,7 @@ Application::Application()
 	windowWidth = windowHeight = 0;
 	windSize[0] = &this->windowWidth;
 	windSize[1] = &this->windowHeight;
+	srand(time(nullptr));
 }
 
 void Application::init()

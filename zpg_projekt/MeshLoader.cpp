@@ -1,6 +1,7 @@
 #include "MeshLoader.hpp"
 #include "TextureManager.hpp"
 
+
 /**
 *	Constructor, loading the specified aiMesh
 **/
@@ -153,6 +154,7 @@ MeshLoader::MeshLoader(const char* filename)
 		printf("Unable to load mesh: %s\n", importer.GetErrorString());
 		return;
 	}
+	shaderProgramID = 0;
 
 	for (int i = 0; i < scene->mNumMeshes; ++i) {
 		aiMesh* mesh = scene->mMeshes[i];
@@ -246,17 +248,23 @@ std::unique_ptr<Material> MeshLoader::getMaterial(const aiMaterial* mat, const c
 		new_path += '\\';
 		new_path += path_name.C_Str();
 		newMaterial->diffuseMap = new_path;
+		shaderProgramID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
+		printf("load texture: %s\n", new_path.c_str());
 
 		someTexture = true;
 		//std::cout << new_path << std::endl;	// TODO: make load this texture path/name
 	}
 	if (mat->GetTexture(aiTextureType_SPECULAR, 0, &path_name) == AI_SUCCESS) {
 		newMaterial->specularMap = path_name.C_Str();
+		//shaderProgramID = Shader::getShader(ShaderType::SPECULAR_MODEL);
 		someTexture = true;
 	}
 	if (mat->GetTexture(aiTextureType_HEIGHT, 0, &path_name) == AI_SUCCESS) {
 		newMaterial->heightMap = path_name.C_Str();
 		someTexture = true;
+	}
+	if (shaderProgramID < 1) {
+		shaderProgramID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
 	}
 
 	if (!someTexture) {
@@ -284,6 +292,8 @@ void MeshLoader::render() {
 	auto textureManager = TextureManager::getInstance();
 	std::vector<std::shared_ptr<Texture>> t;
 
+	glUseProgram(shaderProgramID);
+	Shader::sendUniform(shaderProgramID, "modelMatrix", ModelMatrix);
 	//t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\bpng.png"));
 	//t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\bpng.png"));
 	//t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\Pot textures_col.jpg"));
@@ -314,6 +324,15 @@ void MeshLoader::render() {
 			
 			//printf("texture: %s\n", "..\\" + material[i]->diffuseMap);
 			//printf("mesh entries size %d\n", meshEntries.size());
+
+			
+			//Shader::sendUniform(shaderProgramID, "a", 10.0f);
+			//Shader::sendUniform(shaderProgramID, "meshDiffuse", material[i]->diffuse);
+			//Shader::sendUniform(shaderProgramID, "meshSpecular", material[i]->specular);
+
+			Shader::sendUniform(shaderProgramID, "meshMaterial.ambient", material[i]->ambient);
+			Shader::sendUniform(shaderProgramID, "meshMaterial.diffuse", material[i]->diffuse);
+			Shader::sendUniform(shaderProgramID, "meshMaterial.specular", material[i]->specular);
 
 			glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
 		}

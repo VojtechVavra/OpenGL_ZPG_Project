@@ -11,10 +11,31 @@ out vec4 gl_FragColor;      // output color
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
-uniform sampler2D texture_diffuse2;
+//uniform sampler2D texture_diffuse2;
+
+
+
+struct Material {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+uniform Material meshMaterial;
+
+struct DirLight {
+    int lightType;
+
+    vec3 direction;
+    vec3 color;
+
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};  
+uniform DirLight dirLight;
+
 
 #define MAX_LIGHTS 6
-
 uniform struct SpotLight {
     vec3 position;
     vec3 direction;
@@ -32,27 +53,31 @@ uniform struct SpotLight {
     vec3 specular;
 
     int isActive;
-}spotLight [MAX_LIGHTS];
+} spotLight [MAX_LIGHTS];
+
 
 uniform SpotLight flashLight;
 uniform vec3 fragmentColor = vec3(1.0f, 1.0f, 1.0f);
 
 // constant values modifiers
+vec4 scene_ambient = vec4(0.2, 0.2, 0.2, 1.0);
 uniform float ambientStrength = 0.2f;   // constatnt color - good 0.2f - 0.1f
 uniform float specularStrength = 0.5f;  // 0.5
 
-
+vec4 CalcDirLight(DirLight light, vec3 normal);
 float getAttenuation(vec3 lightPosition, vec3 _fragPos);
 vec4 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos);
 
 vec3 calculateDiffuse(vec3 position, vec3 _lightColor);
+vec3 calculateSpecular(vec3 position, vec3 _lightColor, vec3 viewPos);
+
 
 void main() {
 	vec3 norm = normalize(normal);
 	vec4 result = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
     // phase 1: Directional lighting
-    //vec3 result = CalcDirLight(dirLight, norm);
+    result = CalcDirLight(dirLight, norm);
 
 	// phase 2: Point lights
     //for(int i = 0; i < pointLightCount; i++) {
@@ -63,7 +88,6 @@ void main() {
         //result += CalcSpotLight(spotLight[i], norm, fragPos);
     //}
     // phase 4: FlashLight
-    //if(flashLight.isActive == 1) {
     if(flashLight.isActive == 1) {
         result += CalcFlashLight(flashLight, norm, fragPos);
     }
@@ -72,16 +96,12 @@ void main() {
         if (val.a < 0.1) {
             discard;
         }
+        result += val * scene_ambient * vec4(meshMaterial.ambient, 1.0);
+
         //result += val * vec4(0.3f, 0.3f, 0.3f, 0.0f);
-        result += val * 0.7f; //ambientStrength;
+        //result += val * 0.6f; // 0.7f good value  // ambientStrength;
     }
 
-    //vec4 val = texture2D(myTextureSampler, texCoordUV);
-    /*vec4 val = texture(result, texCoordUV);    // UV = texCoord; texture2D is deprecated, use texture
-    if (val.a < 0.1) {
-        discard;
-    }
-    gl_FragColor = val;*/
     gl_FragColor = result;
 
 	// Output color = color of the texture at the specified UV
@@ -119,34 +139,36 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos)
     diffuse *= attenuation;
 
     return (ambient + diffuse);
-}
+}*/
 
 
 // https://learnopengl.com/Lighting/Multiple-lights
 // https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/6.multiple_lights/multiple_lights.cpp
 // https://learnopengl.com/code_viewer_gh.php?code=src/2.lighting/6.multiple_lights/6.multiple_lights.fs
-vec3 CalcDirLight(DirLight light, vec3 normal)
+vec4 CalcDirLight(DirLight light, vec3 normal)
 {
     //diffuse
     vec3 norm = normalize(normal);
     vec3 lightDir = normalize(light.direction);
     float diff = max(dot(norm, lightDir), 0.0);  // dot product?
 
-    vec3 ambient, diffuse;
+    vec3 ambient, diffuse, specular;
+    vec4 val = texture(myTextureSampler, texCoordUV);
 
-    if(hasTexture == 1) {
-        ambient = ambientStrength * vec3(texture(myTextureSampler, UV)) * light.color;          // TexCoords == uv
-        diffuse = diff * vec3(texture(myTextureSampler, UV)) * light.color;    // light.diffuse * diff *
+    if (val.a < 0.1) {
+        discard;            // odstranime podle alpha kanalu texturu
     }
-    else {
-        ambient = ambientStrength * fragmentColor * light.color;
-        diffuse = diff *fragmentColor * light.color;
-    }
-    return (ambient + diffuse);  // * fragmentColor
+
+    ambient = vec3(scene_ambient) * meshMaterial.ambient * light.color;
+    diffuse = diff * meshMaterial.diffuse * light.color;
+    //specular = calculateSpecular(dirLight.direction, light.color, vec3(0.0, 0.0, 0.0)) * meshMaterial.specular * light.color;
+    // diffuse = diff * vec3(texture(myTextureSampler, UV)) * light.color;
+
+    return vec4(ambient + diffuse, 1.0) * val;
 }
 
 // calculates the color when using a spot light.
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos)
+/*vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos)
 {
     //light.position = viewPos;
 
@@ -197,43 +219,48 @@ float getAttenuation(vec3 _lightPosition, vec3 _fragPos)
 
 vec4 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos)
 {
-    //light.position = viewPos;
-
     vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
-    //float diff = max(dot(normal, lightDir), 0.0);
-    
+    if(diff == 0.0){
+        diff = max(dot(-normal, lightDir), 0.0);
+    }
+
     float attenuation = getAttenuation(light.position, fragPos);
     // spotlight intensity
     float theta = dot(lightDir, normalize(-light.direction)); 
     float epsilon = light.cutOff - light.outerCutOff;
-    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.3, 1.0);
-    // combine results
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 
-    vec4 ambient, diffuse;
+    // combine results
+    vec4 ambient, diffuse, specular;
     
+    //specular = vec4(calculateSpecular(light.position, light.color), 1.0);
+
     vec4 val = texture(myTextureSampler, texCoordUV);
     //ambient = ambientStrength * texture(myTextureSampler, texCoordUV) * vec4(fragmentColor * light.color, 1.0); // TexCoords == uv
     if (val.a < 0.1) {
-        discard;
+        discard;    // odstranime podle alpha kanalu texturu
     }
-    ambient = ambientStrength * val * vec4(light.color, 1.0);
-    if(diff == 0.0)
+
+    // vec3 ambientLighting = vec3(scene_ambient) * vec3(frontMaterial.ambient);
+    ambient = scene_ambient * vec4(meshMaterial.ambient, 1.0) * vec4(light.color, 1.0);
+    /*if(diff == 0.0)
     {
         ambient = val;
-    }
+    }*/
     //diffuse = diff * texture(myTextureSampler, texCoordUV) * vec4(fragmentColor * light.color, 1.0);
 
-    diffuse = diff * val * vec4(light.color, 1.0);
-    
+    diffuse = diff * attenuation * intensity * vec4(meshMaterial.diffuse, 1.0) * vec4(light.color, 1.0);
+    specular = vec4(calculateSpecular(light.position, light.color, light.position), 1.0) * attenuation * intensity * vec4(meshMaterial.specular, 1.0) * vec4(light.color, 1.0);
+
     //ambient  = ambientStrength * fragmentColor * light.color;
     //diffuse  = diff * fragmentColor * light.color;
 
-    ambient *= attenuation * intensity;
-    diffuse *= attenuation * intensity;
+    // ambient *= attenuation * intensity + ambientStrength;
+    //ambient *= ambientStrength;
 
-    return (ambient + diffuse);
+    return (ambient + diffuse + specular) * val;
 }
 
 vec3 calculateDiffuse(vec3 position, vec3 _lightColor)
@@ -241,6 +268,20 @@ vec3 calculateDiffuse(vec3 position, vec3 _lightColor)
     //diffuse
     vec3 norm = normalize(normal);
     vec3 lightDir = normalize(position - fragPos);
-    float diff = max(dot(norm, lightDir), 0.0);  // dot product
+    float diff = max(dot(norm, lightDir), 0.0);  // dot product = cos
     return diff * _lightColor;
+}
+
+vec3 calculateSpecular(vec3 position, vec3 _lightColor, vec3 viewPos)
+{
+    // specular
+    float h = 32.0f; // default is 32
+    vec3 norm = normalize(normal);
+    vec3 lightDir = normalize(position - fragPos);
+
+    vec3 viewDir = normalize(viewPos - fragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), h);
+    //return specularStrength * spec * _lightColor;
+    return spec;
 }

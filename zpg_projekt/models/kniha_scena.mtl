@@ -1,0 +1,98 @@
+# Blender MTL File: 'kniha_scena.blend'
+# Material Count: 9
+
+newmtl Drevo
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Vooja\\Documents\\Skola\\6_semestr\\MGA\\modely\\4\\chair_wood.jpg
+
+newmtl None
+Ns 500
+Ka 0.8 0.8 0.8
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+
+newmtl book2
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Vooja\\Documents\\Skola\\6_semestr\\MGA\\modely\\textures\\books\\book3.jpg
+
+newmtl book2.001
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Vooja\\Documents\\Skola\\6_semestr\\MGA\\modely\\textures\\books\\book2.jpg
+
+newmtl concrete1
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Vooja\\Documents\\Skola\\6_semestr\\MGA\\modely\\textures\\concrete_wall\\RV Concrete Wall 6_baseColor.png
+
+newmtl floor1
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Vooja\\Documents\\Skola\\6_semestr\\MGA\\modely\\textures\\wood_floor\\WoodFloor041_1K_Color.jpg
+
+newmtl sedak
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.018567 0.027043 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Vooja\\Documents\\Skola\\6_semestr\\MGA\\modely\\4\\chair_2.jpg
+
+newmtl wood1
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Vooja\\Documents\\Skola\\6_semestr\\MGA\\modely\\textures\\wood1\\Wood035_1K_Color.jpg
+
+newmtl wood2
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Vooja\\Documents\\Skola\\6_semestr\\MGA\\modely\\textures\\wood2\\Wood027_1K_Color.jpg

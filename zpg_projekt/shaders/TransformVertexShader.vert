@@ -8,8 +8,8 @@ layout(location = 2) in vec3 vertexNormal;		// model space normal in vertex
 
 // Output data ; will be interpolated for each fragment.
 out vec2 texCoordUV;
-out vec3 fragPos;			// added
-out vec3 normal;			// added
+out vec3 fragPos;			// Position in world space
+out vec3 normal;			// Surface normal in world space
 
 // Values that stay constant for the whole mesh.
 //uniform mat4 MVP;

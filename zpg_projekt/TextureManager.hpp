@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <memory>
+
 #include "Texture.hpp"
 
 class TextureManager
@@ -24,5 +25,8 @@ public:
 private:
 	static std::shared_ptr<TextureManager> instance;
 	TextureManager();
+
+	const char* DEFAULT_NOTEXTURE1 = "models\\textures\\default1.png";
+	const char* DEFAULT_NOTEXTURE2 = "models\\textures\\default2.png";
 };
 

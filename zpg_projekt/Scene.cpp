@@ -245,7 +245,7 @@ void Scene::objectSection()
 	color = glm::vec3(0.2f, 1.0f, 0.2f);
 	//addObject("plain", ShaderType::PHONG, pos, color, camera[0], glm::vec3(1.0f));
 	std::string texture1 = "floor\\floor2.jpg";
-	addObject("plainTextured", ShaderType::PHONG, pos, color, camera[0], glm::vec3(1.0f), texture1);
+	addObject("plainTextured", ShaderType::PHONG, glm::vec3(0.0f, -10.0f, 0.0f), color, camera[0], glm::vec3(1.0f), texture1);	// podlaha
 
 	addObject("suzi_smooth", ShaderType::PHONG, pos, glm::vec3(1.0f, 1.0f, 0.2f), camera[0], glm::vec3(1.0f));
 
@@ -394,7 +394,7 @@ void Scene::addObject(std::string modelName, ShaderType shaderType, glm::vec3 po
 		Shader::sendUniform(objShaderProgram, "flashLight.direction", camera->target);
 		Shader::sendUniform(objShaderProgram, "flashLight.color", camera->flashLight->lightColor);
 
-		Shader::sendUniform(objShaderProgram, "flashLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+		Shader::sendUniform(objShaderProgram, "flashLight.ambient", glm::vec3(1.0f, 1.0f, 1.0f));
 		Shader::sendUniform(objShaderProgram, "flashLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
 		Shader::sendUniform(objShaderProgram, "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 		Shader::sendUniform(objShaderProgram, "flashLight.constant", 1.0f);
@@ -483,8 +483,8 @@ void Scene::addObject(std::string modelName, ShaderType shaderType, glm::vec3 po
 		Shader::sendUniform(object.back()->getShader(), "flashLight.direction", camera->target);
 		Shader::sendUniform(object.back()->getShader(), "flashLight.color", camera->flashLight->lightColor);
 
-		Shader::sendUniform(object.back()->getShader(), "flashLight.ambient", glm::vec3(1.0f, 0.0f, 0.0f));
-		Shader::sendUniform(object.back()->getShader(), "flashLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+		Shader::sendUniform(object.back()->getShader(), "flashLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		Shader::sendUniform(object.back()->getShader(), "flashLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
 		Shader::sendUniform(object.back()->getShader(), "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 		Shader::sendUniform(object.back()->getShader(), "flashLight.constant", 1.0f);
 		Shader::sendUniform(object.back()->getShader(), "flashLight.linear", 0.09f);
@@ -556,7 +556,7 @@ void Scene::modelSection()
 	// Create and compile our GLSL program from the shaders
 	//programID = sl.loadShader("shaders\\TransformVertexShader.vert", "shaders\\TextureFragmentShader.frag");
 	
-	programID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
+	//programID = Shader::getShader(ShaderType::DIFFUSE_MODEL);	// uncomment this, this worked well
 	//Shader::use(programID);
 
 	//ShaderProgram spModelID = ShaderProgram(ShaderType::DIFFUSE_MODEL, programID);
@@ -588,26 +588,63 @@ void Scene::modelSection()
 	//MeshLoader* newMeshModel = new MeshLoader("models\\downloaded\\open3dmodel\\Aylin\\Aylin.obj");
 
 	//MeshLoader* newMeshModel = new MeshLoader("models\\downloaded\\open3dmodel\\Character_A1008A325\\mm3.obj");
+
 	MeshLoader* newMeshModel = new MeshLoader("models\\chair\\chair.obj");
 	glm::mat4 ModelMatrix = glm::mat4(1.0);
-	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 1.4f, 0.0f));
+	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 0.65f, 0.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.1f, 0.1f, 0.1f));
 	newMeshModel->ModelMatrix = ModelMatrix;
 	//ModelMatrix = glm::rotate(ModelMatrix, 90.0f, glm::vec3(-1, 1, 1));
 	meshObjects.push_back(newMeshModel);
 	
+	newMeshModel = new MeshLoader("models\\vase\\vase.obj");
+	ModelMatrix = glm::mat4(1.0);
+	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-1.5f, 0.0f, 1.0f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.1f, 0.1f, 0.1f));
+	newMeshModel->ModelMatrix = ModelMatrix;
+	meshObjects.push_back(newMeshModel);
+
+	newMeshModel = new MeshLoader("models\\scena\\kniha_scena.obj");
+	ModelMatrix = glm::mat4(1.0);
+	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-1.5f, 0.0f, 8.0f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.1f, 0.1f, 0.1f));
+	newMeshModel->ModelMatrix = ModelMatrix;
+	meshObjects.push_back(newMeshModel);
+
 	newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
 	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(1.0f, 0.2f, 0.0f));
 	ModelMatrix = glm::scale(glm::mat4(1.0), glm::vec3(0.6f, 0.6f, 0.6f));
 	newMeshModel->ModelMatrix = ModelMatrix;
 	meshObjects.push_back(newMeshModel);
 
+	newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Indoor plant_3_BI_blend2.obj");
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-1.5f, 0.46f, 3.8f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.7f, 0.7f, 0.7f));
+	newMeshModel->ModelMatrix = ModelMatrix;
+	meshObjects.push_back(newMeshModel);
+
 	newMeshModel = new MeshLoader("models\\cube\\dum2\\dum2.obj");
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, -0.4f, 0.0f));
 	newMeshModel->ModelMatrix = ModelMatrix;
-	meshObjects.push_back(newMeshModel);
+	//meshObjects.push_back(newMeshModel);	// uncomment to import house into scene
+
 	//meshModel1 = new MeshLoader("models\\downloaded\\Grass\\Grass.obj");
 	
+	// z kama kam to sviti
+	glm::vec3 direction_up_down = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 direction_down_up = glm::vec3(0.0f, -1.0f, 0.0f);
+	glm::vec3 direction_right_to_left = glm::vec3(0.0f, 0.0f, 1.0f);
+	glm::vec3 direction_left_to_right = glm::vec3(0.0f, 0.0f, -1.0f);
+	glm::vec3 direction_front_to_back = glm::vec3(1.0f, 0.0f, 0.0f);
+	glm::vec3 direction_back_to_front = glm::vec3(-1.0f, 0.0f, 0.0f);
+
+	glm::vec3 direction_front_to_back_up_half_down = glm::vec3(1.0f, 1.0f, 0.0f);
+
+	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.direction", direction_front_to_back_up_half_down);
+	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.color", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5));
+	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 }
 
 //void Scene::skybox
