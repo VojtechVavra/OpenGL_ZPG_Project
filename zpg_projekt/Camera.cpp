@@ -28,6 +28,7 @@ Camera::Camera(glm::vec3 position) : Object(position)
 	this->height = 600;
 
 	this->flashLightBool = false;
+	this->showTextureDetail = false;
 
 	setPerspectiveCamera();
 	updateCameraVectors();
@@ -355,6 +356,16 @@ bool Camera::isFlashLightOn()
 {
 	return this->flashLightBool;
 }
+
+void Camera::setShowTextureDetail(bool show) {
+	this->showTextureDetail = show;
+	notifyObservers(this, camChange::SHOW_TEXTURE_DETAIL);
+}
+
+bool Camera::getTextureDetail() {
+	return this->showTextureDetail;
+}
+
 
 /*void update2(Subject* subject)
 {}*/

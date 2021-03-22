@@ -305,7 +305,16 @@ void MeshLoader::render() {
 
 	//glBindTexture(GL_TEXTURE_2D, t->getTextureId());
 	//glBindTexture(GL_TEXTURE_2D + 1, t2->getTextureId());
-	glActiveTexture(GL_TEXTURE0);
+	std::shared_ptr<Texture> lightShadow = textureManager->getModelTexture("textures\\light_shadow\\smiley.png");
+	glActiveTexture(GL_TEXTURE0 + 1); // Texture unit 1
+	glBindTexture(GL_TEXTURE_2D, lightShadow->getTextureId());
+
+	std::shared_ptr<Texture> textureDetail = textureManager->getModelTexture("textures\\none\\default1.png");
+	glActiveTexture(GL_TEXTURE0 + 2); // Texture unit 2
+	glBindTexture(GL_TEXTURE_2D, textureDetail->getTextureId());
+	
+
+	glActiveTexture(GL_TEXTURE0 + 0);
 
 	for (int j = 0; j < material.size(); j++) {
 		t.emplace_back(textureManager->getModelTexture(material[j]->diffuseMap));

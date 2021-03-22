@@ -618,7 +618,7 @@ void Scene::modelSection()
 	meshObjects.push_back(newMeshModel);
 
 	newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Indoor plant_3_BI_blend2.obj");
-	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-1.5f, 0.46f, 3.8f));
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-1.9f, 0.07f, 3.8f)); // (dopredu/dozadu, nahoru/dolu, doprava/doleva)
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.7f, 0.7f, 0.7f));
 	newMeshModel->ModelMatrix = ModelMatrix;
 	meshObjects.push_back(newMeshModel);
@@ -638,7 +638,8 @@ void Scene::modelSection()
 	glm::vec3 direction_front_to_back = glm::vec3(1.0f, 0.0f, 0.0f);
 	glm::vec3 direction_back_to_front = glm::vec3(-1.0f, 0.0f, 0.0f);
 
-	glm::vec3 direction_front_to_back_up_half_down = glm::vec3(1.0f, 1.0f, 0.0f);
+	//glm::vec3 direction_front_to_back_up_half_down = glm::vec3(1.0f, 1.0f, 0.0f);
+	glm::vec3 direction_front_to_back_up_half_down = glm::vec3(100.0f, 100.0f, 0.0f);
 
 	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.direction", direction_front_to_back_up_half_down);
 	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.color", glm::vec3(1.0f, 1.0f, 1.0f));

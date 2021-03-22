@@ -12,6 +12,7 @@ ShaderProgram::ShaderProgram() {}
 void ShaderProgram::update(Camera* camera, camChange cameraChange)
 {
     Shader::use(shaderProgram);
+
     if (cameraChange == camChange::MOVE_ROTATE) {
         // nepridavat vypisy/printy sekala by se scena
         if (shaderType == (int)ShaderType::AMBIENT)
@@ -62,47 +63,11 @@ void ShaderProgram::update(Camera* camera, camChange cameraChange)
             Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
             Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
         }
-        /*switch (shaderType)
-        {
-        case (int)ShaderType::DIFFUSE:
-            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
-            if (camera->isFlashLightOn()) {
-                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-            }
-            break;
-        case (int)ShaderType::PHONG:
-            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
-            if (camera->isFlashLightOn()) {
-                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-            }
-            break;
-        case (int)ShaderType::DIFFUSE_MODEL:
-
-            break;
-        case (int)ShaderType::SPECULAR_MODEL:
-
-            break;
-        default:
-            break;
-        }*/
-        /*if (shaderType == (int)ShaderType::DIFFUSE)
-        {
-            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
-            if (camera->isFlashLightOn()) {
-                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-            }
+    }
+    else if (cameraChange == camChange::SHOW_TEXTURE_DETAIL) {
+        if (this->shaderType == (int)ShaderType::DIFFUSE_MODEL || this->shaderType == (int)ShaderType::SPECULAR_MODEL) {
+            Shader::sendUniform(shaderProgram, "showTextureDetail", camera->getTextureDetail());
         }
-        else if (shaderType == (int)ShaderType::PHONG)
-        {
-            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
-            if (camera->isFlashLightOn()) {
-                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-            }
-        }*/
-
+        
     }
 }

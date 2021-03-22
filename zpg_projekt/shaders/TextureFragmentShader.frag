@@ -3,17 +3,21 @@
 // Interpolated values from the vertex shaders
 // Data coming from the vertex shader
 in vec2 texCoordUV;
-in vec3 fragPos;			// added
-in vec3 normal;			    // added
+in vec3 fragPos;			
+in vec3 normal;			    
+in vec4 textureCoordProj;   // added
+in vec4 textureCoordProj2;   // show detail texture - added
+
 
 // Ouput data
 out vec4 gl_FragColor;      // output color
 
 // Values that stay constant for the whole mesh.
-uniform sampler2D myTextureSampler;
+uniform sampler2D myTextureSampler;     // Regular texture image 
 //uniform sampler2D texture_diffuse2;
-
-
+uniform sampler2D texProj;              // Projected texture image
+uniform sampler2D texProj2;             // show detail texture
+uniform bool showTextureDetail;
 
 struct Material {
     vec3 ambient;
@@ -70,6 +74,7 @@ vec4 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos);
 
 vec3 calculateDiffuse(vec3 position, vec3 _lightColor);
 vec3 calculateSpecular(vec3 position, vec3 _lightColor, vec3 viewPos);
+bool calculateTextureShadow();
 
 
 void main() {
@@ -102,6 +107,14 @@ void main() {
         //result += val * 0.6f; // 0.7f good value  // ambientStrength;
     }
 
+    if(showTextureDetail) {
+        //vec4 textureColorProj2 = textureProj(texProj2, textureCoordProj2);
+        //result = mix(result, textureColorProj2, 0.5);
+
+        vec4 val = texture(texProj2, texCoordUV);
+        result = mix(result, val, 0.5);
+    }
+    
     gl_FragColor = result;
 
 	// Output color = color of the texture at the specified UV
@@ -161,7 +174,7 @@ vec4 CalcDirLight(DirLight light, vec3 normal)
 
     ambient = vec3(scene_ambient) * meshMaterial.ambient * light.color;
     diffuse = diff * meshMaterial.diffuse * light.color;
-    //specular = calculateSpecular(dirLight.direction, light.color, vec3(0.0, 0.0, 0.0)) * meshMaterial.specular * light.color;
+    specular = calculateSpecular(dirLight.direction, light.color, vec3(0.0, 0.0, 0.0)) * meshMaterial.specular * light.color;
     // diffuse = diff * vec3(texture(myTextureSampler, UV)) * light.color;
 
     return vec4(ambient + diffuse, 1.0) * val;
@@ -231,6 +244,11 @@ vec4 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos)
     float theta = dot(lightDir, normalize(-light.direction)); 
     float epsilon = light.cutOff - light.outerCutOff;
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+    
+
+    //bool textureShadow = calculateTextureShadow();
+    vec4 textureColorProj = textureProj(texProj, textureCoordProj);
+    //vec4 textureColorProj = textureProj(texProj, textureCoordProj);
 
     // combine results
     vec4 ambient, diffuse, specular;
@@ -260,7 +278,12 @@ vec4 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos)
     // ambient *= attenuation * intensity + ambientStrength;
     //ambient *= ambientStrength;
 
-    return (ambient + diffuse + specular) * val;
+    //return (ambient + diffuse + specular) * val;
+
+    if(intensity <= 0.0) {
+        return (ambient + diffuse + specular) * val;
+    }
+    return mix((ambient + diffuse + specular) * val, textureColorProj, 0.3);
 }
 
 vec3 calculateDiffuse(vec3 position, vec3 _lightColor)
@@ -284,4 +307,23 @@ vec3 calculateSpecular(vec3 position, vec3 _lightColor, vec3 viewPos)
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), h);
     //return specularStrength * spec * _lightColor;
     return spec;
+}
+
+bool calculateTextureShadow()
+{
+    //float intensity = clamp((theta - 0.5f) / 0.1, 0.0, 1.0); // new added ctvercove stinitko, v budoucnu predelat na texturove stinitko
+    //intensity = clamp((theta - light.outerCutOff), 0.0, 1.0);
+    //vec4 position_lightClipSpace = vec4(0.5, 0.5, 0.5, 1.0);
+    // clipping against the light frustum
+    //bool isInsideX = ( position_lightClipSpace.x <= position_lightClipSpace.w && position_lightClipSpace.x >= -position_lightClipSpace.w );
+    //bool isInsideY = ( position_lightClipSpace.y <= position_lightClipSpace.w && position_lightClipSpace.y >= -position_lightClipSpace.w );
+    //bool isInsideZ = ( position_lightClipSpace.z <= position_lightClipSpace.w && position_lightClipSpace.z >= -position_lightClipSpace.w );
+    //bool isInside = isInsideX && isInsideY && isInsideZ;
+    //intensity = isInside ? 1.0 : 0.0;
+
+
+    // For perspective projection effect
+	vec4 textureColorProj = textureProj(texProj, textureCoordProj);
+
+    return textureColorProj.w < 0.01 ? false : true;
 }

@@ -188,23 +188,23 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 
 					fullscreen = true;
 				}
+			case GLFW_KEY_F2:
+			{
+				if (Callback::camera == nullptr) {
+					return;
+				}
+				bool texture_detail = Callback::camera->getTextureDetail();
+				if (!texture_detail)
+				{
+					Callback::camera->setShowTextureDetail(true);
+				}
 				else
 				{
-					printf("loading width: %d, height: %d\n", width, height);
-					//Callback::window_size_callback(window, width, height);
-					glfwSetWindowMonitor(window, nullptr, 50, 50, width, height, refreshRate);
-					fullscreen = false;
-
-					// restore last window size and position
-					//glfwSetWindowMonitor(window, nullptr, _wndPos[0], _wndPos[1], _wndSize[0], _wndSize[1], 0);
+					Callback::camera->setShowTextureDetail(false);
 				}
-
-				//GLint m_viewport[4];
-				//glGetIntegerv(GL_VIEWPORT, m_viewport);
-				//GLint m_maxViewport[4];
-				//glGetIntegerv(GL_MAX_VIEWPORT_DIMS, m_maxViewport);
-				//Callback::window_size_callback(window, int width, int height);
+				printf("Texture detail: %s\n", texture_detail ? "on" : "off");
 				break;
+			}
 			default:
 				break;
 		}

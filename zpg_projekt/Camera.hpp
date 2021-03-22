@@ -40,7 +40,8 @@ namespace cameraDefaultValues {
 enum camChange {
 	MOVE_ROTATE,
 	PROJECTION,
-	FLASHLIGHT
+	FLASHLIGHT,
+	SHOW_TEXTURE_DETAIL
 };
 
 struct Resolution;
@@ -79,6 +80,9 @@ public:
 	// end
 	void flashLightOnOff();
 	bool isFlashLightOn();
+	void setShowTextureDetail(bool show);
+	bool getTextureDetail();
+
 	glm::mat4 projection;
 	glm::vec3 target;
 
@@ -107,7 +111,7 @@ private:
 	
 	bool flashLightBool;
 
-
+	bool showTextureDetail;
 	void updateCameraVectors();
 };
 

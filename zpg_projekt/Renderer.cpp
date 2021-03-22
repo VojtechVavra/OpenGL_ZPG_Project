@@ -276,6 +276,11 @@ void Renderer::renderObject(std::shared_ptr<Object> object)
 
 void Renderer::renderModel(int i_stencil_offset)
 {
+	// how to
+	// https://stackoverflow.com/questions/25252512/how-can-i-pass-multiple-textures-to-a-single-shader
+	// and
+	// http://web.cse.ohio-state.edu/~shen.94/781/Site/Slides_files/glsl.pdf
+
 	GLuint shaderProgramID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
 
 	glUseProgram(shaderProgramID);
@@ -287,6 +292,8 @@ void Renderer::renderModel(int i_stencil_offset)
 	glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
 	Shader::sendUniform(shaderProgramID, "myTextureSampler", (GLint)0);
+	Shader::sendUniform(shaderProgramID, "texProj", (GLint)1);
+	Shader::sendUniform(shaderProgramID, "texProj2", (GLint)2);
 
 	Shader::sendUniform(shaderProgramID, "viewMatrix", ViewMatrix);
 	Shader::sendUniform(shaderProgramID, "projectionMatrix", ProjectionMatrix);
@@ -300,10 +307,8 @@ void Renderer::renderModel(int i_stencil_offset)
 	Shader::sendUniform(shaderProgramID, "flashLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
 	Shader::sendUniform(shaderProgramID, "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
-	Shader::sendUniform(shaderProgramID, "flashLight.cutOff", glm::cos(glm::radians(12.5f)));
+	Shader::sendUniform(shaderProgramID, "flashLight.cutOff", glm::cos(glm::radians(12.5f)));	//  convert a quantity in degrees to radians
 	Shader::sendUniform(shaderProgramID, "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
-
-
 
 
 	for (auto obj : scene->meshObjects) {
