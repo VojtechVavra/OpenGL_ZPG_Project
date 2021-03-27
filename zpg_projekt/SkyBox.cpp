@@ -50,6 +50,7 @@ unsigned int SkyBox::loadCubemap(std::vector<std::string> faces, const std::stri
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    
 
     return textureID;
 }
@@ -81,6 +82,9 @@ void SkyBox::InitJpg(const float size, const std::string sky) {
         2, 0, 7
     };
 
+    // IMPORTANT
+    // Images must be in cube format all in same size.
+    // for example 1024x1024 each, otherwise skybox will be black
     std::vector<std::string> faces
     {
         "right.jpg",
@@ -141,6 +145,9 @@ void SkyBox::InitTga(const float size, const std::string sky) {
         2, 0, 7
     };
 
+    // IMPORTANT
+    // Images must be in cube format all in same size.
+    // for example 1024x1024 each, otherwise skybox will be black
     std::vector<std::string> faces
     {
         "right.tga",
@@ -150,7 +157,6 @@ void SkyBox::InitTga(const float size, const std::string sky) {
         "back.tga",
         "front.tga"
     };
-
 
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &VBOvertices);

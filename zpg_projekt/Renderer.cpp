@@ -316,7 +316,7 @@ void Renderer::renderModel(int i_stencil_offset)
 
 	if (!projectionMatUse) {
 		glm::mat4 ViewMatrix2 = glm::mat4(1.0f);
-
+		
 		float aaa[16] = {
 		0.019197, -0.275586, 0.961085, 0.000000,
 		-0.000000, 0.961262, 0.275637, 0.000000,

@@ -538,7 +538,8 @@ void Scene::skyboxSection()
 	//shaders[GL_VERTEX_SHADER] = "../shaders/sky_vertex.glsl";
 	//shaders[GL_FRAGMENT_SHADER] = "../shaders/sky_fragment.glsl";
 
-	skybox = std::make_shared<SkyBox>("jpg", "countryside2");
+	//skybox = std::make_shared<SkyBox>("jpg", "countryside2");
+	skybox = std::make_shared<SkyBox>("tga", "env", 1.0f);
 	//skybox->InitJpg(10, "countryside2");
 	//skybox->InitTga(10, "env");
 	GLuint shaderProgram = Shader::getShader(ShaderType::SKYBOX);
@@ -607,7 +608,7 @@ void Scene::modelSection()
 	newMeshModel->ModelMatrix = ModelMatrix;
 	meshObjects.push_back(newMeshModel);*/
 
-	MeshLoader* newMeshModel = new MeshLoader("models\\scena\\kniha_scena4.obj");
+	MeshLoader* newMeshModel = new MeshLoader("models\\scena\\kniha_scena5.obj");
 	glm::mat4 ModelMatrix = glm::mat4(1.0);
 	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0, 0.0f, 2.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));	// glm::vec3(0.1f, 0.1f, 0.1f)

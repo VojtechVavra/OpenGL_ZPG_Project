@@ -311,8 +311,8 @@ vec4 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos)
 
 vec4 CalcFlashLight2(SpotLight light, vec3 normal, vec3 fragPos)
 {
-    vec3 spotLightWindowPos = vec3(5.750044, 0.695011, 1.963056);   // 5.750044, 0.695011, 0.763056
-    vec3 spotLightPos = vec3(5.944598, 0.874669, 1.955617);     // vec3 spotLightPos = vec3(5.944598, 0.874669, 1.755617);
+    vec3 spotLightWindowPos = vec3(6.750044, 0.895011, 1.963056);   // 5.750044, 0.695011, 0.763056
+    vec3 spotLightPos = vec3(6.944598, 1.174669, 1.755617);     // vec3 spotLightPos = vec3(5.944598, 0.874669, 1.755617);
     vec3 lightDir = normalize(spotLightWindowPos - fragPos);    // vec3(5.821190, 2.376043, 1.707771)
     //vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
