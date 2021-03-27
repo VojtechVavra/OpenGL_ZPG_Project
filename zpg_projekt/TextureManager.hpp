@@ -10,8 +10,9 @@ class TextureManager
 public:
 	static std::shared_ptr<TextureManager> getInstance();
 
-	std::shared_ptr<Texture> getTexture(std::string textureName);
+	std::shared_ptr<Texture> getTexture(std::string textureName, bool repeat = true);
 	std::shared_ptr<Texture> createTexture(std::string texturePath);
+	std::shared_ptr<Texture> createNoRepeatTexture(std::string textureName);
 
 	std::shared_ptr<Texture> getModelTexture(std::string textureName);
 	std::shared_ptr<Texture> createModelTexture(std::string texturePath);

@@ -6,6 +6,7 @@ in vec2 texCoordUV;
 in vec3 fragPos;			
 in vec3 normal;			    
 in vec4 textureCoordProj;   // added
+//in mat4 textureCoordProj;   // added
 in vec4 textureCoordProj2;   // show detail texture - added
 
 
@@ -70,19 +71,30 @@ uniform float specularStrength = 0.5f;  // 0.5
 
 vec4 CalcDirLight(DirLight light, vec3 normal);
 float getAttenuation(vec3 lightPosition, vec3 _fragPos);
+float getAttenuation2(vec3 _lightPosition, vec3 _fragPos);
 vec4 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos);
+vec4 CalcFlashLight2(SpotLight light, vec3 normal, vec3 fragPos);
 
 vec3 calculateDiffuse(vec3 position, vec3 _lightColor);
 vec3 calculateSpecular(vec3 position, vec3 _lightColor, vec3 viewPos);
 bool calculateTextureShadow();
 
+// https://stackoverflow.com/questions/22952742/creating-a-rectangular-light-source-in-opengl
+float time = 30.0;
+vec2 uSpotSize = vec2(0.3, 0.6);
+//vec3 lp = vec3(0.0, 0.0, 7.0 + cos(time) * 5.0); // Light world-space position
+//vec3 lp = vec3(3.0, 0.0, 10.0); // (doprava --, doleva ++ podel zdi; y - vyska zasazenych objektu; z - dopredu/ dozadu)
+vec3 lp = vec3(3.0, 0.5, 1.3);
+vec3 lz = vec3(-1.0, -1.0, 0.0); // Light direction (Z vector)    // vec3(0.0, 0.0, -1.0)
+// Light radius (for attenuation calculation)
+float lr = 1;     // 3.0
 
 void main() {
 	vec3 norm = normalize(normal);
 	vec4 result = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
     // phase 1: Directional lighting
-    result = CalcDirLight(dirLight, norm);
+    result = CalcDirLight(dirLight, norm) * 1.0f;
 
 	// phase 2: Point lights
     //for(int i = 0; i < pointLightCount; i++) {
@@ -94,14 +106,22 @@ void main() {
     //}
     // phase 4: FlashLight
     if(flashLight.isActive == 1) {
-        result += CalcFlashLight(flashLight, norm, fragPos);
+        result += CalcFlashLight2(flashLight, norm, fragPos);
     }
     else {
         vec4 val = texture(myTextureSampler, texCoordUV);
         if (val.a < 0.1) {
             discard;
         }
-        result += val * scene_ambient * vec4(meshMaterial.ambient, 1.0);
+        
+        if(vec3(val) == vec3(0.0, 0.0, 0.0))
+        {
+            result += scene_ambient * vec4(meshMaterial.ambient, 1.0) + vec4(meshMaterial.diffuse, 1.0);
+        }
+        else {
+            result += val * scene_ambient * vec4(meshMaterial.ambient, 1.0);
+        }
+        
 
         //result += val * vec4(0.3f, 0.3f, 0.3f, 0.0f);
         //result += val * 0.6f; // 0.7f good value  // ambientStrength;
@@ -177,6 +197,12 @@ vec4 CalcDirLight(DirLight light, vec3 normal)
     specular = calculateSpecular(dirLight.direction, light.color, vec3(0.0, 0.0, 0.0)) * meshMaterial.specular * light.color;
     // diffuse = diff * vec3(texture(myTextureSampler, UV)) * light.color;
 
+    //return vec4(meshMaterial.diffuse, 1.0);
+    if(vec3(val) == vec3(0.0, 0.0, 0.0))
+    {
+        return vec4(ambient + diffuse, 1.0);
+    }
+
     return vec4(ambient + diffuse, 1.0) * val;
 }
 
@@ -230,6 +256,20 @@ float getAttenuation(vec3 _lightPosition, vec3 _fragPos)
     return attenuation;
 }
 
+float getAttenuation2(vec3 _lightPosition, vec3 _fragPos)
+{
+    // light attenuation coefficient
+    float light_constant = 1.0f;
+    float light_linear = 0.09f;
+    float light_quadratic = 0.032f;
+
+    // attenuation
+    float distance = length(_lightPosition - fragPos);
+    float attenuation = 1.0 / (light_constant + light_linear * distance + light_quadratic * (distance * distance));
+
+    return attenuation;
+}
+
 vec4 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos)
 {
     vec3 lightDir = normalize(light.position - fragPos);
@@ -246,10 +286,94 @@ vec4 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos)
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
     
 
-    //bool textureShadow = calculateTextureShadow();
     vec4 textureColorProj = textureProj(texProj, textureCoordProj);
-    //vec4 textureColorProj = textureProj(texProj, textureCoordProj);
 
+
+    // combine results
+    vec4 ambient, diffuse, specular;
+    
+    vec4 val = texture(myTextureSampler, texCoordUV);
+    //ambient = ambientStrength * texture(myTextureSampler, texCoordUV) * vec4(fragmentColor * light.color, 1.0); // TexCoords == uv
+    if (val.a < 0.1) {
+        discard;    // odstranime podle alpha kanalu texturu
+    }
+
+    ambient = scene_ambient * vec4(meshMaterial.ambient, 1.0) * vec4(light.color, 1.0);
+    diffuse = diff * attenuation * intensity * vec4(meshMaterial.diffuse, 1.0) * vec4(light.color, 1.0);
+    specular = vec4(calculateSpecular(light.position, light.color, light.position), 1.0) * attenuation * intensity * vec4(meshMaterial.specular, 1.0) * vec4(light.color, 1.0);
+
+    if(intensity <= 0.0) {
+        return (ambient + diffuse + specular) * val;
+    }
+    return mix((ambient + diffuse + specular) * val, textureColorProj, 0.3);
+}
+
+
+vec4 CalcFlashLight2(SpotLight light, vec3 normal, vec3 fragPos)
+{
+    vec3 spotLightWindowPos = vec3(5.750044, 0.695011, 1.963056);   // 5.750044, 0.695011, 0.763056
+    vec3 spotLightPos = vec3(5.944598, 0.874669, 1.955617);     // vec3 spotLightPos = vec3(5.944598, 0.874669, 1.755617);
+    vec3 lightDir = normalize(spotLightWindowPos - fragPos);    // vec3(5.821190, 2.376043, 1.707771)
+    //vec3 lightDir = normalize(light.position - fragPos);
+    // diffuse shading
+    float diff = max(dot(normal, lightDir), 0.0);
+    if(diff == 0.0){
+        diff = max(dot(-normal, lightDir), 0.0);
+    }
+
+    float attenuation = getAttenuation(spotLightPos, fragPos);
+    float attenuation2 = getAttenuation2(spotLightWindowPos, fragPos);
+    //float attenuation = getAttenuation(light.position, fragPos);
+
+    // spotlight intensity
+    float theta = dot(lightDir, normalize(-light.direction)); 
+    float epsilon = light.cutOff - light.outerCutOff;
+    //epsilon = 0.4;
+    theta = dot(lightDir, normalize(vec3(1,0.5,0))); 
+    //float intensity = clamp((0.7 - 0.5) / epsilon, 0.0, 1.0);
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+    //float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+
+    //if(fragPos.x < 0.0) intensity = 0.0;
+    //if(fragPos.x < light.position.x - 0.5 || fragPos.x > light.position.x + 0.5) intensity = 0.0;
+    //if(fragPos.y < light.position.y - 0.5 || fragPos.y > light.position.y + 0.5) intensity = 0.0;
+    //if(light.position.x < 0.0) intensity = 0.0;
+    //vec4 positionInLightSpace = vec4(1.0);
+    //float cookieAttenuation = texture(texProj, vec2(positionInLightSpace) / positionInLightSpace.w + vec2(0.5)).a;
+    //float cookieAttenuation = texture(texProj, vec2(light.position) / light.position.z + vec2(0.5)).a;
+    //intensity = cookieAttenuation;
+
+    //bool textureShadow = calculateTextureShadow();
+    //vec4 textureColorProj = textureProj(texProj, textureCoordProj * light.position);
+    
+    vec4 textureColorProj = textureProj(texProj, textureCoordProj);
+    //intensity = textureColorProj;
+
+    bool isInsideX = ( fragPos.x <= light.position.x && fragPos.x >= light.position.x );
+    bool isInsideY = ( fragPos.y <= light.position.y && fragPos.y >= light.position.y );
+    bool isInsideZ = ( fragPos.z <= light.position.z && fragPos.z >= light.position.z );
+    bool isInside = isInsideX && isInsideY && isInsideZ;
+    //intensity = isInside ? 1.0 : 0.0;
+
+
+    vec3 L = lp - fragPos;
+    // Project L on the YZ / XZ plane
+    vec3 LX = normalize(vec3(L.x, 0.0, L.z));
+    vec3 LY = normalize(vec3(0.0, L.y, L.z));
+
+    // Calculate the angle on X and Y axis using projected vectors just above
+    float ax = dot(LX, -lz);
+    float ay = dot(LY, -lz);
+    
+     /*if(ax > cos(uSpotSize.x) && ay > cos(uSpotSize.y))
+     //if(ax > uSpotSize.x && ay > uSpotSize.y)
+        //intensity = 1.0;
+        //gl_FragColor = vec4(shaded); // Inside the light influence zone, light it up !
+    //else
+        //intensity = 0.0;
+        //gl_FragColor = vec4(0.1); // Outside the light influence zone.
+    */
+        
     // combine results
     vec4 ambient, diffuse, specular;
     
@@ -280,10 +404,27 @@ vec4 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos)
 
     //return (ambient + diffuse + specular) * val;
 
-    if(intensity <= 0.0) {
+    /*if(intensity <= 0.0) {
+        return (ambient + diffuse + specular) * val;
+    }*/
+    
+    if(val == vec4(0.0, 0.0, 0.0, 0.0))
+    {
+        return (ambient + diffuse + specular);
+    }
+    if(textureColorProj.r == 0.0)
+    {
+        //return (ambient + diffuse + vec4(0.6, 0.3, 0.0, 1.0) * attenuation2 + specular) * val;
         return (ambient + diffuse + specular) * val;
     }
-    return mix((ambient + diffuse + specular) * val, textureColorProj, 0.3);
+    else
+    {
+        return (ambient + diffuse + vec4(0.8, 0.5, 0.0, 1.0) * intensity * attenuation2 * 2 + specular) * val;
+        //return mix((ambient + diffuse + specular) * val, vec4(0.7, 0.5, 0.0, 1.0) * attenuation2 , 0.5f);
+    }
+
+    return (ambient + diffuse + specular) * val;
+    //return mix((ambient + diffuse + specular) * val, textureColorProj, 0.3);
 }
 
 vec3 calculateDiffuse(vec3 position, vec3 _lightColor)
@@ -306,7 +447,8 @@ vec3 calculateSpecular(vec3 position, vec3 _lightColor, vec3 viewPos)
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), h);
     //return specularStrength * spec * _lightColor;
-    return spec;
+    //return spec;
+    return specularStrength * spec * _lightColor;
 }
 
 bool calculateTextureShadow()

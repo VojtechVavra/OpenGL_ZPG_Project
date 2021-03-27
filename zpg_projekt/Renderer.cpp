@@ -289,6 +289,8 @@ void Renderer::renderModel(int i_stencil_offset)
 	glm::mat4 ViewMatrix = scene->camera[0]->getCamera();
 	glm::mat4 ModelMatrix = glm::mat4(1.0);
 
+	static bool projectionMatUse;
+
 	glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
 	Shader::sendUniform(shaderProgramID, "myTextureSampler", (GLint)0);
@@ -303,13 +305,51 @@ void Renderer::renderModel(int i_stencil_offset)
 	Shader::sendUniform(shaderProgramID, "flashLight.direction", scene->camera[0]->target);
 	Shader::sendUniform(shaderProgramID, "flashLight.color", scene->camera[0]->flashLight->lightColor);
 
-	Shader::sendUniform(shaderProgramID, "flashLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-	Shader::sendUniform(shaderProgramID, "flashLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-	Shader::sendUniform(shaderProgramID, "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(shaderProgramID, "flashLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));	// TODO: odkomentovat 2021
+	Shader::sendUniform(shaderProgramID, "flashLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));	// odkomentovat 2021
+	Shader::sendUniform(shaderProgramID, "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));	// odkomentovat 2021
 
 	Shader::sendUniform(shaderProgramID, "flashLight.cutOff", glm::cos(glm::radians(12.5f)));	//  convert a quantity in degrees to radians
 	Shader::sendUniform(shaderProgramID, "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+	glm::mat4 textureMatrix = glm::scale(glm::mat4(1.0), glm::vec3(0.02, 0.02, 0.02));
+	Shader::sendUniform(shaderProgramID, "textureMatrix", textureMatrix);
 
+	if (!projectionMatUse) {
+		glm::mat4 ViewMatrix2 = glm::mat4(1.0f);
+
+		float aaa[16] = {
+		0.019197, -0.275586, 0.961085, 0.000000,
+		-0.000000, 0.961262, 0.275637, 0.000000,
+		-0.999816, -0.005291, 0.018453, 0.000000,
+		0.652534, 0.920584, -5.731931, 1.000000 };
+
+		float aaa1[16] = {
+		-0.043615, -0.356399, 0.933316, 0.000000,
+		0.000000, 0.934205, 0.356738, 0.000000,
+		-0.999048, 0.015559, -0.040745, 0.000000,
+		0.448786, 0.566074, -8.142872, 1.000000 };
+
+		float aaa2[16] = {
+		-0.022689, -0.192472, 0.981040, 0.000000,
+		0.000000, 0.981293, 0.192522, 0.000000,
+		-0.999743, 0.004368, -0.022265, 0.000000,
+		0.416911, 0.618146, -10.020456, 1.000000 };
+
+		
+
+		float aaa3[16] = {
+		1.0, 0.0, 0.0, 0.0,
+		0.0, 1.0, 0.0, 0.0,
+		0.0, 0.0, 1.0, 0.0,
+		-1.9, 2.07, 3.8, 1.0 };
+
+		memcpy(glm::value_ptr(ViewMatrix2), aaa, sizeof(aaa));
+		//ViewMatrix2 = glm::transpose(ViewMatrix2);
+		Shader::sendUniform(shaderProgramID, "viewMatrix2", ViewMatrix2);
+		
+		projectionMatUse = true;
+	}
+	
 
 	for (auto obj : scene->meshObjects) {
 		//glStencilFunc(GL_ALWAYS, i_stencil_offset + 1, 0xFF);		// uncoment this for further use stencil buffer for imported objects, now not work

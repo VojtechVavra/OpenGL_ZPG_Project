@@ -160,6 +160,19 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 			case GLFW_KEY_F:
 				scene->camera[0]->flashLightOnOff();
 				break;
+			case GLFW_KEY_J:
+				printf("ViewMatrix:\n");
+				glm::mat4 ViewMatrix = scene->camera[0]->getCamera();	// glm::mat4(1.0f); 
+				//ViewMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-1.9f, 2.07f, 3.8f));
+				for (unsigned int i = 0; i < 4; ++i) {
+					for (unsigned int j = 0; j < 4; ++j)
+						printf("%f, ", ViewMatrix[i][j]);
+					printf("\n");
+				}
+
+				glm::vec3 camPos = scene->camera[0]->getPosition();
+				printf("camPos: %f, %f, %f\n", camPos.x, camPos.y, camPos.z);
+				break;
 			case GLFW_KEY_DELETE:
 				if (indexObject != -1) {
 					scene->deleteObject(indexObject);
@@ -188,10 +201,19 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 
 					fullscreen = true;
 				}
+				else
+				{
+					// get resolution of monitor
+					GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+					const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+					glfwSetWindowMonitor(window, NULL, 30, 30, width, height, GLFW_DONT_CARE);
+					fullscreen = false;
+				}
+				break;
 			case GLFW_KEY_F2:
 			{
 				if (Callback::camera == nullptr) {
-					return;
+					break;	// return
 				}
 				bool texture_detail = Callback::camera->getTextureDetail();
 				if (!texture_detail)

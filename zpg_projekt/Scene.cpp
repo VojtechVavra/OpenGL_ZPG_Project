@@ -225,7 +225,7 @@ void Scene::lightSection()
 
 void Scene::objectSection()
 {
-	glm::vec3 pos = glm::vec3(-0.6f, 0.f, 0.25f);	// glm::vec3 pos = glm::vec3(-0.25f, 0.f, 0.25f);
+	/*glm::vec3 pos = glm::vec3(-0.6f, 0.f, 0.25f);	// glm::vec3 pos = glm::vec3(-0.25f, 0.f, 0.25f);
 	glm::vec3 color = glm::vec3(0.8f, 0.8f, 0.8f);
 	addObject("sphere", ShaderType::AMBIENT, pos, color, camera[0], glm::vec3(1.0f));
 
@@ -239,7 +239,7 @@ void Scene::objectSection()
 
 	pos = glm::vec3(0.25f, 0.f, -0.25f);
 	color = glm::vec3(0.8f, 0.0f, 0.0f);
-	addObject("sphere", /*ShaderType::DIFFUSE*/ShaderType::PHONG, pos, color, camera[0], glm::vec3(1.0f));
+	addObject("sphere", ShaderType::PHONG, pos, color, camera[0], glm::vec3(1.0f));
 
 	pos = glm::vec3(0.0f, 0.0f, 0.0f);
 	color = glm::vec3(0.2f, 1.0f, 0.2f);
@@ -252,19 +252,21 @@ void Scene::objectSection()
 	addObject("suzi_flat", ShaderType::PHONG, pos, glm::vec3(0.2f, 0.5f, 1.0f), camera[0], glm::vec3(1.0f));
 
 	std::string texture2 = "floor\\floor1.jpg";
-	addObject("plainTextured", ShaderType::PHONG, pos, glm::vec3(0.2f, 0.1f, 1.0f), camera[0], glm::vec3(1.0f), texture2);
+	addObject("plainTextured", ShaderType::PHONG, pos, glm::vec3(0.2f, 0.1f, 1.0f), camera[0], glm::vec3(1.0f), texture2);	// texture1
 
-	/*std::string texture1 = "floor\\floor1.jpg";
-	addObject("bedna", ShaderType::PHONG, pos, glm::vec3(0.2f, 0.1f, 1.0f), camera[0], glm::vec3(1.0f), texture1);*/
+	//std::string texture1 = "floor\\floor1.jpg";
+	//addObject("bedna", ShaderType::PHONG, pos, glm::vec3(0.2f, 0.1f, 1.0f), camera[0], glm::vec3(1.0f), texture1);
 
 	addObject("worker", ShaderType::PHONG, pos, glm::vec3(0.2f, 0.3f, 0.7f), camera[0], glm::vec3(1.0f));
 
 	//std::string texture3 = "floor\\floor1.jpg";
 	//addObject("cube", ShaderType::SKYBOX, pos, color, camera[0], glm::vec3(1.0f));
+	*/
 }
 
 void Scene::objectTransformSection()
 {
+	/*
 	// 4 spheres
 	glm::vec3 sphereScale = glm::vec3(0.2f, 0.2f, 0.2f);
 	object[0]->Scale(sphereScale);
@@ -293,7 +295,7 @@ void Scene::objectTransformSection()
 	object[8]->Translate(glm::vec3(1.5, 0, 1.0));
 	object[8]->Scale(glm::vec3(0.20f, 0.20f, 0.20f));
 	// end translate, scale
-
+	*/
 
 	object.push_back(light[0]);	// <- odkomentovat
 	//camera[0]->registerObserver(light[0]);
@@ -536,8 +538,9 @@ void Scene::skyboxSection()
 	//shaders[GL_VERTEX_SHADER] = "../shaders/sky_vertex.glsl";
 	//shaders[GL_FRAGMENT_SHADER] = "../shaders/sky_fragment.glsl";
 
-	skybox = std::make_shared<SkyBox>();
-	skybox->Init(10, "countryside2");
+	skybox = std::make_shared<SkyBox>("jpg", "countryside2");
+	//skybox->InitJpg(10, "countryside2");
+	//skybox->InitTga(10, "env");
 	GLuint shaderProgram = Shader::getShader(ShaderType::SKYBOX);
 	ShaderProgram new_skyboxshader(ShaderType::SKYBOX, shaderProgram);
 	skyboxshader = new_skyboxshader;
@@ -589,7 +592,7 @@ void Scene::modelSection()
 
 	//MeshLoader* newMeshModel = new MeshLoader("models\\downloaded\\open3dmodel\\Character_A1008A325\\mm3.obj");
 
-	MeshLoader* newMeshModel = new MeshLoader("models\\chair\\chair.obj");
+	/*MeshLoader* newMeshModel = new MeshLoader("models\\chair\\chair.obj");
 	glm::mat4 ModelMatrix = glm::mat4(1.0);
 	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 0.65f, 0.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.1f, 0.1f, 0.1f));
@@ -602,20 +605,20 @@ void Scene::modelSection()
 	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-1.5f, 0.0f, 1.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.1f, 0.1f, 0.1f));
 	newMeshModel->ModelMatrix = ModelMatrix;
-	meshObjects.push_back(newMeshModel);
+	meshObjects.push_back(newMeshModel);*/
 
-	newMeshModel = new MeshLoader("models\\scena\\kniha_scena.obj");
-	ModelMatrix = glm::mat4(1.0);
-	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(-1.5f, 0.0f, 8.0f));
-	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.1f, 0.1f, 0.1f));
+	MeshLoader* newMeshModel = new MeshLoader("models\\scena\\kniha_scena4.obj");
+	glm::mat4 ModelMatrix = glm::mat4(1.0);
+	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0, 0.0f, 2.0f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));	// glm::vec3(0.1f, 0.1f, 0.1f)
 	newMeshModel->ModelMatrix = ModelMatrix;
 	meshObjects.push_back(newMeshModel);
 
-	newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
+	/*newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
 	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(1.0f, 0.2f, 0.0f));
 	ModelMatrix = glm::scale(glm::mat4(1.0), glm::vec3(0.6f, 0.6f, 0.6f));
 	newMeshModel->ModelMatrix = ModelMatrix;
-	meshObjects.push_back(newMeshModel);
+	meshObjects.push_back(newMeshModel);*/
 
 	newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Indoor plant_3_BI_blend2.obj");
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-1.9f, 0.07f, 3.8f)); // (dopredu/dozadu, nahoru/dolu, doprava/doleva)
@@ -639,13 +642,15 @@ void Scene::modelSection()
 	glm::vec3 direction_back_to_front = glm::vec3(-1.0f, 0.0f, 0.0f);
 
 	//glm::vec3 direction_front_to_back_up_half_down = glm::vec3(1.0f, 1.0f, 0.0f);
-	glm::vec3 direction_front_to_back_up_half_down = glm::vec3(100.0f, 100.0f, 0.0f);
+	glm::vec3 direction_front_to_back_up_half_down = glm::vec3(1.0f, 1.0f, 0.0f);
 
 	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.direction", direction_front_to_back_up_half_down);
 	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.color", glm::vec3(1.0f, 1.0f, 1.0f));
 	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
 	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5));
 	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+	//Shader::sendUniform(newMeshModel->shaderProgramID, "viewMatrix2", camera[0]->getProjectionMatrix());
+	
 }
 
 //void Scene::skybox

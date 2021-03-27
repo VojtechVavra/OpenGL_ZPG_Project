@@ -166,9 +166,9 @@ MeshLoader::MeshLoader(const char* filename)
 		{
 			aiMaterial* pMaterial = scene->mMaterials[mesh->mMaterialIndex];
 			std::unique_ptr<Material> newMaterial = getMaterial(pMaterial, filename);
-			if (newMaterial->diffuseMap == "error")
+			if (newMaterial->diffuseMap == "no_texture")
 			{
-				continue;
+				//continue;
 			}
 
 			
@@ -268,7 +268,7 @@ std::unique_ptr<Material> MeshLoader::getMaterial(const aiMaterial* mat, const c
 	}
 
 	if (!someTexture) {
-		newMaterial->diffuseMap = "error";
+		newMaterial->diffuseMap = "no_texture";
 	}
 
 	return newMaterial;
@@ -305,7 +305,7 @@ void MeshLoader::render() {
 
 	//glBindTexture(GL_TEXTURE_2D, t->getTextureId());
 	//glBindTexture(GL_TEXTURE_2D + 1, t2->getTextureId());
-	std::shared_ptr<Texture> lightShadow = textureManager->getModelTexture("textures\\light_shadow\\smiley.png");
+	std::shared_ptr<Texture> lightShadow = textureManager->getTexture("textures\\light_shadow\\window_shadow3.png", false);	// smiley.png, "textures\\light_shadow\\smiley.png"
 	glActiveTexture(GL_TEXTURE0 + 1); // Texture unit 1
 	glBindTexture(GL_TEXTURE_2D, lightShadow->getTextureId());
 
@@ -342,6 +342,7 @@ void MeshLoader::render() {
 			Shader::sendUniform(shaderProgramID, "meshMaterial.ambient", material[i]->ambient);
 			Shader::sendUniform(shaderProgramID, "meshMaterial.diffuse", material[i]->diffuse);
 			Shader::sendUniform(shaderProgramID, "meshMaterial.specular", material[i]->specular);
+			//printf("diffuse: %f, %f, %f\n", material[i]->diffuse.x, material[i]->diffuse.y, material[i]->diffuse.z);
 
 			glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
 		}
