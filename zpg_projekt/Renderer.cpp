@@ -311,6 +311,18 @@ void Renderer::renderModel(int i_stencil_offset)
 
 	Shader::sendUniform(shaderProgramID, "flashLight.cutOff", glm::cos(glm::radians(12.5f)));	//  convert a quantity in degrees to radians
 	Shader::sendUniform(shaderProgramID, "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+
+	// PointLights
+	Shader::sendUniform(shaderProgramID, "pointLightCount", 2);
+	// # 1
+	Shader::sendUniform(shaderProgramID, "pointLight[0].position", glm::vec3(4.944598, 1.174669, 1.755617));
+	Shader::sendUniform(shaderProgramID, "pointLight[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
+	// # 2
+	Shader::sendUniform(shaderProgramID, "pointLight[1].position", glm::vec3(10.944598, 1.174669, 1.755617));
+	Shader::sendUniform(shaderProgramID, "pointLight[1].color", glm::vec3(1.0f, 1.0f, 1.0f));
+	
+	
+
 	glm::mat4 textureMatrix = glm::scale(glm::mat4(1.0), glm::vec3(0.02, 0.02, 0.02));
 	Shader::sendUniform(shaderProgramID, "textureMatrix", textureMatrix);
 

@@ -317,7 +317,10 @@ void MeshLoader::render() {
 	glActiveTexture(GL_TEXTURE0 + 0);
 
 	for (int j = 0; j < material.size(); j++) {
-		t.emplace_back(textureManager->getModelTexture(material[j]->diffuseMap));
+		//if (material[j]->diffuseMap != "no_texture") {
+			t.emplace_back(textureManager->getModelTexture(material[j]->diffuseMap));
+		//}
+		
 		//t.emplace_back(textureManager->getModelTexture("..\\" + material[j]->diffuseMap));
 		//std::string a = "..\\" + material[j]->diffuseMap;
 	}
@@ -342,9 +345,19 @@ void MeshLoader::render() {
 			Shader::sendUniform(shaderProgramID, "meshMaterial.ambient", material[i]->ambient);
 			Shader::sendUniform(shaderProgramID, "meshMaterial.diffuse", material[i]->diffuse);
 			Shader::sendUniform(shaderProgramID, "meshMaterial.specular", material[i]->specular);
+
+			if (material[i]->diffuseMap == "no_texture") {
+				Shader::sendUniform(shaderProgramID, "hasTexture", 0);
+			}
+			else
+			{
+				Shader::sendUniform(shaderProgramID, "hasTexture", 1);
+				glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
+			}
+			
 			//printf("diffuse: %f, %f, %f\n", material[i]->diffuse.x, material[i]->diffuse.y, material[i]->diffuse.z);
 
-			glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
+			
 		}
 		
 

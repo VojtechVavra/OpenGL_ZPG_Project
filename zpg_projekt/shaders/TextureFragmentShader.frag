@@ -15,6 +15,7 @@ out vec4 gl_FragColor;      // output color
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;     // Regular texture image 
+uniform int hasTexture;
 //uniform sampler2D texture_diffuse2;
 uniform sampler2D texProj;              // Projected texture image
 uniform sampler2D texProj2;             // show detail texture
@@ -39,8 +40,23 @@ struct DirLight {
 };  
 uniform DirLight dirLight;
 
-
 #define MAX_LIGHTS 6
+
+uniform int pointLightCount;
+uniform struct PointLight {
+    int lightType;
+    vec3 position;
+    vec3 color;
+
+    float constant;
+    float linear;
+    float quadratic;
+	
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+} pointLight [MAX_LIGHTS];
+
 uniform struct SpotLight {
     vec3 position;
     vec3 direction;
@@ -62,7 +78,7 @@ uniform struct SpotLight {
 
 
 uniform SpotLight flashLight;
-uniform vec3 fragmentColor = vec3(1.0f, 1.0f, 1.0f);
+//uniform vec3 fragmentColor = vec3(1.0f, 1.0f, 1.0f);
 
 // constant values modifiers
 vec4 scene_ambient = vec4(0.2, 0.2, 0.2, 1.0);
@@ -75,6 +91,7 @@ float getAttenuation2(vec3 _lightPosition, vec3 _fragPos);
 vec4 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos);
 vec4 CalcFlashLight2(SpotLight light, vec3 normal, vec3 fragPos);
 
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos);
 vec3 calculateDiffuse(vec3 position, vec3 _lightColor);
 vec3 calculateSpecular(vec3 position, vec3 _lightColor, vec3 viewPos);
 bool calculateTextureShadow();
@@ -97,9 +114,10 @@ void main() {
     result = CalcDirLight(dirLight, norm) * 1.0f;
 
 	// phase 2: Point lights
-    //for(int i = 0; i < pointLightCount; i++) {
+    for(int i = 0; i < pointLightCount; i++) {
+        result += vec4(CalcPointLight(pointLight[i], norm, fragPos), 1.0);
         //result += CalcPointLight(pointLight[i], norm, fragPos);
-    //}
+    }
     // phase 3: Spot lights
     //for(int i = 0; i < spotLightCount; i++) {
         //result += CalcSpotLight(spotLight[i], norm, fragPos);
@@ -107,25 +125,32 @@ void main() {
     // phase 4: FlashLight
     if(flashLight.isActive == 1) {
         result += CalcFlashLight2(flashLight, norm, fragPos);
+        result *= vec4(0.5, 0.5, 0.5, 1.0);
     }
     else {
-        vec4 val = texture(myTextureSampler, texCoordUV);
-        if (val.a < 0.1) {
-            discard;
-        }
-        
-        if(vec3(val) == vec3(0.0, 0.0, 0.0))
+        if(hasTexture == 1)
         {
-            result += scene_ambient * vec4(meshMaterial.ambient, 1.0) + vec4(meshMaterial.diffuse, 1.0);
+            vec4 val = texture(myTextureSampler, texCoordUV);
+            if (val.a < 0.1) {
+                discard;
+            }
+            //result += val * scene_ambient * vec4(meshMaterial.ambient, 1.0);
+            //result += val; // + vec4(meshMaterial.ambient, 1.0);
+            //vec3 materialDiffuseColor = myTextureSampler  * texture( myTextureSampler, texCoordUV ).rgb - (myTextureSampler - 1) * meshMaterial.diffuse;
+            result += val * vec4(meshMaterial.ambient + meshMaterial.diffuse, 1.0); 
         }
         else {
-            result += val * scene_ambient * vec4(meshMaterial.ambient, 1.0);
+        // only material
+            result += scene_ambient * vec4(meshMaterial.ambient, 1.0) + vec4(meshMaterial.diffuse, 1.0);
+            //result += vec4(1.0, 0.2, 0.2, 1.0);
         }
+        result *= scene_ambient;
         
-
         //result += val * vec4(0.3f, 0.3f, 0.3f, 0.0f);
         //result += val * 0.6f; // 0.7f good value  // ambientStrength;
     }
+
+    
 
     if(showTextureDetail) {
         //vec4 textureColorProj2 = textureProj(texProj2, textureCoordProj2);
@@ -135,6 +160,8 @@ void main() {
         result = mix(result, val, 0.5);
     }
     
+    
+
     gl_FragColor = result;
 
 	// Output color = color of the texture at the specified UV
@@ -143,7 +170,7 @@ void main() {
 
 
 
-/*
+
 // calculates the color when using a point light.
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos)
 {
@@ -152,27 +179,36 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos)
     float diff = max(dot(normal, lightDir), 0.0);
     // attenuation
     float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
+    //float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032f * (distance * distance));  
     // combine results
     
     vec3 ambient, diffuse;
+    ambient = vec3(scene_ambient) * meshMaterial.ambient * light.color;
+    diffuse = diff * attenuation * meshMaterial.diffuse * light.color;
 
     if(hasTexture == 1) {
-        ambient = ambientStrength * vec3(texture(myTextureSampler, UV)) * light.color; // TexCoords = uv
-        diffuse = diff * vec3(texture(myTextureSampler, UV)) * light.color;
+        vec4 val = texture(myTextureSampler, texCoordUV);
+        if (val.a < 0.1) {
+            discard;    // odstranime podle alpha kanalu texturu
+        }
+        return (ambient + diffuse) * vec3(val.xyz);
 
+        //ambient = ambientStrength * vec3(texture(myTextureSampler, texCoordUV)) * light.color; // TexCoords = uv
+        //diffuse = diff * vec3(texture(myTextureSampler, texCoordUV)) * light.color;
     }
     else {
-        
-        ambient = ambientStrength * fragmentColor * light.color;
-        diffuse = calculateDiffuse(light.position, vec3(1.0f, 1.0f, 1.0f)) * fragmentColor * light.color;
+        return (ambient + diffuse);
+
+        //ambient = ambientStrength * meshMaterial.ambient * light.color;
+        //diffuse = calculateDiffuse(light.position, vec3(1.0f, 1.0f, 1.0f)) * meshMaterial.diffuse * light.color;
     }
 
-    ambient *= attenuation;
-    diffuse *= attenuation;
+    //ambient *= attenuation;
+    //diffuse *= attenuation;
 
-    return (ambient + diffuse);
-}*/
+    //return (ambient + diffuse) * 0.5;
+}
 
 
 // https://learnopengl.com/Lighting/Multiple-lights
@@ -188,7 +224,7 @@ vec4 CalcDirLight(DirLight light, vec3 normal)
     vec3 ambient, diffuse, specular;
     vec4 val = texture(myTextureSampler, texCoordUV);
 
-    if (val.a < 0.1) {
+    if (hasTexture == 1 && val.a < 0.1) {
         discard;            // odstranime podle alpha kanalu texturu
     }
 
@@ -198,12 +234,13 @@ vec4 CalcDirLight(DirLight light, vec3 normal)
     // diffuse = diff * vec3(texture(myTextureSampler, UV)) * light.color;
 
     //return vec4(meshMaterial.diffuse, 1.0);
-    if(vec3(val) == vec3(0.0, 0.0, 0.0))
+    //if(vec3(val) == vec3(0.0, 0.0, 0.0))
+    if(hasTexture == 0)
     {
-        return vec4(ambient + diffuse, 1.0);
+        return vec4(ambient * diffuse, 1.0);
     }
 
-    return vec4(ambient + diffuse, 1.0) * val;
+    return vec4(ambient * diffuse, 1.0) * val;
 }
 
 // calculates the color when using a spot light.
@@ -227,8 +264,8 @@ vec4 CalcDirLight(DirLight light, vec3 normal)
     vec3 ambient, diffuse;
 
     if(hasTexture == 1) {
-        ambient = ambientStrength * vec3(texture(myTextureSampler, UV)); // TexCoords = uv
-        diffuse =  light.diffuse * diff * vec3(texture(myTextureSampler, UV));
+        ambient = ambientStrength * vec3(texture(myTextureSampler, texCoordUV)); // TexCoords = uv
+        diffuse =  light.diffuse * diff * vec3(texture(myTextureSampler, texCoordUV));
     }
     else {
         ambient  = ambientStrength * fragmentColor; //vec3(1.0f, 1.0f, 1.0f); // light.color // * fragmentColor;
@@ -311,8 +348,8 @@ vec4 CalcFlashLight(SpotLight light, vec3 normal, vec3 fragPos)
 
 vec4 CalcFlashLight2(SpotLight light, vec3 normal, vec3 fragPos)
 {
-    vec3 spotLightWindowPos = vec3(6.750044, 0.895011, 1.963056);   // 5.750044, 0.695011, 0.763056
-    vec3 spotLightPos = vec3(6.944598, 1.174669, 1.755617);     // vec3 spotLightPos = vec3(5.944598, 0.874669, 1.755617);
+    vec3 spotLightWindowPos = vec3(5.950044, 0.895011, 1.963056);   // 5.750044, 0.695011, 0.763056
+    vec3 spotLightPos = vec3(4.944598, 1.174669, 1.755617);     // vec3 spotLightPos = vec3(5.944598, 0.874669, 1.755617);
     vec3 lightDir = normalize(spotLightWindowPos - fragPos);    // vec3(5.821190, 2.376043, 1.707771)
     //vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
@@ -408,19 +445,20 @@ vec4 CalcFlashLight2(SpotLight light, vec3 normal, vec3 fragPos)
         return (ambient + diffuse + specular) * val;
     }*/
     
-    if(val == vec4(0.0, 0.0, 0.0, 0.0))
+    if(hasTexture == 0)
     {
-        return (ambient + diffuse + specular);
+        return (ambient * (diffuse + specular + vec4(0.6, 0.3, 0.0, 1.0) * attenuation2));
     }
-    if(textureColorProj.r == 0.0)
-    {
+    if(textureColorProj.r == 0.0)   // cerny stin
+    {       
+        return (ambient + diffuse + specular + vec4(0.6, 0.3, 0.0, 1.0) * intensity * attenuation2) * val;
+
         //return (ambient + diffuse + vec4(0.6, 0.3, 0.0, 1.0) * attenuation2 + specular) * val;
-        return (ambient + diffuse + specular) * val;
     }
     else
     {
         return (ambient + diffuse + vec4(0.8, 0.5, 0.0, 1.0) * intensity * attenuation2 * 2 + specular) * val;
-        //return mix((ambient + diffuse + specular) * val, vec4(0.7, 0.5, 0.0, 1.0) * attenuation2 , 0.5f);
+        //return mix((ambient + diffuse + specular) * val, vec4(0.7, 0.5, 0.0, 1.0) * attenuation2, 0.5f);
     }
 
     return (ambient + diffuse + specular) * val;

@@ -614,6 +614,18 @@ void Scene::modelSection()
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));	// glm::vec3(0.1f, 0.1f, 0.1f)
 	newMeshModel->ModelMatrix = ModelMatrix;
 	meshObjects.push_back(newMeshModel);
+	
+	newMeshModel = new MeshLoader("models\\zavesy\\zaves_zatahly.obj");
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0f, 2.0f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));
+	newMeshModel->ModelMatrix = ModelMatrix;
+	meshObjects.push_back(newMeshModel);
+
+	newMeshModel = new MeshLoader("models\\zavesy\\zaves_odtahly.obj");
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0f, 2.0f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));
+	newMeshModel->ModelMatrix = ModelMatrix;
+	meshObjects.push_back(newMeshModel);
 
 	/*newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
 	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(1.0f, 0.2f, 0.0f));
@@ -621,16 +633,17 @@ void Scene::modelSection()
 	newMeshModel->ModelMatrix = ModelMatrix;
 	meshObjects.push_back(newMeshModel);*/
 
-	newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Indoor plant_3_BI_blend2.obj");
+	/*newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Indoor plant_3_BI_blend2.obj");
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-1.9f, 0.07f, 3.8f)); // (dopredu/dozadu, nahoru/dolu, doprava/doleva)
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.7f, 0.7f, 0.7f));
 	newMeshModel->ModelMatrix = ModelMatrix;
-	meshObjects.push_back(newMeshModel);
+	meshObjects.push_back(newMeshModel);*/
 
-	newMeshModel = new MeshLoader("models\\cube\\dum2\\dum2.obj");
+	/*newMeshModel = new MeshLoader("models\\cube\\dum2\\dum2.obj");
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, -0.4f, 0.0f));
 	newMeshModel->ModelMatrix = ModelMatrix;
 	//meshObjects.push_back(newMeshModel);	// uncomment to import house into scene
+	*/
 
 	//meshModel1 = new MeshLoader("models\\downloaded\\Grass\\Grass.obj");
 	
