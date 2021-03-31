@@ -24,7 +24,8 @@ enum class ShaderType {
     BLINN,
     SKYBOX,
     DIFFUSE_MODEL,
-    SPECULAR_MODEL
+    SPECULAR_MODEL,
+    GRAB_MODEL
 };
 
 static std::unordered_map<ShaderType, std::string> fragShaderPath(
@@ -36,7 +37,8 @@ static std::unordered_map<ShaderType, std::string> fragShaderPath(
         { ShaderType::BLINN,    "./shaders/blinn.frag" },
         { ShaderType::SKYBOX,   "./shaders/skybox.frag" },
         { ShaderType::DIFFUSE_MODEL,  "./shaders/TextureFragmentShader.frag" },
-        { ShaderType::SPECULAR_MODEL, "./shaders/------" }    // dodelat specularni shader pro 3d modely/objekty
+        { ShaderType::SPECULAR_MODEL, "./shaders/------" },    // dodelat specularni shader pro 3d modely/objekty
+        { ShaderType::GRAB_MODEL, "./shaders/grabObject.frag" }    // dodelat specularni shader pro 3d modely/objekty
         // DIFFUSE_MODEL a SPECULAR_MODEL are shaders for imported models
 });
 
@@ -49,7 +51,8 @@ static std::unordered_map<ShaderType, GLuint> shaderPrograms(
         { ShaderType::BLINN,    0 },
         { ShaderType::SKYBOX,   0 },
         { ShaderType::DIFFUSE_MODEL,    0 },
-        { ShaderType::SPECULAR_MODEL,   0 }
+        { ShaderType::SPECULAR_MODEL,   0 },
+        { ShaderType::GRAB_MODEL,   0 }
     });
 
 class Camera;

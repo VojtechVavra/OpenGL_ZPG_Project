@@ -40,6 +40,9 @@ GLuint Shader::createShader(ShaderType fragmentShaderType)
     else if (fragmentShaderType == ShaderType::SPECULAR_MODEL) {
         return loader.loadShader("./shaders/TransformVertexShader.vert", fragmentShaderName.c_str());
     }
+    else if (fragmentShaderType == ShaderType::GRAB_MODEL) {
+        return loader.loadShader("./shaders/grabObject.vert", fragmentShaderName.c_str());
+    }
 
     return loader.loadShader("./shaders/vertex.glsl", fragmentShaderName.c_str());
 }

@@ -266,6 +266,12 @@
     <None Include="shaders\TransformVertexShader.vert">
       <Filter>shaders</Filter>
     </None>
+    <None Include="shaders\grabObject.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\grabObject.frag">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="zpg_projekt.rc">

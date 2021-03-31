@@ -345,9 +345,74 @@ void Camera::dropObject()
 	this->holdObject = nullptr;	
 }
 
+void Camera::setHoldObject2(std::shared_ptr<MeshLoader> object)
+{
+	GLuint shaderProgramID = Shader::getShader(ShaderType::GRAB_MODEL);
+	object->shaderProgramID = shaderProgramID;
+	glUseProgram(shaderProgramID);
+	glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.25f, -0.26f, -0.6f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+	//glm::mat4 ModelMatrix = getCamera();
+	//ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+	object->ModelMatrix = ModelMatrix;
+	//this->holdObjects.push_back(object);
+	holdObj = object;
+	Shader::sendUniform(shaderProgramID, "modelMatrix", object->ModelMatrix);
+	holdingObject = true;
+	//Shader::sendUniform(holdObject->getShader(), "modelMatrix", newMatrix);
+	//glm::lookAt(position, position + target, up);
+	//Shader::use(0);
+}
+
+void Camera::dropObject2()
+{
+	GLuint shaderProgramID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
+	holdObj->shaderProgramID = shaderProgramID;
+	glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0), getPosition() + target*2.0f);
+	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.25f, -0.26f, 0.6f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+	holdObj->ModelMatrix = ModelMatrix;
+	holdingObject = false;
+	//holdObjects[0]->shaderProgramID = shaderProgramID;
+
+	//for (auto& holdObj : holdObjects) {
+	/*for(int i = 0; i < holdObjects.size(); i++) {
+		holdObjects[i]->shaderProgramID = shaderProgramID;
+		holdObjects[i] = nullptr;
+	}*/
+	//holdObjects.clear();
+
+	/*glm::mat4 newMatrix = glm::mat4(1.0);		// ModelMatrix = T*S*R
+
+	//newMatrix = glm::lookAt(-position, position + target * (5.0f), up);
+	newMatrix = glm::translate(newMatrix, position + target * 5.0f);
+	newMatrix = glm::scale(newMatrix, holdObject->getScale());
+	//newMatrix = glm::rotate(newMatrix, holdObject->getRotate().z + target.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	holdObject->setMatrix(newMatrix);
+	holdObject->setPositionWithoutTranslate(position + target * 5.0f);
+	printf("scale: x>%f y>%f z%f", holdObject->getScale().x, holdObject->getScale().y, holdObject->getScale().z);
+
+	holdObject->Scale(newMatrix, holdObject->getScale());
+
+	Shader::use(holdObject->getShader());
+	Shader::sendUniform(holdObject->getShader(), "isHeld", false);
+	Shader::sendUniform(holdObject->getShader(), "modelMatrix", holdObject->getMatrix());
+	//Shader::sendUniform(holdObject->getShader(), "modelMatrix", position + glm::normalize(target) * 5.0f);
+	
+	this->holdObject = nullptr;*/
+}
+
+
 void Camera::flashLightOnOff()
 {
 	this->flashLightBool = this->flashLightBool ? false : true;
+	notifyObservers(this, camChange::FLASHLIGHT);
+	printf("Flashlight %s\n", flashLightBool ? "on" : "off");
+}
+
+void Camera::setFLightState(bool state)
+{
+	this->flashLightBool = state;
 	notifyObservers(this, camChange::FLASHLIGHT);
 	printf("Flashlight %s\n", flashLightBool ? "on" : "off");
 }

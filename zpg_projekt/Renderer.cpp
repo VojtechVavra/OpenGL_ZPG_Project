@@ -281,7 +281,16 @@ void Renderer::renderModel(int i_stencil_offset)
 	// and
 	// http://web.cse.ohio-state.edu/~shen.94/781/Site/Slides_files/glsl.pdf
 
-	GLuint shaderProgramID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
+	GLuint shaderProgramID;
+	shaderProgramID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
+	/*if (scene->camera[0]->holdObjects.size() != 0) {
+		shaderProgramID = Shader::getShader(ShaderType::GRAB_MODEL);	// DIFFUSE_MODEL
+	}
+	else
+	{
+		shaderProgramID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
+	}*/
+	
 
 	glUseProgram(shaderProgramID);
 
@@ -298,16 +307,17 @@ void Renderer::renderModel(int i_stencil_offset)
 	Shader::sendUniform(shaderProgramID, "texProj2", (GLint)2);
 
 	Shader::sendUniform(shaderProgramID, "viewMatrix", ViewMatrix);
+	//Shader::sendUniform(shaderProgramID, "viewMatrix", glm::mat4(1.0f));
 	Shader::sendUniform(shaderProgramID, "projectionMatrix", ProjectionMatrix);
 
 	// FlashLight
 	Shader::sendUniform(shaderProgramID, "flashLight.position", scene->camera[0]->getPosition() + scene->camera[0]->flashLight->getPosition());
-	Shader::sendUniform(shaderProgramID, "flashLight.direction", scene->camera[0]->target);
+	//Shader::sendUniform(shaderProgramID, "flashLight.direction", scene->camera[0]->target);
 	Shader::sendUniform(shaderProgramID, "flashLight.color", scene->camera[0]->flashLight->lightColor);
 
-	Shader::sendUniform(shaderProgramID, "flashLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));	// TODO: odkomentovat 2021
-	Shader::sendUniform(shaderProgramID, "flashLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));	// odkomentovat 2021
-	Shader::sendUniform(shaderProgramID, "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));	// odkomentovat 2021
+	//Shader::sendUniform(shaderProgramID, "flashLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));	// TODO: odkomentovat 2021
+	//Shader::sendUniform(shaderProgramID, "flashLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));	// odkomentovat 2021
+	//Shader::sendUniform(shaderProgramID, "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));	// odkomentovat 2021
 
 	Shader::sendUniform(shaderProgramID, "flashLight.cutOff", glm::cos(glm::radians(12.5f)));	//  convert a quantity in degrees to radians
 	Shader::sendUniform(shaderProgramID, "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
@@ -315,12 +325,11 @@ void Renderer::renderModel(int i_stencil_offset)
 	// PointLights
 	Shader::sendUniform(shaderProgramID, "pointLightCount", 2);
 	// # 1
-	Shader::sendUniform(shaderProgramID, "pointLight[0].position", glm::vec3(4.944598, 1.174669, 1.755617));
+	Shader::sendUniform(shaderProgramID, "pointLight[0].position", glm::vec3(4.944598, 0.974669, 1.755617));
 	Shader::sendUniform(shaderProgramID, "pointLight[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
 	// # 2
-	Shader::sendUniform(shaderProgramID, "pointLight[1].position", glm::vec3(10.944598, 1.174669, 1.755617));
+	Shader::sendUniform(shaderProgramID, "pointLight[1].position", glm::vec3(8.944598, 0.974669, 1.755617));
 	Shader::sendUniform(shaderProgramID, "pointLight[1].color", glm::vec3(1.0f, 1.0f, 1.0f));
-	
 	
 
 	glm::mat4 textureMatrix = glm::scale(glm::mat4(1.0), glm::vec3(0.02, 0.02, 0.02));
@@ -366,6 +375,86 @@ void Renderer::renderModel(int i_stencil_offset)
 	for (auto obj : scene->meshObjects) {
 		//glStencilFunc(GL_ALWAYS, i_stencil_offset + 1, 0xFF);		// uncoment this for further use stencil buffer for imported objects, now not work
 		
+		if (scene->zatahlyZaves && obj->fileName == "zaves_zatahly.obj") {
+			glStencilFunc(GL_ALWAYS, 10, 0xFF);
+			scene->camera[0]->setFLightState(false);
+			obj->render();
+			continue;
+		}
+		else if (!scene->zatahlyZaves && obj->fileName == "zaves_odtahly.obj") {
+			glStencilFunc(GL_ALWAYS, 11, 0xFF);
+			scene->camera[0]->setFLightState(true);
+			obj->render();
+			continue;
+		}
+		else if (obj->fileName == "zaves_zatahly.obj" || obj->fileName == "zaves_odtahly.obj") {
+			continue;
+		}
+
+		if (obj->fileName == "Low-Poly Plant_.obj" || obj->fileName == "chair.obj") {
+			if (scene->camera[0]->holdingObject == true) {
+				shaderProgramID = Shader::getShader(ShaderType::GRAB_MODEL);	// DIFFUSE_MODEL
+				glUseProgram(shaderProgramID);
+
+				/*glm::mat4 ProjectionMatrix = scene->camera[0]->getProjectionMatrix();
+				glm::mat4 ViewMatrix = scene->camera[0]->getCamera();
+				glm::mat4 ModelMatrix = glm::mat4(1.0);
+
+				static bool projectionMatUse;
+
+				glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
+				Shader::sendUniform(shaderProgramID, "myTextureSampler", (GLint)0);
+				Shader::sendUniform(shaderProgramID, "texProj", (GLint)1);
+				Shader::sendUniform(shaderProgramID, "texProj2", (GLint)2);
+
+				//Shader::sendUniform(shaderProgramID, "viewMatrix", ViewMatrix);
+				//Shader::sendUniform(shaderProgramID, "viewMatrix", glm::mat4(1.0f));
+				Shader::sendUniform(shaderProgramID, "projectionMatrix", ProjectionMatrix);
+
+				// FlashLight
+				Shader::sendUniform(shaderProgramID, "flashLight.position", scene->camera[0]->getPosition() + scene->camera[0]->flashLight->getPosition());
+				//Shader::sendUniform(shaderProgramID, "flashLight.direction", scene->camera[0]->target);
+				Shader::sendUniform(shaderProgramID, "flashLight.color", scene->camera[0]->flashLight->lightColor);
+
+				//Shader::sendUniform(shaderProgramID, "flashLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));	// TODO: odkomentovat 2021
+				//Shader::sendUniform(shaderProgramID, "flashLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));	// odkomentovat 2021
+				//Shader::sendUniform(shaderProgramID, "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));	// odkomentovat 2021
+
+				Shader::sendUniform(shaderProgramID, "flashLight.cutOff", glm::cos(glm::radians(12.5f)));	//  convert a quantity in degrees to radians
+				Shader::sendUniform(shaderProgramID, "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+
+				// PointLights
+				Shader::sendUniform(shaderProgramID, "pointLightCount", 2);
+				// # 1
+				Shader::sendUniform(shaderProgramID, "pointLight[0].position", glm::vec3(4.944598, 0.974669, 1.755617));
+				Shader::sendUniform(shaderProgramID, "pointLight[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
+				// # 2
+				Shader::sendUniform(shaderProgramID, "pointLight[1].position", glm::vec3(8.944598, 0.974669, 1.755617));
+				Shader::sendUniform(shaderProgramID, "pointLight[1].color", glm::vec3(1.0f, 1.0f, 1.0f));
+				*/
+				Shader::sendUniform(shaderProgramID, "projectionMatrix", ProjectionMatrix);
+
+				//glm::mat4 textureMatrix = glm::scale(glm::mat4(1.0), glm::vec3(0.02, 0.02, 0.02));
+				Shader::sendUniform(shaderProgramID, "textureMatrix", textureMatrix);
+				Shader::sendUniform(shaderProgramID, "modelMatrix", obj->ModelMatrix);
+			}
+			glStencilFunc(GL_ALWAYS, 12, 0xFF);
+			obj->render();
+			continue;
+		}
+		if (obj->fileName == "chair.obj") {
+			if (scene->camera[0]->holdingObject == true) {
+				shaderProgramID = Shader::getShader(ShaderType::GRAB_MODEL);	// DIFFUSE_MODEL
+				glUseProgram(shaderProgramID);
+				Shader::sendUniform(shaderProgramID, "textureMatrix", textureMatrix);
+				Shader::sendUniform(shaderProgramID, "projectionMatrix", ProjectionMatrix);
+			}
+			glStencilFunc(GL_ALWAYS, 12, 0xFF);
+			obj->render();
+			continue;
+		}
+
 		obj->render();
 		i_stencil_offset++;
 	}

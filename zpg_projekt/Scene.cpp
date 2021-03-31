@@ -613,19 +613,33 @@ void Scene::modelSection()
 	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0, 0.0f, 2.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));	// glm::vec3(0.1f, 0.1f, 0.1f)
 	newMeshModel->ModelMatrix = ModelMatrix;
-	meshObjects.push_back(newMeshModel);
-	
+	//meshObjects.push_back(newMeshModel);
+	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+	zatahlyZaves = true;
+
 	newMeshModel = new MeshLoader("models\\zavesy\\zaves_zatahly.obj");
+	//newMeshModel->stencilNumber = 10;
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0f, 2.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));
 	newMeshModel->ModelMatrix = ModelMatrix;
-	meshObjects.push_back(newMeshModel);
+	//meshObjects.push_back(newMeshModel);
+	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
 
 	newMeshModel = new MeshLoader("models\\zavesy\\zaves_odtahly.obj");
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0f, 2.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));
 	newMeshModel->ModelMatrix = ModelMatrix;
-	meshObjects.push_back(newMeshModel);
+	//meshObjects.push_back(newMeshModel);
+	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+
+	//newMeshModel = new MeshLoader("models\\chair\\chair.obj");
+	newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.25f, -0.26f, -0.6f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+	newMeshModel->ModelMatrix = ModelMatrix;
+	//newMeshModel->shaderProgramID = 12;
+	//meshObjects.push_back(newMeshModel);
+	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
 
 	/*newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
 	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(1.0f, 0.2f, 0.0f));

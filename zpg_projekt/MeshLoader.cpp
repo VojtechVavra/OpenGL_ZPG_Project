@@ -154,13 +154,19 @@ MeshLoader::MeshLoader(const char* filename)
 		printf("Unable to load mesh: %s\n", importer.GetErrorString());
 		return;
 	}
+
+	SaveFilenameAndPath(std::string(filename));
 	shaderProgramID = 0;
 
 	for (int i = 0; i < scene->mNumMeshes; ++i) {
 		aiMesh* mesh = scene->mMeshes[i];
 		meshEntries.push_back(new MeshLoader::MeshEntry(mesh));
 		
-		const aiMaterial* pMaterial = scene->mMaterials[i];
+		const aiMaterial* pMaterial;
+		if (i <= scene->mNumMaterials) {
+			pMaterial = scene->mMaterials[i];
+		}
+		
 
 		if (mesh->mMaterialIndex >= 0)
 		{
@@ -294,6 +300,10 @@ void MeshLoader::render() {
 
 	glUseProgram(shaderProgramID);
 	Shader::sendUniform(shaderProgramID, "modelMatrix", ModelMatrix);
+	
+	//Shader::sendUniform(shaderProgramID, "modelMatrix", glm::mat3(ModelMatrix));
+
+
 	//t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\bpng.png"));
 	//t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\bpng.png"));
 	//t.push_back(textureManager->getTexture("..\\models\\downloaded\\Indoor_plant_3\\textures\\Pot textures_col.jpg"));
@@ -377,4 +387,12 @@ void MeshLoader::render2() {
 		glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
 		meshEntries.at(i)->render();
 	}
+}
+
+
+void MeshLoader::SaveFilenameAndPath(const std::string& filename) {
+	std::string filename_path = std::string(filename);
+	std::size_t found = filename_path.find_last_of("/\\");
+	this->path = filename_path.substr(0, found);
+	this->fileName = filename_path.substr(found + 1);
 }

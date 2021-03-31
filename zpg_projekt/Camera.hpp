@@ -16,6 +16,7 @@
 #include "Subject.hpp"
 #include "Object.hpp"
 #include "SpotLight.hpp"
+#include "MeshLoader.hpp"
 
 //class Shader;
 class Object;
@@ -76,9 +77,15 @@ public:
 	//void rotateHoldObjectToCamera(float x, float y);
 	void setHoldObject(std::shared_ptr<Object> object);
 	void dropObject();
+	void setHoldObject2(std::shared_ptr<MeshLoader> object);
+	void dropObject2();
 	std::shared_ptr<Object> holdObject;
+	std::vector<std::shared_ptr<MeshLoader>> holdObjects;
+	std::shared_ptr<MeshLoader> holdObj;
+	bool holdingObject;
 	// end
 	void flashLightOnOff();
+	void setFLightState(bool state);
 	bool isFlashLightOn();
 	void setShowTextureDetail(bool show);
 	bool getTextureDetail();

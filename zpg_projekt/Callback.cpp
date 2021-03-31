@@ -110,10 +110,11 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 				// pick up item / drop down
 				if (isObjectHold) {
 					isObjectHold = false;
-					scene->setLastColor(indexObject);
+					//scene->setLastColor(indexObject);
 
 					printf("Object %u dropped\n", indexObject - 1);
-					camera->dropObject();
+					//camera->dropObject();
+					camera->dropObject2();
 					indexObject = 0;
 				}
 				else if (!isObjectHold) {
@@ -137,11 +138,11 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 					if (indexObject > 0) {
 						printf("Clicked on pixel %d, %d, color %02hhx %02hhx %02hhx %02hhx, depth %f, stencil index %u\n", x, y, color[0], color[1], color[2], color[3], depth, index);
 
-						scene->setNewColor(indexObject);
+						//scene->setNewColor(indexObject);
 						isObjectHold = true;
 						printf("Object %u taken\n", indexObject - 1);
 
-						if (scene->object.size() > indexObject - 1) {	// this is for basic models from .h file where are specified manually positions, etc.
+						/*if (scene->object.size() > indexObject - 1) {	// this is for basic models from .h file where are specified manually positions, etc.
 							std::shared_ptr<Object> holdedObject = scene->object[indexObject - 1];
 							Callback::camera->setHoldObject(holdedObject);
 						}
@@ -149,8 +150,13 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 							// TODO: Create object class to assign also imported models to camera held object
 							//std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[indexObject - 1];
 							//Callback::camera->setHoldObject(holdedObject);
-						}
+						}*/
 						//holdedObject->setMatrix(glm::inverse(camera->getCamera()) * camera->getMatrix());
+						if (indexObject == 12) {
+							std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[3];
+							Callback::camera->setHoldObject2(holdedObject);
+						}
+						
 					}
 					else {
 						indexObject = 0;
@@ -316,7 +322,12 @@ void Callback::button_callback(GLFWwindow* window, int button, int action, int m
 
 		if (button == GLFW_MOUSE_BUTTON_1)
 		{
-
+			if (index == 10) {
+				scene->zatahlyZaves = false;
+			}
+			else if (index == 11) {
+				scene->zatahlyZaves = true;
+			}
 		}
 		else if (button == GLFW_MOUSE_BUTTON_2)
 		{ // spawnovani objektu

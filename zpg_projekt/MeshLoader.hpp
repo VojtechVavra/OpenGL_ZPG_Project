@@ -3,6 +3,8 @@
 // this code taken and edited from: https://badvertex.com/2014/04/13/loading-meshes-using-assimp-in-opengl.html
 #include <vector>
 #include <memory>
+#include <cstddef>         // std::size_t
+#include <string>
 
 #include <assimp/Importer.hpp>      // C++ importer interface
 #include <assimp/scene.h>           // Output data structure
@@ -50,7 +52,10 @@ public:
 // pridat do teto classy textury a materialy
 	glm::mat4 ModelMatrix; // added
 	GLuint shaderProgramID; // added
-private:
 
+	std::string path;
+	std::string fileName;
+private:
+	void SaveFilenameAndPath(const std::string& filename);
 };
 

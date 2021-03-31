@@ -42,8 +42,10 @@ public:
 
 	GLuint programID;
 	std::vector<Mesh*> meshes;	// added 2021
-	std::vector<MeshLoader*> meshObjects;
+	std::vector<std::shared_ptr<MeshLoader>> meshObjects;
+	//std::vector<MeshLoader*> meshObjects;
 	//Shader shaderLight;
+	bool zatahlyZaves;
 
 	void InitializeScene();
 	void addObject(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 color, std::shared_ptr<Camera> camera, glm::vec3 scale = glm::vec3(1.0f), std::string texturePath = "");
