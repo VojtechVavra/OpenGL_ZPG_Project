@@ -126,6 +126,16 @@ illum 2
 #map_Kd textures\\none\\default2.PNG
 map_Kd textures\\A-sockter\\grass01d.tga
 
+newmtl krb
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.046962 0.030664 0.030664
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
 newmtl hneda
 Ns 225.000000
 Ka 1.000000 1.000000 1.000000
@@ -167,6 +177,29 @@ Ni 1.450000
 d 1.000000
 illum 2
 map_Kd ..\\vase\\vase.png
+
+newmtl vetev
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures\\wood3\\vetev.jpg
+
+newmtl vetev_prurez
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd textures\\wood3\\vetev_prurez.jpg
+
 
 newmtl window1_orange
 Ns 900.000000

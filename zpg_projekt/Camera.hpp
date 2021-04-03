@@ -96,6 +96,8 @@ public:
 	float yaw2;
 	float pitch2;
 
+	bool fly;
+
 	std::shared_ptr<SpotLight> flashLight;
 private:
 	//glm::mat4 projection;

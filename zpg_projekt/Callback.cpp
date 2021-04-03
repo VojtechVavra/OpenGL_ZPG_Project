@@ -153,7 +153,15 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 						}*/
 						//holdedObject->setMatrix(glm::inverse(camera->getCamera()) * camera->getMatrix());
 						if (indexObject == 12) {
-							std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[3];
+							std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[4];
+							Callback::camera->setHoldObject2(holdedObject);
+						}
+						else if (indexObject == 13) {
+							std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[5];
+							Callback::camera->setHoldObject2(holdedObject);
+						}
+						else if (indexObject == 14) {
+							std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[6];
 							Callback::camera->setHoldObject2(holdedObject);
 						}
 						
@@ -231,6 +239,20 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 					Callback::camera->setShowTextureDetail(false);
 				}
 				printf("Texture detail: %s\n", texture_detail ? "on" : "off");
+				break;
+			}
+			case GLFW_KEY_F1:
+			{
+				if (Callback::camera == nullptr) {
+					break;	// return
+				}
+				if (Callback::camera->fly) {
+					Callback::camera->fly = false;
+				}
+				else {
+					Callback::camera->fly = true;
+				}
+				printf("Fly mode: %s\n", Callback::camera->fly ? "on" : "off");
 				break;
 			}
 			default:

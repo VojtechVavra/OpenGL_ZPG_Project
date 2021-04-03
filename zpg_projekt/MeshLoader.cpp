@@ -167,7 +167,6 @@ MeshLoader::MeshLoader(const char* filename)
 			pMaterial = scene->mMaterials[i];
 		}
 		
-
 		if (mesh->mMaterialIndex >= 0)
 		{
 			aiMaterial* pMaterial = scene->mMaterials[mesh->mMaterialIndex];
@@ -176,7 +175,6 @@ MeshLoader::MeshLoader(const char* filename)
 			{
 				//continue;
 			}
-
 			
 			material.push_back(std::move(newMaterial));
 		}

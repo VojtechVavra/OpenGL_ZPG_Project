@@ -58,11 +58,13 @@ void ShaderProgram::update(Camera* camera, camChange cameraChange)
         //std::cout << "Projection has changed" << std::endl;
     }
     else if (cameraChange == FLASHLIGHT) {          // camChange::FLASHLIGHT
-        Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
-        if (camera->isFlashLightOn()) {
-            Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-            Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-        }
+        if (shaderType == (int)ShaderType::DIFFUSE || shaderType == (int)ShaderType::DIFFUSE_MODEL) {
+            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
+            if (camera->isFlashLightOn()) {
+                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
+                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
+            }
+        }    
     }
     else if (cameraChange == camChange::SHOW_TEXTURE_DETAIL) {
         if (this->shaderType == (int)ShaderType::DIFFUSE_MODEL || this->shaderType == (int)ShaderType::SPECULAR_MODEL) {

@@ -328,7 +328,7 @@ void Renderer::renderModel(int i_stencil_offset)
 	Shader::sendUniform(shaderProgramID, "pointLight[0].position", glm::vec3(4.944598, 0.974669, 1.755617));
 	Shader::sendUniform(shaderProgramID, "pointLight[0].color", glm::vec3(1.0f, 1.0f, 1.0f));
 	// # 2
-	Shader::sendUniform(shaderProgramID, "pointLight[1].position", glm::vec3(8.944598, 0.974669, 1.755617));
+	Shader::sendUniform(shaderProgramID, "pointLight[1].position", glm::vec3(8.944598, 0.474669, 1.755617));	// glm::vec3(8.944598, 0.974669, 1.755617)
 	Shader::sendUniform(shaderProgramID, "pointLight[1].color", glm::vec3(1.0f, 1.0f, 1.0f));
 	
 
@@ -391,7 +391,7 @@ void Renderer::renderModel(int i_stencil_offset)
 			continue;
 		}
 
-		if (obj->fileName == "Low-Poly Plant_.obj" || obj->fileName == "chair.obj") {
+		if (obj->fileName == "Low-Poly Plant_.obj" || obj->fileName == "chair.obj" || obj->fileName == "vetev1.obj" || obj->fileName == "vetev2.obj") {
 			if (scene->camera[0]->holdingObject == true) {
 				shaderProgramID = Shader::getShader(ShaderType::GRAB_MODEL);	// DIFFUSE_MODEL
 				glUseProgram(shaderProgramID);
@@ -443,7 +443,7 @@ void Renderer::renderModel(int i_stencil_offset)
 			obj->render();
 			continue;
 		}
-		if (obj->fileName == "chair.obj") {
+		/*if (obj->fileName == "chair.obj") {
 			if (scene->camera[0]->holdingObject == true) {
 				shaderProgramID = Shader::getShader(ShaderType::GRAB_MODEL);	// DIFFUSE_MODEL
 				glUseProgram(shaderProgramID);
@@ -451,6 +451,11 @@ void Renderer::renderModel(int i_stencil_offset)
 				Shader::sendUniform(shaderProgramID, "projectionMatrix", ProjectionMatrix);
 			}
 			glStencilFunc(GL_ALWAYS, 12, 0xFF);
+			obj->render();
+			continue;
+		}*/
+		if (obj->fileName == "krb.obj") {
+			glStencilFunc(GL_ALWAYS, 15, 0xFF);
 			obj->render();
 			continue;
 		}

@@ -29,6 +29,7 @@ Camera::Camera(glm::vec3 position) : Object(position)
 
 	this->flashLightBool = false;
 	this->showTextureDetail = false;
+	this->fly = false;
 
 	setPerspectiveCamera();
 	updateCameraVectors();
@@ -161,38 +162,84 @@ void Camera::processKeyboard(float deltaTime)
 	}
 
 	if (movingDirection == (FORWARD | STRAFE_RIGHT)) {
-		position += velocity * target * 0.5f;
-		position += glm::normalize(glm::cross(target, up)) * velocity * 0.5f;
+		if (fly) {
+			position += velocity * target * 0.5f;
+			position += glm::normalize(glm::cross(target, up)) * velocity * 0.5f;
+		}
+		else {
+			position += velocity * glm::vec3(target.x, 0, target.z) * 0.5f;
+			position += glm::normalize(glm::cross(glm::vec3(target.x, 0, target.z), up)) * velocity * 0.5f;
+		}
 	}
 	else if (movingDirection == (FORWARD | STRAFE_LEFT)) {
-		position += velocity * target * 0.5f;
-		position -= glm::normalize(glm::cross(target, up)) * velocity * 0.5f;
+		if (fly) {
+			position += velocity * target * 0.5f;
+			position -= glm::normalize(glm::cross(target, up)) * velocity * 0.5f;
+		}
+		else {
+			position += velocity * glm::vec3(target.x, 0, target.z) * 0.5f;
+			position -= glm::normalize(glm::cross(glm::vec3(target.x, 0, target.z), up)) * velocity * 0.5f;
+		}
 	}
 	else if (movingDirection == (BACKWARD | STRAFE_RIGHT)) {
-		position -= velocity * target * 0.5f;
-		position += glm::normalize(glm::cross(target, up)) * velocity * 0.5f;
+		if (fly) {
+			position -= velocity * target * 0.5f;
+			position += glm::normalize(glm::cross(target, up)) * velocity * 0.5f;
+		}
+		else {
+			position -= velocity * glm::vec3(target.x, 0, target.z) * 0.5f;
+			position += glm::normalize(glm::cross(glm::vec3(target.x, 0, target.z), up)) * velocity * 0.5f;
+		}		
 	}
 	else if (movingDirection == (BACKWARD | STRAFE_LEFT)) {
-		position -= velocity * target * 0.5f;
-		position -= glm::normalize(glm::cross(target, up)) * velocity * 0.5f;
+		if (fly) {
+			position -= velocity * target * 0.5f;
+			position -= glm::normalize(glm::cross(target, up)) * velocity * 0.5f;
+		}
+		else {
+			position -= velocity * glm::vec3(target.x, 0, target.z) * 0.5f;
+			position -= glm::normalize(glm::cross(glm::vec3(target.x, 0, target.z), up)) * velocity * 0.5f;
+		}	
 	}
+
 	else if (movingDirection & FORWARD) {		// 'w'
-		
-		position += velocity * target;	// 'target' = 'front'
+		if (fly) {
+			position += velocity * target;	// 'target' = 'front'
+		}
+		else {
+			position += velocity * glm::vec3(target.x, 0, target.z);
+		}
 		//position += velocity * glm::vec3(target.x, 0, target.z);   // this is useful for staying on ground -> constant Y axis
 		//position += target * velocity;
 	}
 	else if (movingDirection & BACKWARD) {		// 's'
-		position -= velocity * target;
+		if (fly) {
+			position -= velocity * target;
+		}
+		else {
+			position -= velocity * glm::vec3(target.x, 0, target.z);
+		}
 		//position -= velocity * glm::vec3(target.x, 0, target.z);	// this is useful for staying on ground -> constant Y axis
 		//position -= target * velocity;
 	}
 	else if (movingDirection & STRAFE_LEFT) {	// 'a'
-		position -= glm::normalize(glm::cross(target, up)) * velocity;
+		if (fly) {
+			position -= glm::normalize(glm::cross(target, up)) * velocity;
+		}
+		else {
+			position -= glm::normalize(glm::cross(glm::vec3(target.x, 0, target.z), up)) * velocity;
+		}
 		//position -= right * velocity;
 	}
 	else if (movingDirection & STRAFE_RIGHT) {	// 'd'
-		position += glm::normalize(glm::cross(target, up)) * velocity;
+		
+		if (fly) {
+			position += glm::normalize(glm::cross(target, up)) * velocity;
+		}
+		else
+		{
+			position += glm::normalize(glm::cross(glm::vec3(target.x, 0, target.z), up)) * velocity;
+		}
 		//position += right * velocity;
 	}
 	else
@@ -351,7 +398,14 @@ void Camera::setHoldObject2(std::shared_ptr<MeshLoader> object)
 	object->shaderProgramID = shaderProgramID;
 	glUseProgram(shaderProgramID);
 	glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.25f, -0.26f, -0.6f));
-	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+	if (object->fileName == "vetev2.obj" || object->fileName == "vetev1.obj") {
+		ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.25f, -0.1f, -0.6f));
+		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));
+	}
+	else {
+		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+	}
+	
 	//glm::mat4 ModelMatrix = getCamera();
 	//ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
 	object->ModelMatrix = ModelMatrix;
@@ -366,13 +420,21 @@ void Camera::setHoldObject2(std::shared_ptr<MeshLoader> object)
 
 void Camera::dropObject2()
 {
-	GLuint shaderProgramID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
-	holdObj->shaderProgramID = shaderProgramID;
-	glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0), getPosition() + target*2.0f);
-	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.25f, -0.26f, 0.6f));
-	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-	holdObj->ModelMatrix = ModelMatrix;
-	holdingObject = false;
+	//if (holdingObject) {
+		GLuint shaderProgramID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
+		holdObj->shaderProgramID = shaderProgramID;
+		glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0), getPosition() + target * 1.3f);
+		//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.25f, -0.26f, 0.6f));
+		if (holdObj->fileName == "vetev2.obj" || holdObj->fileName == "vetev1.obj") {
+			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));
+		}
+		else {
+			ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
+		}
+		holdObj->ModelMatrix = ModelMatrix;
+		holdingObject = false;
+	//}
+	
 	//holdObjects[0]->shaderProgramID = shaderProgramID;
 
 	//for (auto& holdObj : holdObjects) {
@@ -414,7 +476,7 @@ void Camera::setFLightState(bool state)
 {
 	this->flashLightBool = state;
 	notifyObservers(this, camChange::FLASHLIGHT);
-	printf("Flashlight %s\n", flashLightBool ? "on" : "off");
+	//printf("Flashlight %s\n", flashLightBool ? "on" : "off");
 }
 
 bool Camera::isFlashLightOn()

@@ -141,7 +141,7 @@ void main() {
         }
         else {
         // only material
-            result += scene_ambient * vec4(meshMaterial.ambient, 1.0) * vec4(meshMaterial.diffuse, 1.0);
+            result += scene_ambient * 2 * vec4(meshMaterial.ambient, 1.0) * vec4(meshMaterial.diffuse, 1.0);
             //result += vec4(1.0, 0.2, 0.2, 1.0);
         }
         //result *= scene_ambient;
@@ -456,14 +456,15 @@ vec4 CalcFlashLight2(SpotLight light, vec3 normal, vec3 fragPos)
         // diffuse = diff * attenuation * intensity * vec4(meshMaterial.diffuse, 1.0) * vec4(light.color, 1.0);
         // return scene_ambient * diff * attenuation * vec4(light.color, 1.0) * vec4(meshMaterial.ambient, 1.0) * vec4(meshMaterial.diffuse, 1.0);
 
-        return diff * attenuation * vec4(light.color, 1.0) * vec4(meshMaterial.ambient, 1.0) * vec4(meshMaterial.diffuse, 1.0);
+        return diff * scene_ambient * vec4(meshMaterial.ambient, 1.0) * vec4(meshMaterial.diffuse, 1.0);   // added 3. 4. 2021
+        //return diff * /*attenuation * */vec4(light.color, 1.0) * vec4(meshMaterial.ambient, 1.0) * vec4(meshMaterial.diffuse, 1.0);
     }
     if(textureColorProj.r == 0.0)   // cerny stin
     {
-        return (ambient + diffuse + specular + vec4(0.6, 0.3, 0.0, 1.0) * intensity * attenuation2) * val;
+        return (ambient + diffuse + specular + vec4(0.6, 0.3, 0.0, 1.0) * intensity * attenuation2 * 2) * val;
         //return (ambient + diffuse + specular + vec4(0.6, 0.3, 0.0, 1.0) * intensity * attenuation2) * val;
 
-        //return (ambient + diffuse + vec4(0.6, 0.3, 0.0, 1.0) * attenuation2 + specular) * val;
+        //return (ambient + diffuse + vec4(0.6, 0.3, 0.0, 1.0) * attenuation2 * 2 + specular) * val;
     }
     else
     {
