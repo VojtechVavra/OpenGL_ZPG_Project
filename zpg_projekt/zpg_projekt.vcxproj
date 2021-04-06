@@ -181,6 +181,7 @@
     <ClInclude Include="Callback.hpp" />
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="DirectionalLight.hpp" />
+    <ClInclude Include="Flame.hpp" />
     <ClInclude Include="FPSCounter.hpp" />
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="LoadModel.hpp" />

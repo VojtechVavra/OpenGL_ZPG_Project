@@ -319,6 +319,8 @@ void MeshLoader::render() {
 
 	std::shared_ptr<Texture> textureDetail = textureManager->getModelTexture("textures\\none\\default1.png");
 	glActiveTexture(GL_TEXTURE0 + 2); // Texture unit 2
+	//glBindTexture(GL_TEXTURE_2D, 2);
+	//glBindTexture(GL_TEXTURE_2D, m_texture[index]->getTextureId());
 	glBindTexture(GL_TEXTURE_2D, textureDetail->getTextureId());
 	
 
@@ -365,10 +367,49 @@ void MeshLoader::render() {
 			
 			//printf("diffuse: %f, %f, %f\n", material[i]->diffuse.x, material[i]->diffuse.y, material[i]->diffuse.z);
 
-			
 		}
 		
 
+		meshEntries.at(i)->render();
+	}
+}
+
+void MeshLoader::renderFlame() {
+	auto textureManager = TextureManager::getInstance();
+	std::vector<std::shared_ptr<Texture>> t;
+
+	glUseProgram(shaderProgramID);
+	Shader::sendUniform(shaderProgramID, "modelMatrix", ModelMatrix);
+
+	std::shared_ptr<Texture> lightShadow = textureManager->getTexture("textures\\light_shadow\\window_shadow3.png", false);	// smiley.png, "textures\\light_shadow\\smiley.png"
+	glActiveTexture(GL_TEXTURE0 + 1); // Texture unit 1
+	glBindTexture(GL_TEXTURE_2D, lightShadow->getTextureId());
+
+	std::shared_ptr<Texture> textureDetail = textureManager->getModelTexture("textures\\none\\default1.png");
+	glActiveTexture(GL_TEXTURE0 + 2); // Texture unit 2
+
+	glActiveTexture(GL_TEXTURE0 + 0);
+
+	for (int j = 0; j < material.size(); j++) {
+		t.emplace_back(textureManager->getModelTexture(material[j]->diffuseMap));
+	}
+
+	for (int i = 0; i < meshEntries.size(); ++i) {
+		if (material.size() - 1 >= i) {
+
+			Shader::sendUniform(shaderProgramID, "meshMaterial.ambient", material[i]->ambient);
+			Shader::sendUniform(shaderProgramID, "meshMaterial.diffuse", material[i]->diffuse);
+			Shader::sendUniform(shaderProgramID, "meshMaterial.specular", material[i]->specular);
+
+			if (material[i]->diffuseMap == "no_texture") {
+				Shader::sendUniform(shaderProgramID, "hasTexture", 0);
+			}
+			else
+			{
+				Shader::sendUniform(shaderProgramID, "hasTexture", 1);
+				//glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
+			}
+		}
 		meshEntries.at(i)->render();
 	}
 }

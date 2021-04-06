@@ -2,7 +2,9 @@
 #define RENDERER_HPP
 
 #include <memory>
+
 #include "Scene.hpp"
+#include "Flame.hpp"
 
 class Renderer
 {
@@ -19,6 +21,7 @@ private:
 	std::shared_ptr<GLFWwindow> window;
 	void renderModel(int i_stencil_offset);
 	void renderModel2(int meshModel); // 2021 - repairing loading models
+	Flame* flame;
 	// timing
 	float currentFrame;
 	float deltaTime;	// time between current frame and last frame

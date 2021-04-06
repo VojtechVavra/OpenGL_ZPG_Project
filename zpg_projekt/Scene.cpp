@@ -639,6 +639,12 @@ void Scene::modelSection()
 	//meshObjects.push_back(newMeshModel);
 	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
 
+	newMeshModel = new MeshLoader("models\\scena\\flame.obj");
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0f, 2.0f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));	// glm::vec3(0.1f, 0.1f, 0.1f)
+	newMeshModel->ModelMatrix = ModelMatrix;
+	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+
 	//newMeshModel = new MeshLoader("models\\chair\\chair.obj");
 	newMeshModel = new MeshLoader("models\\scena\\vetev2.obj");
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-1.25f, 0.26f, 0.6f));

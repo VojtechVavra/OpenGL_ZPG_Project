@@ -48,6 +48,7 @@ public:
 	std::unique_ptr<Material> getMaterial(const aiMaterial* mat, const char* filename);
 
 	void render();
+	void renderFlame();
 	void render2(); // TODO: Smazat tuto funkci a udelat ji obecne
 // pridat do teto classy textury a materialy
 	glm::mat4 ModelMatrix; // added

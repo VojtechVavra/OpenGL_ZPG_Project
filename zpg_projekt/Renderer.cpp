@@ -20,6 +20,7 @@ void Renderer::renderScene(std::shared_ptr<Scene> scene, std::shared_ptr<GLFWwin
 	glEnable(GL_DEPTH_TEST);
 	//glDisable(GL_DEPTH_TEST);
 	//renderInit();
+
 	renderLoop();
 }
 
@@ -168,6 +169,7 @@ void Renderer::renderInit()
 void Renderer::renderLoop()
 {
 	FPSCounter fpsCounter = FPSCounter();
+	flame = new Flame();
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -195,6 +197,9 @@ void Renderer::renderLoop()
 
 		// FPSCounter
 		fpsCounter.drawFps(currentFrame);
+
+		// flame animate texture
+		//flame.AnimateNextFrame(currentFrame);
 
 		// input
 		scene->camera[0]->processKeyboard(deltaTime);
@@ -305,6 +310,7 @@ void Renderer::renderModel(int i_stencil_offset)
 	Shader::sendUniform(shaderProgramID, "myTextureSampler", (GLint)0);
 	Shader::sendUniform(shaderProgramID, "texProj", (GLint)1);
 	Shader::sendUniform(shaderProgramID, "texProj2", (GLint)2);
+	//glBindTexture(GL_TEXTURE_2D, m_texture[index]->getTextureId());
 
 	Shader::sendUniform(shaderProgramID, "viewMatrix", ViewMatrix);
 	//Shader::sendUniform(shaderProgramID, "viewMatrix", glm::mat4(1.0f));
@@ -378,6 +384,7 @@ void Renderer::renderModel(int i_stencil_offset)
 		if (scene->zatahlyZaves && obj->fileName == "zaves_zatahly.obj") {
 			glStencilFunc(GL_ALWAYS, 10, 0xFF);
 			scene->camera[0]->setFLightState(false);
+			Shader::sendUniform(shaderProgramID, "hasTexture", 1);
 			obj->render();
 			continue;
 		}
@@ -454,9 +461,16 @@ void Renderer::renderModel(int i_stencil_offset)
 			obj->render();
 			continue;
 		}*/
+
 		if (obj->fileName == "krb.obj") {
 			glStencilFunc(GL_ALWAYS, 15, 0xFF);
 			obj->render();
+			continue;
+		}
+		if (obj->fileName == "flame.obj") {
+			flame->AnimateNextFrame(currentFrame);
+			glStencilFunc(GL_ALWAYS, 16, 0xFF);
+			obj->renderFlame();
 			continue;
 		}
 
