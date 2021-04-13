@@ -139,7 +139,7 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 						printf("Clicked on pixel %d, %d, color %02hhx %02hhx %02hhx %02hhx, depth %f, stencil index %u\n", x, y, color[0], color[1], color[2], color[3], depth, index);
 
 						//scene->setNewColor(indexObject);
-						isObjectHold = true;
+						
 						printf("Object %u taken\n", indexObject - 1);
 
 						/*if (scene->object.size() > indexObject - 1) {	// this is for basic models from .h file where are specified manually positions, etc.
@@ -153,14 +153,17 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 						}*/
 						//holdedObject->setMatrix(glm::inverse(camera->getCamera()) * camera->getMatrix());
 						if (indexObject == 12) {
+							isObjectHold = true;
 							std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[4];
 							Callback::camera->setHoldObject2(holdedObject);
 						}
 						else if (indexObject == 13) {
+							isObjectHold = true;
 							std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[5];
 							Callback::camera->setHoldObject2(holdedObject);
 						}
 						else if (indexObject == 14) {
+							isObjectHold = true;
 							std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[6];
 							Callback::camera->setHoldObject2(holdedObject);
 						}

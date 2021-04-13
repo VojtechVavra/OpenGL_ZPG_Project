@@ -223,6 +223,8 @@
     <None Include="shaders\ambient.frag" />
     <None Include="shaders\blinn.frag" />
     <None Include="shaders\diffuse.frag" />
+    <None Include="shaders\flame.frag" />
+    <None Include="shaders\flame.vert" />
     <None Include="shaders\grabObject.frag" />
     <None Include="shaders\grabObject.vert" />
     <None Include="shaders\phong.frag" />

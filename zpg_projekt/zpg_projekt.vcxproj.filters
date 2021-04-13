@@ -275,6 +275,12 @@
     <None Include="shaders\grabObject.frag">
       <Filter>shaders</Filter>
     </None>
+    <None Include="shaders\flame.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="shaders\flame.frag">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="zpg_projekt.rc">

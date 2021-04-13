@@ -468,12 +468,25 @@ void Renderer::renderModel(int i_stencil_offset)
 			continue;
 		}
 		if (obj->fileName == "flame.obj") {
-			flame->AnimateNextFrame(currentFrame);
+			flame->AnimateNextFrame(currentFrame);	// currentFrame
+			//GLuint shaderProgramID;
+			//shaderProgramID = Shader::getShader(ShaderType::FLAME);
+			//glUseProgram(shaderProgramID);
+			
+			//glUseProgram(shaderProgramID);
+
+			Shader::sendUniform(shaderProgramID, "myTextureSampler", (GLint)0);	// textureSampler
+			Shader::sendUniform(shaderProgramID, "viewMatrix", ViewMatrix);
+			Shader::sendUniform(shaderProgramID, "projectionMatrix", ProjectionMatrix);
 			glStencilFunc(GL_ALWAYS, 16, 0xFF);
 			obj->renderFlame();
+			//obj->render();
+
+			//glUseProgram(0);
 			continue;
 		}
 
+		
 		obj->render();
 		i_stencil_offset++;
 	}

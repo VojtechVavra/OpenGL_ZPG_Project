@@ -43,6 +43,9 @@ GLuint Shader::createShader(ShaderType fragmentShaderType)
     else if (fragmentShaderType == ShaderType::GRAB_MODEL) {
         return loader.loadShader("./shaders/grabObject.vert", fragmentShaderName.c_str());
     }
+    else if (fragmentShaderType == ShaderType::FLAME) {
+        return loader.loadShader("./shaders/flame.vert", fragmentShaderName.c_str());
+    }
 
     return loader.loadShader("./shaders/vertex.glsl", fragmentShaderName.c_str());
 }

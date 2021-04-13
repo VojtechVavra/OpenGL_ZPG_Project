@@ -124,7 +124,7 @@ void main() {
     //}
     // phase 4: FlashLight
     if(flashLight.isActive == 1) {
-        result += CalcFlashLight2(flashLight, norm, fragPos);
+        result += CalcFlashLight2(flashLight, norm, fragPos) * 2.0;
         //result *= vec4(0.5, 0.5, 0.5, 1.0);
     }
     else {

@@ -60,6 +60,9 @@ void Scene::InitializeScene()
 
 void Scene::registerUsedShaders()
 {
+	//
+	Shader::getShader(ShaderType::FLAME);
+
 	shaderPrograms = Shader::getShaderPrograms();
 
 	for (ShaderProgram shaderProgram : shaderPrograms)
@@ -608,7 +611,7 @@ void Scene::modelSection()
 	newMeshModel->ModelMatrix = ModelMatrix;
 	meshObjects.push_back(newMeshModel);*/
 
-	MeshLoader* newMeshModel = new MeshLoader("models\\scena\\kniha_scena5.obj");
+	MeshLoader* newMeshModel = new MeshLoader("models\\scena\\kniha_scena6.obj");
 	glm::mat4 ModelMatrix = glm::mat4(1.0);
 	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0, 0.0f, 2.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));	// glm::vec3(0.1f, 0.1f, 0.1f)
@@ -639,12 +642,6 @@ void Scene::modelSection()
 	//meshObjects.push_back(newMeshModel);
 	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
 
-	newMeshModel = new MeshLoader("models\\scena\\flame.obj");
-	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0f, 2.0f));
-	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));	// glm::vec3(0.1f, 0.1f, 0.1f)
-	newMeshModel->ModelMatrix = ModelMatrix;
-	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
-
 	//newMeshModel = new MeshLoader("models\\chair\\chair.obj");
 	newMeshModel = new MeshLoader("models\\scena\\vetev2.obj");
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-1.25f, 0.26f, 0.6f));
@@ -653,6 +650,13 @@ void Scene::modelSection()
 	//newMeshModel->shaderProgramID = 12;
 	//meshObjects.push_back(newMeshModel);
 	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+
+	newMeshModel = new MeshLoader("models\\scena\\flame.obj");
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0f, 2.0f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));	// glm::vec3(0.1f, 0.1f, 0.1f)
+	newMeshModel->ModelMatrix = ModelMatrix;
+	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+
 
 	/*newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
 	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(1.0f, 0.2f, 0.0f));
