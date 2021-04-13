@@ -354,7 +354,7 @@ void Callback::button_callback(GLFWwindow* window, int button, int action, int m
 				scene->zatahlyZaves = true;
 			}
 		}
-		else if (button == GLFW_MOUSE_BUTTON_2)
+		/*else if (button == GLFW_MOUSE_BUTTON_2)
 		{ // spawnovani objektu
 			//Application::getInstance()->getScene()->getRenderer()->setSelect(index-1);
 
@@ -371,7 +371,7 @@ void Callback::button_callback(GLFWwindow* window, int button, int action, int m
 
 			//scene->object.push_back(objectFactory.createObject);
 			scene->addObject("sphere", ShaderType::PHONG, newPosition, glm::vec3(1.0f, 1.0f, 0.5f), camera, sphereScale);
-		}
+		}*/
 	}
 
 	printf("button_callback up? [%d,%d,%d]\n", button, action, mode);
