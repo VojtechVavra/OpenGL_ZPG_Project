@@ -12,6 +12,6 @@ How to run in Windows:
    * glew32.lib
    * glfw3.lib
    * SOIL.lib
-4. Attach to the final compiled project: Assimp32.dll, glew32.dll (place there where .exe with final program is)
+4. Attach dynamic libraries to the final compiled project: Assimp32.dll, glew32.dll (place there where .exe with final program is)
 5. Have proper files in folders: models, shaders, textures
 6. .obj 3D models not included
