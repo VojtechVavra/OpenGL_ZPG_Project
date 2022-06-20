@@ -11,6 +11,7 @@
 
 class ShaderLoader
 {
+private:
 	GLuint	programID, vertexID, fragmentID;
 	std::string loadFile(const char* fname);
 public:
