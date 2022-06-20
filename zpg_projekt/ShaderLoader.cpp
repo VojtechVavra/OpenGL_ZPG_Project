@@ -21,8 +21,8 @@ GLuint ShaderLoader::loadShader(const char* vertexFile, const char* fragmentFile
 	int vlen = vertexShaderString.length();
 	int flen = fragmentShaderString.length();
 
-	if (vertexShaderString.empty()) printf("Nulový Vertex Shader\n");
-	if (fragmentShaderString.empty()) printf("Nulový Fragment Shader\n");
+	if (vertexShaderString.empty()) printf("NulovÃ½ Vertex Shader\n");
+	if (fragmentShaderString.empty()) printf("NulovÃ½ Fragment Shader\n");
 
 	const char* vertexShaderCStr = vertexShaderString.c_str();
 	const char* fragmentShaderCStr = fragmentShaderString.c_str();
@@ -80,6 +80,9 @@ void ShaderLoader::checkVertShaderCompileError(GLuint vertShader) {
 		GLchar* strInfoLog = new GLchar[infoLogLength];
 		glGetShaderInfoLog(vertexID, infoLogLength, NULL, strInfoLog);
 		fprintf(stderr, "Compile failure in Vertex shader:\n%s\n", strInfoLog);
+		
+		// Exit with failure.
+		glDeleteShader(vertexID); // Don't leak the shader.
 		delete[] strInfoLog;
 	}
 }
