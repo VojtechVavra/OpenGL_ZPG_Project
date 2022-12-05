@@ -14,4 +14,7 @@ How to run in Windows:
    * SOIL.lib
 4. Attach dynamic libraries to the final compiled project: Assimp32.dll, glew32.dll (place there where .exe with final program is)
 5. Have proper files in folders: models, shaders, textures
-6. .obj 3D models not included
+6. .obj 3D models not included  
+  
+Online Visual glBlendFunc + glBlendEquation Tool  
+http://andersriggelsen.dk/glblendfunc.php  
