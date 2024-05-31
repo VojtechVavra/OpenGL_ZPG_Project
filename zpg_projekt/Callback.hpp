@@ -5,13 +5,16 @@
 #include "Camera.hpp"
 #include "Scene.hpp"
 
+class Window;
 
 class Callback {
 public:
     //Callback(Camera* camera);
     static void setCamera(std::shared_ptr<Camera> camera);
-    static void setWindow(std::shared_ptr<GLFWwindow> window);
-    static std::shared_ptr<GLFWwindow> window;
+    static void setWindow(std::shared_ptr<Window> window);
+    static void setWindow(GLFWwindow* glfwWindow);
+    static std::shared_ptr<Window> window;
+    static GLFWwindow* glfwWindow;
 private:
     //static GLFWwindow* window;
     static std::shared_ptr<Camera> camera;
@@ -31,6 +34,7 @@ public:
     static void window_iconify_callback(GLFWwindow* window, int iconified);
 
     static void window_size_callback(GLFWwindow* window, int width, int height);
+    static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     //static void window_size_modify_callback(int& windowWidth, int& windowHeight);
 
     static void cursor_callback(GLFWwindow* window, double x, double y);

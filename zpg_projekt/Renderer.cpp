@@ -14,7 +14,7 @@ Renderer::Renderer()
 	lastFrame = 0.0f;
 }
 
-void Renderer::renderScene(std::shared_ptr<Scene> scene, std::shared_ptr<GLFWwindow> window)
+void Renderer::renderScene(std::shared_ptr<Scene> scene, GLFWwindow* window)
 {
 	this->scene = scene;
 	this->window = window;
@@ -191,7 +191,7 @@ void Renderer::renderLoop()
 	
 	// vytvorit renderer, predat mu tridu scenu, scena udrzuje objekty
 	// Main loop
-	while (!glfwWindowShouldClose(window.get()))
+	while (!glfwWindowShouldClose(window))
 	{
 		// per-frame time logic
 		currentFrame = glfwGetTime();
@@ -240,10 +240,10 @@ void Renderer::renderLoop()
 		// update other events like input handling
 		glfwPollEvents();
 		// put the stuff we’ve been drawing onto the display
-		glfwSwapBuffers(window.get());
+		glfwSwapBuffers(window);
 	}
 
-	glfwDestroyWindow(window.get());
+	glfwDestroyWindow(window);
 	glfwTerminate();
 }
 

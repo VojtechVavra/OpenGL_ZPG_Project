@@ -7,11 +7,14 @@
 #include <glm/gtc/matrix_transform.hpp>	// glm::lookAt, glm::radians
 
 #include "Callback.hpp"
+#include "Window.hpp"
 
 struct Resolution;
 
 std::shared_ptr<Camera> Callback::camera = nullptr;
-std::shared_ptr<GLFWwindow> Callback::window = nullptr;
+//std::shared_ptr<GLFWwindow> Callback::window = nullptr;
+std::shared_ptr<Window> Callback::window = nullptr;
+GLFWwindow* Callback::glfwWindow = nullptr;
 std::shared_ptr<Scene> Callback::scene = nullptr;
 
 float Callback::lastX = 0;
@@ -29,16 +32,20 @@ void Callback::setCamera(std::shared_ptr<Camera> camera) {
 	Callback::camera = camera;
 
 	int width, height;
-	glfwGetWindowSize(Callback::window.get(), &width, &height);
+	glfwGetWindowSize(Callback::glfwWindow, &width, &height);
 
 	Camera::Resolution resolution{ width, height };
 	camera->setResolution(resolution);
 }
 
-void Callback::setWindow(std::shared_ptr<GLFWwindow> window) {
+void Callback::setWindow(std::shared_ptr<Window> window) {
 	Callback::window = window;
+	Callback::glfwWindow = window->getWindow();
 }
 
+void Callback::setWindow(GLFWwindow* glfwWindow) {
+	Callback::glfwWindow = glfwWindow;
+}
 
 // callback functions
 void Callback::error_callback(int error, const char* description) {
@@ -51,7 +58,7 @@ void Callback::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 	if (firstMouse)
 	{
 		int width, height;
-		glfwGetWindowSize(Callback::window.get(), &width, &height);
+		glfwGetWindowSize(Callback::glfwWindow, &width, &height);
 
 		Callback::lastX = width / 2.0f;
 		Callback::lastY = height / 2.0f;
@@ -301,13 +308,19 @@ void Callback::window_iconify_callback(GLFWwindow* window, int iconified) {
 // original one
 void Callback::window_size_callback(GLFWwindow* window, int width, int height) {
 	printf("resize %d, %d \n", width, height);
-	glViewport(0, 0, width, height);
+	//glViewport(0, 0, width, height);
 
 	int* windSize = (int*)glfwGetWindowUserPointer(window);
 	windSize[0] = width;
 	windSize[1] = height;
+	//Callback::window->printWindowSize();
 
 	Callback::camera->setPerspectiveCamera(width, height);
+}
+
+void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+	std::cout << "Framebuffer resized to " << width << " x " << height << std::endl;
+	glViewport(0, 0, width, height); // Aktualizace viewportu
 }
 
 // new

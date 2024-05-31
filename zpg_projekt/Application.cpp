@@ -14,84 +14,61 @@
 #include "Renderer.hpp"
 
 
-Application* Application::single = nullptr;
+Application* Application::m_single = nullptr;
 
 Application* Application::getInstance()
 {
-	if (Application::single == nullptr) {
-		Application::single = new Application();
+	if (Application::m_single == nullptr) {
+		Application::m_single = new Application();
 	}
-	return Application::single;
+	return Application::m_single;
 }
 
 Application::Application()
 {
-	windowWidth = windowHeight = 0;
-	windSize[0] = &this->windowWidth;
-	windSize[1] = &this->windowHeight;
+	m_window = std::make_shared<Window>("ZPGSS");
+	//windowWidth = windowHeight = 0;
+	//windSize[0] = &this->windowWidth;
+	//windSize[1] = &this->windowHeight;
 	srand(time(nullptr));
 }
 
 void Application::init()
 {
-	if (!glfwInit()) {
-		fprintf(stderr, "ERROR: could not start GLFW3\n");
-		exit(EXIT_FAILURE);
-	}
+	//if (!glfwInit()) {
+	//	fprintf(stderr, "ERROR: could not start GLFW3\n");
+		/** 
+		 * Funkce exit()
+		 * Okamžité ukonèení programu z jakéhokoliv místa v programu
+		 * Nepovolá destruktory lokálních objektù, což mùže vést k únikùm pamìti.
+		 * Funkce registrované pomocí atexit() budou volány, stejnì jako destruktory statických objektù.
+		 */
+	//	exit(EXIT_FAILURE);
+	//}
 
-	if (windowWidth <= 0 || windowHeight <= 0) {
+	// Make the window's context current
+	//glfwMakeContextCurrent(m_window->getRawPtrWindow());
+	//glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
+	/*if (windowWidth <= 0 || windowHeight <= 0) {
 		CreateWindow();
 	}
 	else {
 		CreateWindow(windowWidth, windowHeight);
-	}
+	}*/
 	
-	// after window creatin can be set callbacks
-	callbackFunctions();
-
-	// start GLEW extension handler
-	glewExperimental = GL_TRUE;
-	GLenum err = glewInit();
-	if (err != GLEW_OK)
-	{
-		/* Problem: glewInit failed, something is seriously wrong. */
-		fprintf(stdout, "Error: %s\n", glewGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
-
 	PrintInfo();
-	int width, height;
-	glfwGetFramebufferSize(window.get(), &width, &height);
-	//float ratio = width / (float)height;
-	glViewport(0, 0, width, height);
 
+	// after window creation can be set callbacks
+	callbackFunctions();
 	draw();
 }
 
-void Application::setWindowSize(int width, int height)
+void Application::setWindowSize(int width, int height) const
 {
-	this->windowWidth = width;
-	this->windowHeight = height;
+	this->m_window->setSize(width, height);
 }
 
-void Application::CreateWindow(int width, int height)
-{
-	this->window = std::shared_ptr<GLFWwindow>(glfwCreateWindow(width, height, "ZPG", NULL, NULL));
 
-	if (!window.get())
-	{
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-		std::cout << "Error in creating window on line: " << __LINE__ << std::endl;
-	}
-
-	glfwMakeContextCurrent(window.get());
-	glfwSwapInterval(1);
-	
-	// we will tell GLFW that it should hide the cursor and capture it. Capturing a cursor means that, once the application has focus, the mouse cursor stays within the center of the window (unless the application loses focus or quits). We can do this with one simple configuration call:
-	// After this call, wherever we move the mouse it won't be visible and it should not leave the window.
-	glfwSetInputMode(window.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-}
 
 void Application::PrintInfo()
 {
@@ -107,16 +84,18 @@ void Application::PrintInfo()
 }
 
 void Application::callbackFunctions() {
-	Callback::setWindow(window);
+	//std::shared_ptr<GLFWwindow*> a = std::make_shared<GLFWwindow*>(m_window->getWindow());
+	//auto sharedWindow = std::shared_ptr<GLFWwindow>(m_window->getWindow(), glfwDestroyWindow);
+	Callback::setWindow(m_window);
 
 	glfwSetErrorCallback([](int error, const char* description) { Callback::error_callback(error, description); });
 	//glfwSetCursorPosCallback(this->GetWindow(), [](GLFWwindow* window, double mouseXPos, double mouseYPos) -> void { Callback::cursor_pos_callback(window, mouseXPos, mouseYPos); });
-	glfwSetCursorPosCallback(window.get(), Callback::cursor_pos_callback);
-	glfwSetKeyCallback(this->GetWindow().get(), [](GLFWwindow* window, int key, int scancode, int action, int mods) { Callback::key_callback(window, key, scancode, action, mods); });
-	glfwSetMouseButtonCallback(this->GetWindow().get(), [](GLFWwindow* window, int button, int action, int mode) { Callback::button_callback(window, button, action, mode); });
+	glfwSetCursorPosCallback(m_window->getRawPtrWindow(), Callback::cursor_pos_callback);
+	glfwSetKeyCallback(m_window->getRawPtrWindow(), [](GLFWwindow* window, int key, int scancode, int action, int mods) { Callback::key_callback(window, key, scancode, action, mods); });
+	glfwSetMouseButtonCallback(m_window->getRawPtrWindow(), [](GLFWwindow* window, int button, int action, int mode) { Callback::button_callback(window, button, action, mode); });
 	//glfwSetWindowFocusCallback(this->GetWindow().get(), [](GLFWwindow* window, int focused) { Callback::window_focus_callback(window, focused); });
-	glfwSetWindowFocusCallback(window.get(), Callback::window_focus_callback);
-	glfwSetWindowIconifyCallback(this->GetWindow().get(), [](GLFWwindow* window, int iconified) { Callback::window_iconify_callback(window, iconified); });
+	glfwSetWindowFocusCallback(m_window->getRawPtrWindow(), Callback::window_focus_callback);
+	glfwSetWindowIconifyCallback(m_window->getRawPtrWindow(), [](GLFWwindow* window, int iconified) { Callback::window_iconify_callback(window, iconified); });
 
 	//int* windSize[2]{ &this->windowWidth, &this->windowHeight };
 	//glfwSetWindowSizeCallback(window.get(), [&](GLFWwindow* window, int width, int height) { Callback::window_size_callback(window, width, height, &this->windowWidth, &this->windowHeight); });
@@ -124,13 +103,15 @@ void Application::callbackFunctions() {
 	
 	//void (*my_fptr_setWindowSizeCallback)(int& winWidth, int& winHeight) = Callback::window_size_modify_callback;
 	//my_fptr_setWindowSizeCallback
-	glfwSetWindowUserPointer(window.get(), &windSize);
+	glfwSetWindowUserPointer(m_window->getRawPtrWindow(), m_window->getWindowSizePtr()/*&windSize*/);
 	//glfwSetWindowUserPointer
 	//glfwSetWindowSizeCallback(window.get(), Callback::window_size_callback);
 
-	glfwSetWindowSizeCallback(window.get(), Callback::window_size_callback);
+	glfwSetWindowSizeCallback(m_window->getRawPtrWindow(), Callback::window_size_callback);
+	// Nastavení callbacku pro zmìnu velikosti framebufferu
+	glfwSetFramebufferSizeCallback(m_window->getRawPtrWindow(), Callback::framebuffer_size_callback);
 
-	glfwSetScrollCallback(window.get(), Callback::scroll_callback);
+	glfwSetScrollCallback(m_window->getRawPtrWindow(), Callback::scroll_callback);
 }
 
 void Application::draw()
@@ -139,7 +120,7 @@ void Application::draw()
 	Renderer renderer = Renderer();
 	Callback::scene = scene;
 
-	renderer.renderScene(scene, window);
+	renderer.renderScene(scene, m_window->getWindow());
 }
 
 Application::~Application()
