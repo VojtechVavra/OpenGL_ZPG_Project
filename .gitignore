@@ -338,3 +338,6 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# custom ignore - dont stage large files like 3D models
+#zpg_projekt/models/
