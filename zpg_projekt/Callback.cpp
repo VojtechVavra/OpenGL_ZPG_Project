@@ -178,6 +178,7 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 				scene->camera[0]->flashLightOnOff();
 				break;
 			case GLFW_KEY_J:
+			{
 				printf("ViewMatrix:\n");
 				glm::mat4 ViewMatrix = scene->camera[0]->getCamera();	// glm::mat4(1.0f); 
 				//ViewMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-1.9f, 2.07f, 3.8f));
@@ -190,7 +191,9 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 				glm::vec3 camPos = scene->camera[0]->getPosition();
 				printf("camPos: %f, %f, %f\n", camPos.x, camPos.y, camPos.z);
 				break;
+			}
 			case GLFW_KEY_DELETE:
+			{
 				if (indexObject != -1) {
 					scene->deleteObject(indexObject);
 					//scene->camera[0]->dropObject();
@@ -201,7 +204,9 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 					indexObject = -1;
 				}
 				break;
+			}
 			case GLFW_KEY_F10:
+			{
 				if (!fullscreen)
 				{
 					// backup window position and window size
@@ -227,6 +232,7 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 					fullscreen = false;
 				}
 				break;
+			}
 			case GLFW_KEY_F2:
 			{
 				if (Callback::camera == nullptr) {

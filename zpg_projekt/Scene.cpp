@@ -20,7 +20,7 @@
 
 //#include "ObjLoader.hpp"
 
-
+#include "glm/gtc/matrix_transform.hpp"
 
 Scene::Scene()
 {
@@ -86,7 +86,7 @@ void Scene::lightSection()
 	// setup lights
 	std::shared_ptr<ObjectFactory> objectFactory = ObjectFactory::getInstance();
 
-	glm::vec3 position = glm::vec4(0, 0, 0, 1);
+	glm::vec3 position = glm::vec3(0, 0, 1);
 	glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 	float attenuation = 0.1f;
 	float ambientCoefficient = 0.0f;

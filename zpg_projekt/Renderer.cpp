@@ -5,6 +5,8 @@
 #include "LoadModel.hpp"	// smazat
 #include "ObjLoader.hpp"
 
+#include "glm/gtc/matrix_transform.hpp"
+
 Renderer::Renderer()
 {
 	currentFrame = 0.0f;
