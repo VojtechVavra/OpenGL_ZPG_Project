@@ -22,3 +22,14 @@ GLuint Texture::getTextureId()
 {
     return textureId;
 }
+
+void Texture::Delete()
+{
+    /**
+     When you're done using the texture, delete it. This will set texname to 0 and
+     delete all of the graphics card memory associated with the texture. If you
+     don't call this method, the texture will stay in graphics card memory until you
+     close the application.
+    */
+    glDeleteTextures(1, &textureId);
+}

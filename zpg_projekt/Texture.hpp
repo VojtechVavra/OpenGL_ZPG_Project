@@ -11,6 +11,7 @@ public:
 	void Load() const;
 	void LoadCubemap() const;
 	GLuint getTextureId();
+	void Delete();
 private:
 	GLuint textureId;
 	std::string texturePath;

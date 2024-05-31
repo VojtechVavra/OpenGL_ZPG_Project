@@ -18,10 +18,11 @@ public:
 	std::shared_ptr<Texture> createModelTexture(std::string texturePath);
 
 	std::shared_ptr<Texture> createCubemap(std::vector<std::string> faces, const std::string sky);
-
 	std::shared_ptr<Texture> createCubemap2(std::vector<std::string> faces, const std::string sky);
 
-	//std::unordered_map<std::string, Texture> textures;
+	void deleteTextureByName(const std::string& textureName);
+	void deleteAllTextureFromGraphicsMemory();
+
 	std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
 private:
 	static std::shared_ptr<TextureManager> instance;

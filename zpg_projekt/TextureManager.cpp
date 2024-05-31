@@ -190,3 +190,34 @@ std::shared_ptr<Texture> TextureManager::createCubemap2(std::vector<std::string>
     std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(sky, cubeMapTexture);
     return newTexture;
 }
+
+void TextureManager::deleteAllTextureFromGraphicsMemory()
+{
+    //When you're done using the texture, delete it. This will set texname to 0 and
+    //delete all of the graphics card memory associated with the texture. If you
+    //don't call this method, the texture will stay in graphics card memory until you
+    //close the application.
+    //it = mymap.find('b');
+    std::unordered_map<std::string, std::shared_ptr<Texture>>::iterator it;
+    //for (auto texture : textures) {
+    for (it = textures.begin(); it != textures.end(); ++it) {
+        std::cout << "Deleting texture: " << it->first << "\n";
+        it->second->Delete();
+        //it = mymap.find('b');
+        textures.erase(it);
+    }
+}
+
+void TextureManager::deleteTextureByName(const std::string& textureName)
+{
+    //When you're done using the texture, delete it. This will set texname to 0 and
+    //delete all of the graphics card memory associated with the texture. If you
+    //don't call this method, the texture will stay in graphics card memory until you
+    //close the application.
+    //it = mymap.find('b');
+    std::unordered_map<std::string, std::shared_ptr<Texture>>::iterator it;
+    it = textures.find(textureName);
+    std::cout << "Deleting single texture: " << it->first << "\n";
+    it->second->Delete();
+    textures.erase(it);
+}

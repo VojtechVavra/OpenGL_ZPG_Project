@@ -190,6 +190,7 @@ void Renderer::renderLoop()
 
 	
 	// vytvorit renderer, predat mu tridu scenu, scena udrzuje objekty
+	// Main loop
 	while (!glfwWindowShouldClose(window.get()))
 	{
 		// per-frame time logic
