@@ -1,6 +1,11 @@
 #include "MeshLoader.hpp"
 #include "TextureManager.hpp"
 
+// memory usage
+#include <windows.h>
+#include <psapi.h>
+#include <iostream>
+
 
 /**
 *	Constructor, loading the specified aiMesh
@@ -293,8 +298,11 @@ MeshLoader::~MeshLoader(void)
 *	Renders all loaded MeshEntries
 **/
 void MeshLoader::render() {
+	//return;
+	printMemoryUsage("Before Render ");
 	auto textureManager = TextureManager::getInstance();
 	std::vector<std::shared_ptr<Texture>> t;
+	//t.clear(); // Clear vector to reuse
 
 	glUseProgram(shaderProgramID);
 	Shader::sendUniform(shaderProgramID, "modelMatrix", ModelMatrix);
@@ -312,6 +320,8 @@ void MeshLoader::render() {
 	//glBindTexture(GL_TEXTURE_2D, t->getTextureId());
 	//glBindTexture(GL_TEXTURE_2D + 1, t2->getTextureId());
 	std::shared_ptr<Texture> lightShadow = textureManager->getTexture("textures\\light_shadow\\window_shadow3.png", false);	// smiley.png, "textures\\light_shadow\\smiley.png"
+
+
 	glActiveTexture(GL_TEXTURE0 + 1); // Texture unit 1
 	glBindTexture(GL_TEXTURE_2D, lightShadow->getTextureId());
 
@@ -320,9 +330,10 @@ void MeshLoader::render() {
 	//glBindTexture(GL_TEXTURE_2D, 2);
 	//glBindTexture(GL_TEXTURE_2D, m_texture[index]->getTextureId());
 	glBindTexture(GL_TEXTURE_2D, textureDetail->getTextureId());
-	
 
 	glActiveTexture(GL_TEXTURE0 + 0);
+
+	
 
 	for (int j = 0; j < material.size(); j++) {
 		//if (material[j]->diffuseMap != "no_texture") {
@@ -334,22 +345,9 @@ void MeshLoader::render() {
 	}
 
 	for (int i = 0; i < meshEntries.size(); ++i) {
-		/*if (material[i]->diffuseMap == "") {
-			continue;
-		}*/
-		//glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
-		//meshEntries.at(i)->render();
-
 		if (material.size() - 1 >= i) {
-			
 			//printf("texture: %s\n", "..\\" + material[i]->diffuseMap);
 			//printf("mesh entries size %d\n", meshEntries.size());
-
-			
-			//Shader::sendUniform(shaderProgramID, "a", 10.0f);
-			//Shader::sendUniform(shaderProgramID, "meshDiffuse", material[i]->diffuse);
-			//Shader::sendUniform(shaderProgramID, "meshSpecular", material[i]->specular);
-
 			Shader::sendUniform(shaderProgramID, "meshMaterial.ambient", material[i]->ambient);
 			Shader::sendUniform(shaderProgramID, "meshMaterial.diffuse", material[i]->diffuse);
 			Shader::sendUniform(shaderProgramID, "meshMaterial.specular", material[i]->specular);
@@ -357,22 +355,21 @@ void MeshLoader::render() {
 			if (material[i]->diffuseMap == "no_texture") {
 				Shader::sendUniform(shaderProgramID, "hasTexture", 0);
 			}
-			else
-			{
+			else {
 				Shader::sendUniform(shaderProgramID, "hasTexture", 1);
 				glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
-			}
-			
+			}	
 			//printf("diffuse: %f, %f, %f\n", material[i]->diffuse.x, material[i]->diffuse.y, material[i]->diffuse.z);
-
-		}
-		
+		}		
 
 		meshEntries.at(i)->render();
 	}
+	t.clear(); // added mb smazat
+	printMemoryUsage("After Render ");
 }
 
 void MeshLoader::renderFlame() {
+	//return; // added smazat
 	auto textureManager = TextureManager::getInstance();
 	std::vector<std::shared_ptr<Texture>> t;
 
@@ -429,4 +426,19 @@ void MeshLoader::SaveFilenameAndPath(const std::string& filename) {
 	std::size_t found = filename_path.find_last_of("/\\");
 	this->path = filename_path.substr(0, found);
 	this->fileName = filename_path.substr(found + 1);
+}
+
+
+void MeshLoader::printMemoryUsage(std::string number) {
+	PROCESS_MEMORY_COUNTERS pmc;
+	HANDLE process = GetCurrentProcess();
+
+	if (GetProcessMemoryInfo(process, &pmc, sizeof(pmc))) {
+		std::cout << "- " << number << " Current memory usage: " << pmc.WorkingSetSize / 1024 << " KB" << std::endl;
+	}
+	else {
+		std::cerr << "Failed to get memory usage." << std::endl;
+	}
+
+	CloseHandle(process);
 }

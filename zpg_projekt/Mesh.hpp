@@ -7,6 +7,8 @@
 
 #include "Texture.hpp"
 
+// https://stackoverflow.com/questions/21652546/what-is-the-role-of-glbindvertexarrays-vs-glbindbuffer-and-what-is-their-relatio
+
 // Material mam duplicitni v ObjLoader.hpp -> presunout ho do samostatneho souboru a jen ho importovat
 struct Material;/* {
     glm::vec3 diffuse{ 0.f };

@@ -7,6 +7,11 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
+// memory usage
+#include <windows.h>
+#include <psapi.h>
+
+
 Renderer::Renderer()
 {
 	currentFrame = 0.0f;
@@ -225,13 +230,14 @@ void Renderer::renderLoop()
 		{
 			glStencilFunc(GL_ALWAYS, i + 1, 0xFF);
 			//glStencilFunc(GL_ALWAYS, scene->object[i]->getID(), 0xFF);
-			renderObject(scene->object[i]);
+			
+			renderObject(scene->object[i]); //uncomment this
 		}
-
+		
 		// render 3D objects
 		//renderModel();
 
-		renderModel(i);
+		renderModel(i); //uncomment this
 
 		//glDisable(GL_ALPHA_TEST);
 		//glDepthMask(GL_TRUE);
@@ -284,6 +290,7 @@ void Renderer::renderObject(std::shared_ptr<Object> object)
 
 void Renderer::renderModel(int i_stencil_offset)
 {
+	printMemoryUsage("0");
 	// how to
 	// https://stackoverflow.com/questions/25252512/how-can-i-pass-multiple-textures-to-a-single-shader
 	// and
@@ -373,17 +380,19 @@ void Renderer::renderModel(int i_stencil_offset)
 		0.0, 0.0, 1.0, 0.0,
 		-1.9, 2.07, 3.8, 1.0 };
 
-		memcpy(glm::value_ptr(ViewMatrix2), aaa, sizeof(aaa));
+		//memcpy(glm::value_ptr(ViewMatrix2), aaa, sizeof(aaa));
 		//ViewMatrix2 = glm::transpose(ViewMatrix2);
-		Shader::sendUniform(shaderProgramID, "viewMatrix2", ViewMatrix2);
+		//Shader::sendUniform(shaderProgramID, "viewMatrix2", ViewMatrix2);
 		
 		projectionMatUse = true;
 	}
 	
-
+	unsigned int countObject = 10;
+	printMemoryUsage("1");
 	for (auto obj : scene->meshObjects) {
+		countObject++;
 		//glStencilFunc(GL_ALWAYS, i_stencil_offset + 1, 0xFF);		// uncoment this for further use stencil buffer for imported objects, now not work
-		
+		printMemoryUsage(std::to_string(countObject));
 		if (scene->zatahlyZaves && obj->fileName == "zaves_zatahly.obj") {
 			glStencilFunc(GL_ALWAYS, 10, 0xFF);
 			scene->camera[0]->setFLightState(false);
@@ -401,6 +410,8 @@ void Renderer::renderModel(int i_stencil_offset)
 			continue;
 		}
 
+		//printMemoryUsage("1.1");
+		printMemoryUsage(std::to_string(countObject));
 		if (obj->fileName == "Low-Poly Plant_.obj" || obj->fileName == "chair.obj" || obj->fileName == "vetev1.obj" || obj->fileName == "vetev2.obj") {
 			if (scene->camera[0]->holdingObject == true) {
 				shaderProgramID = Shader::getShader(ShaderType::GRAB_MODEL);	// DIFFUSE_MODEL
@@ -449,8 +460,11 @@ void Renderer::renderModel(int i_stencil_offset)
 				Shader::sendUniform(shaderProgramID, "textureMatrix", textureMatrix);
 				Shader::sendUniform(shaderProgramID, "modelMatrix", obj->ModelMatrix);
 			}
+			//printMemoryUsage("1.2");
+			printMemoryUsage(std::to_string(countObject));
 			glStencilFunc(GL_ALWAYS, 12, 0xFF);
 			obj->render();
+			printMemoryUsage("1.3");
 			continue;
 		}
 		/*if (obj->fileName == "chair.obj") {
@@ -470,6 +484,7 @@ void Renderer::renderModel(int i_stencil_offset)
 			obj->render();
 			continue;
 		}
+		printMemoryUsage("2");
 		if (obj->fileName == "flame.obj") {
 			flame->AnimateNextFrame(currentFrame);	// currentFrame
 			//GLuint shaderProgramID;
@@ -482,18 +497,32 @@ void Renderer::renderModel(int i_stencil_offset)
 			Shader::sendUniform(shaderProgramID, "viewMatrix", ViewMatrix);
 			Shader::sendUniform(shaderProgramID, "projectionMatrix", ProjectionMatrix);
 			glStencilFunc(GL_ALWAYS, 16, 0xFF);
-			obj->renderFlame();
+			obj->renderFlame(); // uncomment
 			//obj->render();
 
 			//glUseProgram(0);
 			continue;
 		}
-
+		printMemoryUsage("3");
 		
 		obj->render();
 		i_stencil_offset++;
 	}
+	printMemoryUsage("4");
 	glUseProgram(0);
+}
+
+void Renderer::printMemoryUsage(std::string number) {
+	PROCESS_MEMORY_COUNTERS pmc;
+	HANDLE process = GetCurrentProcess();
+
+	if (GetProcessMemoryInfo(process, &pmc, sizeof(pmc))) {
+		std::cout << "- " << number << " Current memory usage: " << pmc.WorkingSetSize / 1024 << " KB" << std::endl;
+	} else {
+		std::cerr << "Failed to get memory usage." << std::endl;
+	}
+
+	CloseHandle(process);
 }
 
 Renderer::~Renderer()

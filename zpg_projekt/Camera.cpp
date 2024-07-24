@@ -46,7 +46,8 @@ Camera::~Camera()
 
 glm::mat4 Camera::getCamera()
 {	// view projection
-	return glm::lookAt(position, position + target, up);
+	return m_lookAt;
+	// return glm::lookAt(position, position + target, up);
 }
 
 glm::mat4 Camera::getProjectionMatrix()
@@ -134,6 +135,8 @@ void Camera::updateCameraVectors()
 		newMatrix = glm::translate(newMatrix, position + glm::normalize(target) * 5.0f);
 		Shader::sendUniform(holdObject->getShader(), "modelMatrix", newMatrix);*/
 	}
+
+	m_lookAt = glm::lookAt(position, position + target, up);
 
 	notifyObservers(this, camChange::MOVE_ROTATE);
 }

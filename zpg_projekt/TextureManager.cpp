@@ -117,6 +117,10 @@ std::shared_ptr<Texture> TextureManager::createModelTexture(std::string textureN
 
 std::shared_ptr<Texture> TextureManager::getModelTexture(std::string textureName)
 {
+    if (textureName == "no_texture") {
+        textureName = "models\\textures\\default2.png"; //  texturePath="models\\textures\\default2.png"
+    }
+
     auto it = textures.find(textureName);
     /*if (textures.empty())
     {

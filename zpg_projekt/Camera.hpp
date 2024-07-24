@@ -58,6 +58,9 @@ public:
 	Camera(glm::vec3 position);
 	Camera();
 	~Camera();
+
+	glm::mat4 m_lookAt;
+
 	glm::mat4 getCamera();
 	glm::mat4 getProjectionMatrix();
 	void setPerspectiveCamera();

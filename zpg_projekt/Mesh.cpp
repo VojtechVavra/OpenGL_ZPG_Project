@@ -136,15 +136,24 @@ void Mesh::Draw2(GLuint shaderProgram)
 
 void Mesh::setupMesh()
 {
+    // https://stackoverflow.com/questions/21652546/what-is-the-role-of-glbindvertexarrays-vs-glbindbuffer-and-what-is-their-relatio
+
     glGenVertexArrays(1, &VAO);
+    // Generate a name for a new buffer.
+    // e.g. VBO buffer = 2
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &IBO);  // uvBuffer - texture indices
-
+    
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO); // GL_ARRAY_BUFFER
 
     //glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
+    // Upload a bunch of data into the active array buffer
+    // Kind of like:
+    // opengl->current_array_buffer->data = new byte[sizeof(points)]
+    // memcpy(opengl->current_array_buffer->data, points, sizeof(points))
+    
     // funguje
     //glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * this->vertices.size(), &vertices[0], GL_STATIC_DRAW);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) * this->vertices.size(), &vertices[0], GL_DYNAMIC_DRAW); // GL_STATIC_DRAW
@@ -152,6 +161,11 @@ void Mesh::setupMesh()
 
     //glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
+    // Make the new buffer active, creating it if necessary.
+    // Kind of like:
+    // if (opengl->buffers[buffer] == null)
+    //     opengl->buffers[buffer] = new Buffer()
+    // opengl->current_array_buffer = opengl->buffers[buffer]
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort) * indices.size(),
         &indices[0], GL_STATIC_DRAW);
