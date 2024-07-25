@@ -11,76 +11,24 @@
 class FPSCounter
 {
 private:
-    float frameRatePrint;    // cetnost vypisu do konzole fpsek
-    int frames;
-    double starttime;
-    bool first;
-    float fps;
+    float frameRatePrint = 0.25f;    // cetnost vypisu do konzole fpsek, default 0.25f
+    int frames = 0;
+    double startTime = 0;
+    bool first = true;
+    float fps = 0.0f;
     bool m_bPrintFps = true;
     //The first thing we do is check if this is the first time we've passed through the counter and set some stuff up:
     
+    // lambda function to be executed
     std::function<void(const int)> storedLambda;
     
 public:
-    /*template<typename T>
-    //void bindFunction(std::function<T(float)> const& f) {
-    void bindFunction(const T& f) {
-        func = f;
-    }
-    template<typename F> void bindLambda(F f) {
-        func2 = f;
-    }*/
+    FPSCounter();
+    void enablePrint(bool enabled);
 
-public:
-    FPSCounter()
-    {
-        frameRatePrint = 0.25f; // original 0.25f
-        frames = 0;
-        starttime = 0;  // startTime;
-        first = true;
-        fps = 0.0f;
-    }
+    void bindLambda(std::function<void(const int)> lambda);
 
-    void enablePrint(bool enabled) {
-        m_bPrintFps = enabled;
-    }
+    void drawFps(double timepassed);
 
-    void bindLambda(std::function<void(const int)> lambda) {
-        storedLambda = lambda;
-    }
-
-    void drawFps(double timepassed)
-    {
-        if (first)
-        {
-            //frames = 0;
-            //starttime = timepassed;
-            //first = FALSE;
-            //return;
-        }
-        //Next we increment the number of frames that have passed; I'm assuming here that you're updating the framerate counter once per frame only :
-
-        frames++;
-        //And here we evaluate the actual FPS number.
-
-        if (timepassed - starttime > frameRatePrint && frames > 10)
-        {
-            fps = (double)frames / (timepassed - starttime);
-            starttime = timepassed;
-            frames = 0;
-
-            // casting: https://stackoverflow.com/questions/103512/why-use-static-casttx-instead-of-tx
-            fps = static_cast<int>(fps);
-            if (m_bPrintFps) {
-                std::cout << fps << "\n";
-            }
-            executeLambda();
-        }
-    }
-
-    void executeLambda() const {
-        if (storedLambda) {
-            storedLambda(fps);
-        }
-    }
+    void executeLambda() const;
 };

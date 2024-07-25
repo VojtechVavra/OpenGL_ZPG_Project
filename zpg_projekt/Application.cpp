@@ -27,6 +27,8 @@ Application* Application::getInstance()
 Application::Application()
 {
 	m_window = std::make_shared<Window>("ZPG - OpenGL");
+	m_window->VSyncEnable(true);
+
 	srand(time(nullptr));
 }
 
