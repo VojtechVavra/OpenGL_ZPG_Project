@@ -22,8 +22,7 @@ private:
 	GLFWwindow* window;
 	void renderModel(int i_stencil_offset);
 	void renderModel2(int meshModel); // 2021 - repairing loading models
-
-	void printMemoryUsage(std::string number);
+	
 	Flame* flame;
 	// timing
 	float currentFrame;

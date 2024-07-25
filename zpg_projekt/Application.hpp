@@ -15,9 +15,10 @@ class Application {
 public:
     Application* getInstance();
     ~Application();
-    //inline std::shared_ptr<GLFWwindow> getWindow() { return window; }
+    
     void callbackFunctions();
     void setWindowSize(int width, int height) const;
+    void setWindowTitle(const std::string& newTitle) const;
     void init();
 
 private:

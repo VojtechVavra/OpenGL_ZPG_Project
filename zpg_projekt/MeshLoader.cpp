@@ -1,11 +1,6 @@
 #include "MeshLoader.hpp"
 #include "TextureManager.hpp"
-
-// memory usage
-#include <windows.h>
-#include <psapi.h>
-#include <iostream>
-
+#include "MemoryUsage.hpp"
 
 /**
 *	Constructor, loading the specified aiMesh
@@ -299,7 +294,7 @@ MeshLoader::~MeshLoader(void)
 **/
 void MeshLoader::render() {
 	//return;
-	printMemoryUsage("Before Render ");
+	//MemoryUsage::printMemoryUsage("Before Render ");
 	auto textureManager = TextureManager::getInstance();
 	std::vector<std::shared_ptr<Texture>> t;
 	//t.clear(); // Clear vector to reuse
@@ -365,7 +360,7 @@ void MeshLoader::render() {
 		meshEntries.at(i)->render();
 	}
 	t.clear(); // added mb smazat
-	printMemoryUsage("After Render ");
+	//MemoryUsage::printMemoryUsage("After Render ");
 }
 
 void MeshLoader::renderFlame() {
@@ -426,19 +421,4 @@ void MeshLoader::SaveFilenameAndPath(const std::string& filename) {
 	std::size_t found = filename_path.find_last_of("/\\");
 	this->path = filename_path.substr(0, found);
 	this->fileName = filename_path.substr(found + 1);
-}
-
-
-void MeshLoader::printMemoryUsage(std::string number) {
-	PROCESS_MEMORY_COUNTERS pmc;
-	HANDLE process = GetCurrentProcess();
-
-	if (GetProcessMemoryInfo(process, &pmc, sizeof(pmc))) {
-		std::cout << "- " << number << " Current memory usage: " << pmc.WorkingSetSize / 1024 << " KB" << std::endl;
-	}
-	else {
-		std::cerr << "Failed to get memory usage." << std::endl;
-	}
-
-	CloseHandle(process);
 }

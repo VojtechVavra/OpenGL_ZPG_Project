@@ -159,6 +159,7 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LoadModel.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MemoryUsage.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="Light.hpp" />
     <ClInclude Include="LoadModel.hpp" />
     <ClInclude Include="Material.hpp" />
+    <ClInclude Include="MemoryUsage.hpp" />
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="MeshLoader.hpp" />
     <ClInclude Include="Model.hpp" />

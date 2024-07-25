@@ -59,7 +59,6 @@ public:
 
 private:
 	void SaveFilenameAndPath(const std::string& filename);
-
-	void printMemoryUsage(std::string number);
+	
 };
 

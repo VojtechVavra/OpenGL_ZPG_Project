@@ -12,7 +12,6 @@
 struct Resolution;
 
 std::shared_ptr<Camera> Callback::camera = nullptr;
-//std::shared_ptr<GLFWwindow> Callback::window = nullptr;
 std::shared_ptr<Window> Callback::window = nullptr;
 GLFWwindow* Callback::glfwWindow = nullptr;
 std::shared_ptr<Scene> Callback::scene = nullptr;
@@ -40,7 +39,7 @@ void Callback::setCamera(std::shared_ptr<Camera> camera) {
 
 void Callback::setWindow(std::shared_ptr<Window> window) {
 	Callback::window = window;
-	Callback::glfwWindow = window->getWindow();
+	Callback::glfwWindow = window->getGLFWwindow();
 }
 
 void Callback::setWindow(GLFWwindow* glfwWindow) {
@@ -54,7 +53,6 @@ void Callback::error_callback(int error, const char* description) {
 
 void Callback::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
 	//printf("cursor_pos_callback ax:%d, ay:%d\n", (int)xpos, (int)ypos);
-
 	if (firstMouse)
 	{
 		int width, height;
@@ -72,20 +70,8 @@ void Callback::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 
 	lastX = xpos;
 	lastY = ypos;
-
-
+	
 	Callback::camera->processMouseMovement(xoffset, yoffset);
-
-	/*if (isObjectHold && indexObject > 0 && false)
-	{
-		printf("object camera move\n");
-		glm::vec3 objPos = scene->object[indexObject - 1]->getPosition();
-		glm::vec3 camPos = scene->camera[0]->getPosition();
-
-		scene->object[indexObject - 1]->useShader();
-		Shader::sendUniform(scene->object[indexObject - 1]->getShader(), "modelMatrix", scene->object[indexObject - 1]->getMatrix());
-	}*/
-
 }
 
 void Callback::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -93,9 +79,6 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	//printf("key_callback [%d,%d,%d,%d] \n", key, scancode, action, mods);
-	//if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-	//	glfwSetWindowShouldClose(window, true);
-
 
 	if (action == GLFW_PRESS)
 	{
@@ -114,7 +97,7 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 				Callback::camera->setMoveDir(STRAFE_RIGHT);
 				break;
 			case GLFW_KEY_E:
-				// pick up item / drop down
+				// Pick up item / drop down
 				if (isObjectHold) {
 					isObjectHold = false;
 					//scene->setLastColor(indexObject);
@@ -136,7 +119,6 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 					GLint x = width / 2;
 					GLint y = height / 2;
 
-
 					glReadPixels(x, y, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, color);
 					glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
 					glReadPixels(x, y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
@@ -146,19 +128,8 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 						printf("Clicked on pixel %d, %d, color %02hhx %02hhx %02hhx %02hhx, depth %f, stencil index %u\n", x, y, color[0], color[1], color[2], color[3], depth, index);
 
 						//scene->setNewColor(indexObject);
-						
 						printf("Object %u taken\n", indexObject - 1);
 
-						/*if (scene->object.size() > indexObject - 1) {	// this is for basic models from .h file where are specified manually positions, etc.
-							std::shared_ptr<Object> holdedObject = scene->object[indexObject - 1];
-							Callback::camera->setHoldObject(holdedObject);
-						}
-						else {	// this is for mesh objects imported from .obj and other formats
-							// TODO: Create object class to assign also imported models to camera held object
-							//std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[indexObject - 1];
-							//Callback::camera->setHoldObject(holdedObject);
-						}*/
-						//holdedObject->setMatrix(glm::inverse(camera->getCamera()) * camera->getMatrix());
 						if (indexObject == 12) {
 							isObjectHold = true;
 							std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[4];
@@ -173,8 +144,7 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 							isObjectHold = true;
 							std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[6];
 							Callback::camera->setHoldObject2(holdedObject);
-						}
-						
+						}				
 					}
 					else {
 						indexObject = 0;
@@ -182,13 +152,13 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 				}
 				break;
 			case GLFW_KEY_F:
+				// Flashlight
 				scene->camera[0]->flashLightOnOff();
 				break;
 			case GLFW_KEY_J:
 			{
 				printf("ViewMatrix:\n");
-				glm::mat4 ViewMatrix = scene->camera[0]->getCamera();	// glm::mat4(1.0f); 
-				//ViewMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-1.9f, 2.07f, 3.8f));
+				glm::mat4 ViewMatrix = scene->camera[0]->getCamera();
 				for (unsigned int i = 0; i < 4; ++i) {
 					for (unsigned int j = 0; j < 4; ++j)
 						printf("%f, ", ViewMatrix[i][j]);
@@ -214,34 +184,34 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 			}
 			case GLFW_KEY_F10:
 			{
-				if (!fullscreen)
+				// TODO: Important bug, after press KEY F10, game stop responding
+				if (fullscreen)
 				{
-					// backup window position and window size
+					// leave full screen by setting previous width and height of the game window
+					glfwSetWindowMonitor(window, NULL, 30, 30, width, height, GLFW_DONT_CARE);
+					fullscreen = false;
+				}
+				else
+				{
+					// Save current width and height, so after user leave full screen we can resize window size back to previos size
 					//glfwGetWindowPos(window, &xPos, &_wndPos[1]);
 					glfwGetWindowSize(window, &width, &height);
 					printf("saving width: %d, height: %d\n", width, height);
 
-					// get resolution of monitor
+					// get resolution, refresh rate of monitor
 					GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 					const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
 					// switch to full screen
 					glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-
+					
 					fullscreen = true;
-				}
-				else
-				{
-					// get resolution of monitor
-					GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-					const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-					glfwSetWindowMonitor(window, NULL, 30, 30, width, height, GLFW_DONT_CARE);
-					fullscreen = false;
 				}
 				break;
 			}
 			case GLFW_KEY_F2:
 			{
+				// Draw / hide detail of textures over them
 				if (Callback::camera == nullptr) {
 					break;	// return
 				}
@@ -259,6 +229,7 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 			}
 			case GLFW_KEY_F1:
 			{
+				// Enable / disable fly camera
 				if (Callback::camera == nullptr) {
 					break;	// return
 				}
@@ -277,6 +248,7 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 	}
 	else if (action == GLFW_RELEASE)
 	{
+		// Camera movement
 		switch (key)
 		{
 		case GLFW_KEY_W:
@@ -362,8 +334,7 @@ void Callback::button_callback(GLFWwindow* window, int button, int action, int m
 		glReadPixels(x, y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, &index);
 
 		printf("Clicked on pixel %d, %d, color %02hhx %02hhx %02hhx %02hhx, depth %f, stencil index %u\n", x, y, color[0], color[1], color[2], color[3], depth, index);
-
-
+		
 		if (button == GLFW_MOUSE_BUTTON_1)
 		{
 			if (index == 10) {
