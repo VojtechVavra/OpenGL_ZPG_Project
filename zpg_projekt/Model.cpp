@@ -158,6 +158,7 @@ void Model::render() {
 	// render the cube
 	//glBindVertexArray(VAO); 
 	glDrawArrays(GL_TRIANGLES, 0, vertexCount); // mode, first, count
+    glBindVertexArray(0);
 }
 
 /*GLuint Model::getVAO()

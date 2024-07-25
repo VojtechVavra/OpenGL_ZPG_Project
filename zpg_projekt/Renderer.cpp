@@ -4,6 +4,7 @@
 #include "FPSCounter.hpp"
 #include "LoadModel.hpp"	// smazat
 #include "ObjLoader.hpp"
+#include "Window.hpp"
 
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -19,10 +20,11 @@ Renderer::Renderer()
 	lastFrame = 0.0f;
 }
 
-void Renderer::renderScene(std::shared_ptr<Scene> scene, GLFWwindow* window)
+void Renderer::renderScene(std::shared_ptr<Scene> scene, std::shared_ptr<Window> window)
 {
 	this->scene = scene;
 	this->window = window;
+	this->glfwWindow = window->getGLFWwindow();
 
 	glEnable(GL_DEPTH_TEST);
 	//glDisable(GL_DEPTH_TEST);
@@ -169,13 +171,17 @@ void Renderer::renderInit()
 
 		scene->object[i]->getModel().render();
 	}
-
 }
 
 
 void Renderer::renderLoop()
 {
-	FPSCounter fpsCounter = FPSCounter();
+	FPSCounter fpsCounter;
+	fpsCounter.enablePrint(false);
+	fpsCounter.bindLambda([this](int fps) {
+		window->setWindowTitle("ZPG - FPS: " + std::to_string(fps));
+		});
+
 	flame = new Flame();
 
 	glEnable(GL_DEPTH_TEST);
@@ -196,7 +202,7 @@ void Renderer::renderLoop()
 	
 	// vytvorit renderer, predat mu tridu scenu, scena udrzuje objekty
 	// Main loop
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(glfwWindow))
 	{
 		// per-frame time logic
 		currentFrame = glfwGetTime();
@@ -246,10 +252,10 @@ void Renderer::renderLoop()
 		// update other events like input handling
 		glfwPollEvents();
 		// put the stuff we’ve been drawing onto the display
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(glfwWindow);
 	}
 
-	glfwDestroyWindow(window);
+	glfwDestroyWindow(glfwWindow);
 	glfwTerminate();
 }
 

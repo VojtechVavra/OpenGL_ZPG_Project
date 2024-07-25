@@ -370,9 +370,8 @@ void Object::renderSkybox(std::shared_ptr<Camera> camera)
 
     texture->LoadCubemap();
 
-
     this->getModel().render();		// glDrawArrays()
-    //glBindVertexArray(0);
+    glBindVertexArray(0);
 }
 
 void Object::renderSkybox2(std::shared_ptr<Camera> camera)

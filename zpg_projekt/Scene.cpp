@@ -60,7 +60,6 @@ void Scene::InitializeScene()
 
 void Scene::registerUsedShaders()
 {
-	//
 	Shader::getShader(ShaderType::FLAME);
 
 	shaderPrograms = Shader::getShaderPrograms();

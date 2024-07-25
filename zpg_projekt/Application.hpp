@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Window.hpp"
+#include "Renderer.hpp"
 
 
 class Application {
@@ -24,13 +25,12 @@ public:
 private:
     static Application* m_single;
     Application();
-    std::shared_ptr<Window> m_window; // application window
-    //int windowWidth, windowHeight;
-    //int* windSize[2];
-
-    //void CreateWindow(int width = 800, int height = 600);
+    std::shared_ptr<Window> m_window;
     void PrintInfo();
     void draw();
+
+    std::shared_ptr<class Scene> scene;
+    Renderer renderer;
 };
 
 #endif

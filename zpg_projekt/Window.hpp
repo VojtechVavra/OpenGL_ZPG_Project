@@ -12,11 +12,9 @@ class Window
 {
 public:
 	Window(const char* title, int width = 800, int height = 600);
-
+	
 	GLFWwindow* getGLFWwindow() const;
-	
 	void createWindow(const char* title, int width, int height);
-	
 	void VSyncEnable(bool enabled);
 
 	void setSize(int width, int height);
@@ -24,7 +22,6 @@ public:
 	int* getWindowSizePtr() { return windowSize; };
 	void printWindowSize();
 private:
-	//std::shared_ptr<GLFWwindow> m_glfwWindow;
 	GLFWwindow* m_glfwWindow;
 
 	int windowWidth, windowHeight;

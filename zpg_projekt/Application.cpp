@@ -26,7 +26,7 @@ Application* Application::getInstance()
 
 Application::Application()
 {
-	m_window = std::make_shared<Window>("ZPGSS");
+	m_window = std::make_shared<Window>("ZPG - OpenGL");
 	srand(time(nullptr));
 }
 
@@ -83,11 +83,9 @@ void Application::callbackFunctions()
 
 void Application::draw()
 {
-	std::shared_ptr<Scene> scene = std::shared_ptr<Scene>(new Scene());
-	Renderer renderer = Renderer();
+	scene = std::make_shared<Scene>();
 	Callback::scene = scene;
-
-	renderer.renderScene(scene, m_window->getGLFWwindow());
+	renderer.renderScene(scene, m_window);
 }
 
 Application::~Application()

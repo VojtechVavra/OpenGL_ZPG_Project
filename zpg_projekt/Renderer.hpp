@@ -11,15 +11,15 @@ class Renderer
 public:
 	Renderer();
 	~Renderer();
-	void renderScene(std::shared_ptr<Scene> scene, GLFWwindow* window);
+	void renderScene(std::shared_ptr<Scene> scene, std::shared_ptr<class Window> window);
 private:
 	void renderInit();
 	void renderLoop();
 	//void renderObject(Object* object);
 	void renderObject(std::shared_ptr<Object> object);
 	std::shared_ptr<Scene> scene;
-	//std::shared_ptr<GLFWwindow> window;
-	GLFWwindow* window;
+	std::shared_ptr<class Window> window;
+	GLFWwindow* glfwWindow;
 	void renderModel(int i_stencil_offset);
 	void renderModel2(int meshModel); // 2021 - repairing loading models
 	

@@ -292,9 +292,10 @@ MeshLoader::~MeshLoader(void)
 /**
 *	Renders all loaded MeshEntries
 **/
-void MeshLoader::render() {
-	//return;
+void MeshLoader::render()
+{
 	//MemoryUsage::printMemoryUsage("Before Render ");
+	
 	auto textureManager = TextureManager::getInstance();
 	std::vector<std::shared_ptr<Texture>> t;
 	//t.clear(); // Clear vector to reuse
