@@ -14,7 +14,6 @@ public:
 	Window(const char* title, int width = 800, int height = 600);
 
 	GLFWwindow* getGLFWwindow() const;
-	GLFWwindow* getRawPtrWindow() const;
 	
 	void createWindow(const char* title, int width, int height);
 	

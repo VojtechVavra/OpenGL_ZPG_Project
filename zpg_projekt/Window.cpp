@@ -38,13 +38,13 @@ void Window::createWindow(const char* title, int width, int height)
 	}
 
 	// Make the window's context current
-	glfwMakeContextCurrent(getRawPtrWindow());
+	glfwMakeContextCurrent(this->m_glfwWindow);
 	
 	VSyncEnable(true);
 
 	// we will tell GLFW that it should hide the cursor and capture it. Capturing a cursor means that, once the application has focus, the mouse cursor stays within the center of the window (unless the application loses focus or quits). We can do this with one simple configuration call:
 	// After this call, wherever we move the mouse it won't be visible and it should not leave the window.
-	glfwSetInputMode(getRawPtrWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(this->m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	/* Start GLEW extension handler
 	*  -----------------------------------------------------------------
@@ -81,12 +81,6 @@ void Window::VSyncEnable(bool enabled)
 */
 GLFWwindow* Window::getGLFWwindow() const
 {
-	return m_glfwWindow;
-}
-
-GLFWwindow* Window::getRawPtrWindow() const
-{
-	std::cout << windowSize[0] << " " << windowSize[1] << std::endl;
 	return m_glfwWindow;
 }
 

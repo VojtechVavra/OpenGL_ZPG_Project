@@ -66,19 +66,19 @@ void Application::callbackFunctions()
 	Callback::setWindow(m_window);
 
 	glfwSetErrorCallback([](int error, const char* description) { Callback::error_callback(error, description); });
-	glfwSetCursorPosCallback(m_window->getRawPtrWindow(), Callback::cursor_pos_callback);
-	glfwSetKeyCallback(m_window->getRawPtrWindow(), [](GLFWwindow* window, int key, int scancode, int action, int mods) { Callback::key_callback(window, key, scancode, action, mods); });
-	glfwSetMouseButtonCallback(m_window->getRawPtrWindow(), [](GLFWwindow* window, int button, int action, int mode) { Callback::button_callback(window, button, action, mode); });
+	glfwSetCursorPosCallback(m_window->getGLFWwindow(), Callback::cursor_pos_callback);
+	glfwSetKeyCallback(m_window->getGLFWwindow(), [](GLFWwindow* window, int key, int scancode, int action, int mods) { Callback::key_callback(window, key, scancode, action, mods); });
+	glfwSetMouseButtonCallback(m_window->getGLFWwindow(), [](GLFWwindow* window, int button, int action, int mode) { Callback::button_callback(window, button, action, mode); });
 	//glfwSetWindowFocusCallback(this->GetWindow().get(), [](GLFWwindow* window, int focused) { Callback::window_focus_callback(window, focused); });
-	glfwSetWindowFocusCallback(m_window->getRawPtrWindow(), Callback::window_focus_callback);
-	glfwSetWindowIconifyCallback(m_window->getRawPtrWindow(), [](GLFWwindow* window, int iconified) { Callback::window_iconify_callback(window, iconified); });
-	glfwSetWindowUserPointer(m_window->getRawPtrWindow(), m_window->getWindowSizePtr()/*&windSize*/);
-	glfwSetWindowSizeCallback(m_window->getRawPtrWindow(), Callback::window_size_callback);
+	glfwSetWindowFocusCallback(m_window->getGLFWwindow(), Callback::window_focus_callback);
+	glfwSetWindowIconifyCallback(m_window->getGLFWwindow(), [](GLFWwindow* window, int iconified) { Callback::window_iconify_callback(window, iconified); });
+	glfwSetWindowUserPointer(m_window->getGLFWwindow(), m_window->getWindowSizePtr()/*&windSize*/);
+	glfwSetWindowSizeCallback(m_window->getGLFWwindow(), Callback::window_size_callback);
 	
 	// Nastavení callbacku pro zmìnu velikosti framebufferu
-	glfwSetFramebufferSizeCallback(m_window->getRawPtrWindow(), Callback::framebuffer_size_callback);
+	glfwSetFramebufferSizeCallback(m_window->getGLFWwindow(), Callback::framebuffer_size_callback);
 
-	glfwSetScrollCallback(m_window->getRawPtrWindow(), Callback::scroll_callback);
+	glfwSetScrollCallback(m_window->getGLFWwindow(), Callback::scroll_callback);
 }
 
 void Application::draw()
