@@ -15,5 +15,7 @@ public:
 private:
 	GLuint textureId;
 	std::string texturePath;
-};
 
+	// TODO: this param name is not used, but it should also be set
+	std::string name;
+};
