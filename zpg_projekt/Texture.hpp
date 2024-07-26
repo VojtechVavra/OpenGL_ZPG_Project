@@ -10,7 +10,10 @@ public:
 	Texture(std::string texturePath, GLuint textureId);
 	void Load() const;
 	void LoadCubemap() const;
+
 	GLuint getTextureId();
+
+	void Bind() const;
 	void Delete();
 private:
 	GLuint textureId;

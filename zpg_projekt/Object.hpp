@@ -15,6 +15,9 @@
 #include "Shader.hpp"
 #include "Subject.hpp"
 
+#include "VAO.hpp"
+#include "VBO.hpp"
+
 #include "Texture.hpp"
 
 //#include "Camera.hpp"   // added, maybe throw error
@@ -25,15 +28,18 @@ class camera;
 class Object // : public virtual Observer
 {
 public:
+    virtual ~Object() = default;
     Object(glm::vec3 position); // pouzivam jen pro kameru
     Object(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType); // For lights without model
-    Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType);
-    Object(glm::vec3 position, Model model, std::shared_ptr<Texture> texture, GLuint shaderProgram, ShaderType shaderType);
+    Object(glm::vec3 position, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType);
+    Object(glm::vec3 position, std::shared_ptr<Texture> texture, GLuint shaderProgram, ShaderType shaderType);
     
-    //Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderID, ShaderType shaderType, std::shared_ptr<Camera> camera);
-    //Object(glm::vec3 position, Model model, GLuint shaderID, ShaderType shaderType);
     Object();
+
+    // nova funkce pro tvorbu objektu - + vao a vbo tvoreni
+    Object(const Shader& shader);
     //~Object();
+
     glm::vec3 getPosition() const;
     glm::mat4 getMatrix() const;
     glm::vec3 getRotate() const;
@@ -51,6 +57,11 @@ public:
     void Scale(glm::mat4 mat4x4, glm::vec3 scale);
     void Scale(glm::vec3 scale);
     //void LookAt(glm::vec3 target, float x, float y);
+
+    // Draw object
+    virtual void draw();
+    // Render mesh model
+    void render_mesh_new();
 
     void render();
     void renderSkybox(std::shared_ptr<Camera> camera);
@@ -87,8 +98,9 @@ protected:
     static GLuint objectCount;
     GLuint objID;
 private:
-    //glm::vec3 position;
-    
+    VAO m_VAO;
+    VBO m_VBO;
+    Shader m_shader;
 };
 
 #endif // !OBJECTSPACE_H

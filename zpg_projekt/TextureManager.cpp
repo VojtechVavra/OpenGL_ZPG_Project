@@ -22,24 +22,35 @@ TextureManager::TextureManager() {}
 std::shared_ptr<Texture> TextureManager::createTexture(std::string textureName)
 {
 	//Bind the first texture to the first texture unit.
-	glActiveTexture(GL_TEXTURE0);
+	//glActiveTexture(GL_TEXTURE0);
 
 	std::string texturePath = "textures\\" + textureName;	// "textures\\floor\\floor1.jpg"
-	GLuint textureID = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_MIPMAPS);
+	GLuint textureID = SOIL_load_OGL_texture(
+        texturePath.c_str(), 
+        SOIL_LOAD_RGBA, 
+        SOIL_CREATE_NEW_ID, 
+        SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_MIPMAPS
+    );
 
     if (textureID == 0) {
+        // Pokud se naètení nepodaøilo, nastavíme výchozí texturu
+        // 
         //printf("[Texture manager/loader] \"%s\" failed to load texture!\n", texturePath.c_str());
 
         //int r = rand() % 2 + 1;
         const char* rand_texture_choice = DEFAULT_NOTEXTURE2;   // r == 1 ? DEFAULT_NOTEXTURE1 : DEFAULT_NOTEXTURE2;
         //printf("[Texture model manager/loader] setting up default texture \"%s\"\n", rand_texture_choice);
-        textureID = SOIL_load_OGL_texture(rand_texture_choice, SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_MIPMAPS);
+        textureID = SOIL_load_OGL_texture(
+            rand_texture_choice, 
+            SOIL_LOAD_RGBA, 
+            SOIL_CREATE_NEW_ID, 
+            SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_MIPMAPS
+        );
+
         texturePath = std::string(rand_texture_choice);
     }
-
-
-	glBindTexture(GL_TEXTURE_2D, textureID);
-
+    
+    // Vytvoø novou instanci textury a pøidej ji do mapy
 	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureName, textureID);
 	textures.insert({ textureName, newTexture });
 
@@ -49,22 +60,35 @@ std::shared_ptr<Texture> TextureManager::createTexture(std::string textureName)
 std::shared_ptr<Texture> TextureManager::createNoRepeatTexture(std::string textureName)
 {
     //Bind the first texture to the first texture unit.
-    glActiveTexture(GL_TEXTURE0);
+    //glActiveTexture(GL_TEXTURE0);
 
     std::string texturePath = textureName;	// "textures\\floor\\floor1.jpg"
-    GLuint textureID = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y | SOIL_FLAG_MIPMAPS);
+    GLuint textureID = SOIL_load_OGL_texture(
+        texturePath.c_str(), 
+        SOIL_LOAD_RGBA, 
+        SOIL_CREATE_NEW_ID, 
+        SOIL_FLAG_INVERT_Y | SOIL_FLAG_MIPMAPS
+    );
+
     if (textureID == 0) {
+        // Pokud se naètení nepodaøilo, nastavíme výchozí texturu
+        
         //printf("[Texture model manager/loader] \"%s\" failed to load texture!\n", texturePath.c_str());
 
         //int r = rand() % 2 + 1;
         const char* rand_texture_choice = DEFAULT_NOTEXTURE2;   // r == 1 ? DEFAULT_NOTEXTURE1 : DEFAULT_NOTEXTURE2;
         //printf("[Texture model manager/loader] setting up default texture \"%s\"\n", rand_texture_choice);
-        textureID = SOIL_load_OGL_texture(rand_texture_choice, SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y | SOIL_FLAG_MIPMAPS);
+        textureID = SOIL_load_OGL_texture(
+            rand_texture_choice, 
+            SOIL_LOAD_RGBA, 
+            SOIL_CREATE_NEW_ID, 
+            SOIL_FLAG_INVERT_Y | SOIL_FLAG_MIPMAPS
+        );
+
         texturePath = std::string(rand_texture_choice);
     }
-
-    glBindTexture(GL_TEXTURE_2D, textureID);
-
+    
+    // Vytvoø novou instanci textury a pøidej ji do mapy
     std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(texturePath, textureID);
     textures.insert({ texturePath, newTexture });
 
@@ -93,21 +117,32 @@ std::shared_ptr<Texture> TextureManager::getTexture(std::string textureName, boo
 std::shared_ptr<Texture> TextureManager::createModelTexture(std::string textureName)
 {
     //Bind the first texture to the first texture unit.
-    glActiveTexture(GL_TEXTURE0);
+    //glActiveTexture(GL_TEXTURE0);
 
     std::string texturePath = textureName;	// "textures\\floor\\floor1.jpg"
-    GLuint textureID = SOIL_load_OGL_texture(texturePath.c_str(), SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_MIPMAPS);
+    GLuint textureID = SOIL_load_OGL_texture(
+        texturePath.c_str(), 
+        SOIL_LOAD_RGBA, 
+        SOIL_CREATE_NEW_ID, 
+        SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_MIPMAPS
+    );
+
     if (textureID == 0) {
         //printf("[Texture model manager/loader] \"%s\" failed to load texture!\n", texturePath.c_str());
 
         //int r = rand() % 2 + 1;
         const char* rand_texture_choice = DEFAULT_NOTEXTURE2;   // r == 1 ? DEFAULT_NOTEXTURE1 : DEFAULT_NOTEXTURE2;
         //printf("[Texture model manager/loader] setting up default texture \"%s\"\n", rand_texture_choice);
-        textureID = SOIL_load_OGL_texture(rand_texture_choice, SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_MIPMAPS);
+        textureID = SOIL_load_OGL_texture(
+            rand_texture_choice, 
+            SOIL_LOAD_RGBA, 
+            SOIL_CREATE_NEW_ID, 
+            SOIL_FLAG_INVERT_Y | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_MIPMAPS
+        );
         texturePath = std::string(rand_texture_choice);
     }
     
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    //glBindTexture(GL_TEXTURE_2D, textureID);
 
     std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(texturePath, textureID);
     textures.insert({ texturePath, newTexture });

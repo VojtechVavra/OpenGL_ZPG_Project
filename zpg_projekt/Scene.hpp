@@ -27,6 +27,20 @@ public:
 	Scene();
 	~Scene();
 
+
+	/* Scene contain objects:
+	*  objects can be:
+	*	 1. 3D Models which contains:
+	*		1.1. mesh
+	*		1.2. textures
+	*		1.3. shaders
+	*		1.4. position in 3D world scene
+	*    2. Lights
+	*	 3. Camera
+	*    3. Skybox (which is type of 3D model exatly textured cube)
+	*	 4.
+	*/
+
 	std::vector<std::shared_ptr<Object>> object;
 	std::vector<std::shared_ptr<Camera>> camera;
 	std::vector<std::shared_ptr<Light>> light;
@@ -34,7 +48,6 @@ public:
 
 	std::shared_ptr<SkyBox> skybox;
 	ShaderProgram skyboxshader;
-	std::shared_ptr<Object> skybox2;
 
 	std::vector<std::shared_ptr<SpotLight>> spotLight;
 	std::vector<std::shared_ptr<DirectionalLight>> directionalLight;
@@ -64,6 +77,5 @@ private:
 	void skyboxSection();
 	void modelSection();
 };
-
 
 #endif // !SCENE_HPP

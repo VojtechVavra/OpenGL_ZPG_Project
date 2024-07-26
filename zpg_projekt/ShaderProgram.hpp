@@ -8,15 +8,15 @@
 #include "Camera.hpp"
 
 
-class ShaderProgram  : public virtual Observer
+class ShaderProgram  : public /*virtual*/ Observer
 {
 public:
 	ShaderProgram(ShaderType shaderType, GLuint shaderProgram);
 	ShaderProgram();
 
-	void update(Camera* camera, camChange cameraChange) override;
+	void update(Camera* camera, enum class camChange cameraChange) override;
 
-	int shaderType;
+	ShaderType shaderType;
 	GLuint shaderProgram;
 };
 

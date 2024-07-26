@@ -180,6 +180,8 @@
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="VAO.cpp" />
+    <ClCompile Include="VBO.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -224,6 +226,8 @@
     <ClInclude Include="Subject.hpp" />
     <ClInclude Include="Texture.hpp" />
     <ClInclude Include="TextureManager.hpp" />
+    <ClInclude Include="VAO.hpp" />
+    <ClInclude Include="VBO.hpp" />
     <ClInclude Include="Window.hpp" />
   </ItemGroup>
   <ItemGroup>

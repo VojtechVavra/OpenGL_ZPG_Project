@@ -63,7 +63,7 @@ void Application::PrintInfo()
 	printf("Using GLFW %i.%i.%i\n", major, minor, revision);
 }
 
-void Application::callbackFunctions()
+void Application::callbackFunctions() const
 {
 	Callback::setWindow(m_window);
 
@@ -85,9 +85,9 @@ void Application::callbackFunctions()
 
 void Application::draw()
 {
-	scene = std::make_shared<Scene>();
-	Callback::scene = scene;
-	renderer.renderScene(scene, m_window);
+	m_scene = std::make_shared<Scene>();
+	Callback::scene = m_scene;
+	m_renderer.renderScene(m_scene, m_window);
 }
 
 Application::~Application()

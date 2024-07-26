@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 
 #include "ModelPrefabs.hpp"
@@ -51,3 +52,4 @@ ModelPrefabs::~ModelPrefabs()
 {
 	std::cout << "Destructor of ModelPrefabs\n";
 }
+*/

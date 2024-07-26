@@ -7,8 +7,6 @@
 
 #include "Observer.hpp"
 
-enum camChange;
-
 
 class Subject
 {
@@ -20,7 +18,7 @@ public:
 	//void notifyObservers();	// Notify all the registered observers when a change happens
 	//void notifyObservers(std::string change);
 
-	void notifyObservers(Camera* camera, camChange cameraChange);	//Subject*
+	void notifyObservers(Camera* camera, enum class camChange cameraChange);	//Subject*
 private:
 	//std::vector<Observer*> observers;
 	std::vector<std::shared_ptr<Observer>> observers;

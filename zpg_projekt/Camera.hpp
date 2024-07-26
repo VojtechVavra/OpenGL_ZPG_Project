@@ -38,7 +38,7 @@ namespace cameraDefaultValues {
 	const float FOV = 45.0f;		// camera ZOOM / FOV
 }
 
-enum camChange {
+enum class camChange {
 	MOVE_ROTATE,
 	PROJECTION,
 	FLASHLIGHT,

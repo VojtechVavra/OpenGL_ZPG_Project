@@ -210,7 +210,7 @@ void Shader::sendUniform(GLuint shaderProgram, const GLchar* name, glm::mat4 dat
 // end static functions
 
 
-void Shader::use()
+void Shader::use() const
 {
     glUseProgram(shaderProgram);
 }

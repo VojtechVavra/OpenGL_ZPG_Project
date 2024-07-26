@@ -17,7 +17,7 @@ public:
     Application* getInstance();
     ~Application();
     
-    void callbackFunctions();
+    void callbackFunctions() const;
     void setWindowSize(int width, int height) const;
     void setWindowTitle(const std::string& newTitle) const;
     void init();
@@ -29,8 +29,8 @@ private:
     void PrintInfo();
     void draw();
 
-    std::shared_ptr<class Scene> scene;
-    Renderer renderer;
+    std::shared_ptr<class Scene> m_scene;
+    Renderer m_renderer;
 };
 
 #endif

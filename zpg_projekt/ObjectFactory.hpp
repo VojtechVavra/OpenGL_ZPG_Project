@@ -14,25 +14,25 @@ class ObjectFactory
 public:
 	static std::shared_ptr<ObjectFactory> getInstance();
 
-	std::shared_ptr<Object> createObject(std::string modelName, ShaderType shaderType);
+	//std::shared_ptr<Object> createObject(std::string modelName, ShaderType shaderType);
 	std::shared_ptr<Object> createObject(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 color);
 	std::shared_ptr<Object> createObject(std::string modelName, ShaderType shaderType, glm::vec3 position, std::string texture);
 	
 	// skybox
-	std::shared_ptr<Object> createSkybox(std::string texturePath);
+	//std::shared_ptr<Object> createSkybox(std::string texturePath);
 
 	// Point light
-	std::shared_ptr<Light> createPointLight(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 objectColor, glm::vec3 lightColor, float attenuation, float ambientCoefficient);
+	//std::shared_ptr<Light> createPointLight(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 objectColor, glm::vec3 lightColor, float attenuation, float ambientCoefficient);
 	// light without model
 	std::shared_ptr<Light> createPointLight(glm::vec3 position, ShaderType shaderType, glm::vec3 lightColor, float attenuation, float ambientCoefficient);
 
 	// Spot light
-	std::shared_ptr<Light> createSpotLight(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 objectColor, glm::vec3 lightColor, float attenuation, float ambientCoefficient, float coneAngle, glm::vec3 coneDirection);
+	//std::shared_ptr<Light> createSpotLight(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 objectColor, glm::vec3 lightColor, float attenuation, float ambientCoefficient, float coneAngle, glm::vec3 coneDirection);
 	// light without model
 	std::shared_ptr<Light> createSpotLight(glm::vec3 position, ShaderType shaderType, glm::vec3 lightColor, float attenuation, float ambientCoefficient, float coneAngle, glm::vec3 coneDirection);
 
 	// Directional light
-	std::shared_ptr<Light> createDirectionalLight(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 objectColor, glm::vec3 lightColor, glm::vec3 direction, float ambientCoefficient);
+	//std::shared_ptr<Light> createDirectionalLight(std::string modelName, ShaderType shaderType, glm::vec3 position, glm::vec3 objectColor, glm::vec3 lightColor, glm::vec3 direction, float ambientCoefficient);
 	// light without model
 	std::shared_ptr<Light> createDirectionalLight(ShaderType shaderType, glm::vec3 lightColor, glm::vec3 direction, float ambientCoefficient);
 

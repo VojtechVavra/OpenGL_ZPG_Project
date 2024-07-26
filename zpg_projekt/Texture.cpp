@@ -2,7 +2,7 @@
 
 Texture::Texture(std::string texturePath, GLuint textureId) : texturePath(texturePath), textureId(textureId){ }
 
-
+// TODO: smazat, misto toho pouzit Bind() funkci
 void Texture::Load() const {
     glActiveTexture(GL_TEXTURE0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);  // GL_REPEAT
@@ -10,11 +10,13 @@ void Texture::Load() const {
     glBindTexture(GL_TEXTURE_2D, textureId);
 }
 
+void Texture::Bind() const {
+    glActiveTexture(GL_TEXTURE0); // Aktivuje texture unit 0
+    glBindTexture(GL_TEXTURE_2D, textureId); // Bind textury
+}
 
 void Texture::LoadCubemap() const {
     glActiveTexture(GL_TEXTURE0);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);  // GL_REPEAT
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
 }
 

@@ -31,17 +31,17 @@ enum class ShaderType {
 
 static std::unordered_map<ShaderType, std::string> fragShaderPath(
     {
-        { ShaderType::AMBIENT,  "./shaders/ambient.frag" },
-        { ShaderType::DIFFUSE,  "./shaders/diffuse.frag" },
-        { ShaderType::SPECULAR, "./shaders/specular.frag" },
-        { ShaderType::PHONG,    "./shaders/phong.frag" },
-        { ShaderType::BLINN,    "./shaders/blinn.frag" },
-        { ShaderType::SKYBOX,   "./shaders/skybox.frag" },
-        { ShaderType::DIFFUSE_MODEL,  "./shaders/TextureFragmentShader.frag" },
-        { ShaderType::SPECULAR_MODEL, "./shaders/------" },    // dodelat specularni shader pro 3d modely/objekty
-        { ShaderType::GRAB_MODEL, "./shaders/grabObject.frag" },    // dodelat specularni shader pro 3d modely/objekty
+        { ShaderType::AMBIENT,          "./shaders/ambient.frag" },
+        { ShaderType::DIFFUSE,          "./shaders/diffuse.frag" },
+        { ShaderType::SPECULAR,         "./shaders/specular.frag" },
+        { ShaderType::PHONG,            "./shaders/phong.frag" },
+        { ShaderType::BLINN,            "./shaders/blinn.frag" },
+        { ShaderType::SKYBOX,           "./shaders/skybox.frag" },
+        { ShaderType::DIFFUSE_MODEL,    "./shaders/TextureFragmentShader.frag" },
+        { ShaderType::SPECULAR_MODEL,   "./shaders/------" },    // dodelat specularni shader pro 3d modely/objekty
+        { ShaderType::GRAB_MODEL,       "./shaders/grabObject.frag" },    // dodelat specularni shader pro 3d modely/objekty
         // DIFFUSE_MODEL a SPECULAR_MODEL are shaders for imported models
-        { ShaderType::FLAME, "./shaders/flame.frag" }
+        { ShaderType::FLAME,            "./shaders/flame.frag" }
 });
 
 static std::unordered_map<ShaderType, GLuint> shaderPrograms(
@@ -80,7 +80,9 @@ public:
 
     GLuint getShader();
     ShaderType getType();
-    void use();
+
+    // aktivuje shader (nutne pred vykreslovanim objektu a pred zaslanim uniformnich promennych do shaderu)
+    void use() const;
     static void use(GLuint shaderProgram);
 
 private:  

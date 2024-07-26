@@ -47,14 +47,15 @@ Object::Object(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType)
     std::cout << "Object type 2 - light without model" << std::endl;
 }
 
-Object::Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType)
+// Colored 3D model
+Object::Object(glm::vec3 position, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType)
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
     this->rotation = glm::vec3(0.0f);
     this->scale = glm::vec3(0.0f);
     this->color = color;
-    this->model = model;
+    //this->model = model;
     this->shaderProgram = shaderProgram;
     this->shaderType = shaderType;
     //this->camera = camera;
@@ -67,14 +68,15 @@ Object::Object(glm::vec3 position, Model model, glm::vec3 color, GLuint shaderPr
     std::cout << "Object type 3 - other model objects" << std::endl;
 }
 
-Object::Object(glm::vec3 position, Model model, std::shared_ptr<Texture> texture, GLuint shaderProgram, ShaderType shaderType)
+// Textured 3D model
+Object::Object(glm::vec3 position, std::shared_ptr<Texture> texture, GLuint shaderProgram, ShaderType shaderType)
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
     this->rotation = glm::vec3(0.0f);
     this->scale = glm::vec3(0.0f);
     this->texture = texture;
-    this->model = model;
+    //this->model = model;
     this->shaderProgram = shaderProgram;
     this->shaderType = shaderType;
     //this->hasTexture = false;
@@ -103,6 +105,20 @@ Object::Object(glm::vec3 position, Model model, std::shared_ptr<Texture> texture
 Object::Object()
 {
     this->color = glm::vec3(1.0f, 1.0f, 1.0f);
+}
+
+#include "models/2/cube.hpp"
+
+Object::Object(const Shader& shader) : m_shader(shader)
+{
+    const void* vertices = cube_simple2;
+
+    m_VAO.bind();
+    m_VBO.bind();
+    m_VBO.setData(sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    m_VAO.unbind();
 }
 
 /*Object::~Object()
@@ -322,6 +338,47 @@ glm::vec3 Object::getScale() const
     }
 }*/
 
+/*
+*   Default uniforms for PHONG shader
+*/
+void Object::draw()
+{
+    // Aktivace shaderu
+    m_shader.use();
+    
+    // Nastavíme uniformní promìnné aktuálních dat
+    m_shader.sendUniform("modelMatrix", m_matrix);
+    m_shader.sendUniform("fragmentColor", color);
+     
+    // texture load
+    if (hasTexture())
+    {
+        // Funkce, která binduje texturu pro použití v shaderu
+        texture->Bind();
+
+        //loadTexture();
+        m_shader.sendUniform("hasTexture", 1);
+        m_shader.sendUniform("textureUnitID", 0);
+    }
+    else
+    {
+        m_shader.sendUniform("hasTexture", 0);
+    }
+    // viewMatrix a projectionMatrix a viewPos se updatuje ve ShaderProgram classe pøi zmìnì kamery
+    
+    m_VAO.bind();
+    // Vykreslovací kód (napø. glDrawArrays nebo glDrawElements)
+    render_mesh_new();
+
+    m_VAO.unbind();
+}
+
+void Object::render_mesh_new()
+{
+    int vertexCount = 555;
+    glDrawArrays(GL_TRIANGLES, 0, vertexCount); // mode, first, count
+    glBindVertexArray(0);
+}
 
 void Object::render()
 {

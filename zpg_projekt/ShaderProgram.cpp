@@ -3,7 +3,7 @@
 
 ShaderProgram::ShaderProgram(ShaderType shaderType, GLuint shaderProgram)
 {
-    this->shaderType = (int)shaderType;
+    this->shaderType = shaderType;
     this->shaderProgram = shaderProgram;
 }
 
@@ -15,11 +15,11 @@ void ShaderProgram::update(Camera* camera, camChange cameraChange)
 
     if (cameraChange == camChange::MOVE_ROTATE) {
         // nepridavat vypisy/printy sekala by se scena
-        if (shaderType == (int)ShaderType::AMBIENT)
+        if (shaderType == ShaderType::AMBIENT)
         {
             Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
         }
-        else if (shaderType == (int)ShaderType::DIFFUSE)
+        else if (shaderType == ShaderType::DIFFUSE)
         {
             Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
 
@@ -30,12 +30,12 @@ void ShaderProgram::update(Camera* camera, camChange cameraChange)
                 Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
             }
         }
-        else if (shaderType == (int)ShaderType::SPECULAR)
+        else if (shaderType == ShaderType::SPECULAR)
         {
             Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
             Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
         }
-        else if (shaderType == (int)ShaderType::PHONG)
+        else if (shaderType == ShaderType::PHONG)
         {
             Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
             Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
@@ -47,7 +47,7 @@ void ShaderProgram::update(Camera* camera, camChange cameraChange)
                 Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
             }
         }
-        else if (shaderType == (int)ShaderType::BLINN)
+        else if (shaderType == ShaderType::BLINN)
         {
         }
         //std::cout << "Camera has changed" << std::endl;
@@ -57,8 +57,8 @@ void ShaderProgram::update(Camera* camera, camChange cameraChange)
         Shader::sendUniform(shaderProgram, "projectionMatrix", camera->getProjectionMatrix());
         //std::cout << "Projection has changed" << std::endl;
     }
-    else if (cameraChange == FLASHLIGHT) {          // camChange::FLASHLIGHT
-        if (shaderType == (int)ShaderType::DIFFUSE || shaderType == (int)ShaderType::DIFFUSE_MODEL) {
+    else if (cameraChange == camChange::FLASHLIGHT) {          // camChange::FLASHLIGHT
+        if (shaderType == ShaderType::DIFFUSE || shaderType == ShaderType::DIFFUSE_MODEL) {
             Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
             if (camera->isFlashLightOn()) {
                 Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
@@ -67,9 +67,8 @@ void ShaderProgram::update(Camera* camera, camChange cameraChange)
         }    
     }
     else if (cameraChange == camChange::SHOW_TEXTURE_DETAIL) {
-        if (this->shaderType == (int)ShaderType::DIFFUSE_MODEL || this->shaderType == (int)ShaderType::SPECULAR_MODEL) {
+        if (this->shaderType == ShaderType::DIFFUSE_MODEL || this->shaderType == ShaderType::SPECULAR_MODEL) {
             Shader::sendUniform(shaderProgram, "showTextureDetail", camera->getTextureDetail());
         }
-        
     }
 }

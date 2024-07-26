@@ -144,14 +144,14 @@ void Scene::lightSection()
 	ambientCoefficient = 0.1f;
 	glm::vec3 objectColor(1.0f, 1.0f, 1.0f);
 
-	std::shared_ptr<Light> pointLight1 = objectFactory->createPointLight("sphere", ShaderType::AMBIENT, position, objectColor, lightColor, attenuation, ambientCoefficient);
+	/*std::shared_ptr<Light> pointLight1 = objectFactory->createPointLight("sphere", ShaderType::AMBIENT, position, objectColor, lightColor, attenuation, ambientCoefficient);
 	pointLight1->Scale(glm::vec3(0.02f, 0.02f, 0.02f));
 
 	auto pointLight1p = std::static_pointer_cast<PointLight>(pointLight1);
 	//object.push_back(pointLight1p);
 	//camera[0]->registerObserver(pointLight1p);
 	light.push_back(pointLight1p);
-
+	*/
 
 	/*Model lightModel("sphere");
 	lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -178,13 +178,13 @@ void Scene::lightSection()
 	coneDirection = glm::vec3(0.0f, -1.0f, 0.0f); // direction_up_down;
 	objectColor = glm::vec3(0.5f, 1.0f, 0.5f);
 
-	std::shared_ptr<Light> newSpotLight1 = objectFactory->createSpotLight("cube", ShaderType::AMBIENT, position, objectColor, lightColor, attenuation, ambientCoefficient, coneAngle, coneDirection);
+	/*std::shared_ptr<Light> newSpotLight1 = objectFactory->createSpotLight("cube", ShaderType::AMBIENT, position, objectColor, lightColor, attenuation, ambientCoefficient, coneAngle, coneDirection);
 	newSpotLight1->Scale(glm::vec3(0.03f, 0.01f, 0.03f));
 	auto newSpotLight11 = std::static_pointer_cast<SpotLight>(newSpotLight1);
 	spotLight.push_back(newSpotLight11);
 	//object.push_back(newSpotLight11);	// added
 	//camera[0]->registerObserver(newSpotLight11);
-
+	*/
 
 	
 	for (int i = 0; i < spotLight.size(); i++) {
@@ -299,7 +299,7 @@ void Scene::objectTransformSection()
 	// end translate, scale
 	*/
 
-	object.push_back(light[0]);	// <- odkomentovat
+	/*object.push_back(light[0]);	// <- odkomentovat
 	//camera[0]->registerObserver(light[0]);
 
 	object.push_back(spotLight[0]);	// added
@@ -307,7 +307,7 @@ void Scene::objectTransformSection()
 
 	object.push_back(directionalLight[0]);
 	//camera[0]->registerObserver(directionalLight[0]);
-
+	*/
 	// Apply initial transformations and scales on objects
 	camera[0]->notifyObservers(camera[0].get(), camChange::MOVE_ROTATE);
 }
@@ -547,13 +547,6 @@ void Scene::skyboxSection()
 	GLuint shaderProgram = Shader::getShader(ShaderType::SKYBOX);
 	ShaderProgram new_skyboxshader(ShaderType::SKYBOX, shaderProgram);
 	skyboxshader = new_skyboxshader;
-	
-
-	//auto of = ObjectFactory::getInstance();
-	//skybox2 = of->createSkybox("countryside2");
-
-	//auto of = ObjectFactory::getInstance();
-	//skybox2 = of->createSkybox("countryside2");
 }
 
 void Scene::modelSection()
