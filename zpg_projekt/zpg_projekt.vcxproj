@@ -162,6 +162,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MemoryUsage.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Mesh_old.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelPrefabs.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="Material.hpp" />
     <ClInclude Include="MemoryUsage.hpp" />
     <ClInclude Include="Mesh.hpp" />
+    <ClInclude Include="Mesh_old.hpp" />
     <ClInclude Include="MeshLoader.hpp" />
     <ClInclude Include="Model.hpp" />
     <ClInclude Include="ModelPrefabs.hpp" />

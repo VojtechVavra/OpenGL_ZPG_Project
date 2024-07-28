@@ -603,52 +603,74 @@ void Scene::modelSection()
 	newMeshModel->ModelMatrix = ModelMatrix;
 	meshObjects.push_back(newMeshModel);*/
 
-	MeshLoader* newMeshModel = new MeshLoader("models\\scena\\kniha_scena6.obj");
+	auto o1 = std::make_shared<Object>("models\\scena\\kniha_scena6.obj", ShaderType::DIFFUSE_MODEL);
+	o1->setCamera(camera.at(0));
+	//MeshLoader* newMeshModel = new MeshLoader("models\\scena\\kniha_scena6.obj");
 	glm::mat4 ModelMatrix = glm::mat4(1.0);
 	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0, 0.0f, 2.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));	// glm::vec3(0.1f, 0.1f, 0.1f)
-	newMeshModel->ModelMatrix = ModelMatrix;
+	o1->setMatrix(ModelMatrix);
+	//newMeshModel->ModelMatrix = ModelMatrix;
+	
 	//meshObjects.push_back(newMeshModel);
-	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+	//meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+	m_objects.push_back(o1);
 	zatahlyZaves = true;
 
-	newMeshModel = new MeshLoader("models\\zavesy\\zaves_zatahly.obj");
+	//newMeshModel = new MeshLoader("models\\zavesy\\zaves_zatahly.obj");
+	auto o2 = std::make_shared<Object>("models\\zavesy\\zaves_zatahly.obj", ShaderType::DIFFUSE_MODEL);
+	o2->setCamera(camera.at(0));
 	//newMeshModel->stencilNumber = 10;
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0f, 2.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));
-	newMeshModel->ModelMatrix = ModelMatrix;
+	//newMeshModel->ModelMatrix = ModelMatrix;
+	o2->setMatrix(ModelMatrix);
 	//meshObjects.push_back(newMeshModel);
-	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+	//meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+	m_objects.push_back(o2);
 
-	newMeshModel = new MeshLoader("models\\zavesy\\zaves_odtahly.obj");
+	
+	//newMeshModel = new MeshLoader("models\\zavesy\\zaves_odtahly.obj");
+	auto o3 = std::make_shared<Object>("models\\zavesy\\zaves_zatahly.obj", ShaderType::DIFFUSE_MODEL);
+	o3->setCamera(camera.at(0));
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0f, 2.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));
-	newMeshModel->ModelMatrix = ModelMatrix;
+	//newMeshModel->ModelMatrix = ModelMatrix;
+	o3->setMatrix(ModelMatrix);
 	//meshObjects.push_back(newMeshModel);
-	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+	m_objects.push_back(o3);
+	//meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
 
-	newMeshModel = new MeshLoader("models\\scena\\krb.obj");
+	//newMeshModel = new MeshLoader("models\\scena\\krb.obj");
+	auto o4 = std::make_shared<Object>("models\\scena\\krb.obj", ShaderType::DIFFUSE_MODEL);
+	o4->setCamera(camera.at(0));
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0f, 2.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));	// glm::vec3(0.1f, 0.1f, 0.1f)
-	newMeshModel->ModelMatrix = ModelMatrix;
+	//newMeshModel->ModelMatrix = ModelMatrix;
+	o4->setMatrix(ModelMatrix);
 	//meshObjects.push_back(newMeshModel);
-	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
-
-	//newMeshModel = new MeshLoader("models\\chair\\chair.obj");
-	newMeshModel = new MeshLoader("models\\scena\\vetev2.obj");
+	//meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+	m_objects.push_back(o4);
+	
+	//newMeshModel = new MeshLoader("models\\scena\\vetev2.obj");
+	auto o5 = std::make_shared<Object>("models\\scena\\krb.obj", ShaderType::DIFFUSE_MODEL);
+	o5->setCamera(camera.at(0));
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-1.25f, 0.26f, 0.6f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));
-	newMeshModel->ModelMatrix = ModelMatrix;
+	//newMeshModel->ModelMatrix = ModelMatrix;
+	o5->setMatrix(ModelMatrix);
 	//newMeshModel->shaderProgramID = 12;
 	//meshObjects.push_back(newMeshModel);
-	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+	//meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
+	m_objects.push_back(o5);
 
+	/*
 	newMeshModel = new MeshLoader("models\\scena\\flame.obj");
 	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0f, 2.0f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));	// glm::vec3(0.1f, 0.1f, 0.1f)
 	newMeshModel->ModelMatrix = ModelMatrix;
 	meshObjects.push_back(std::shared_ptr<MeshLoader>(newMeshModel));
-
+	*/
 
 	/*newMeshModel = new MeshLoader("models\\downloaded\\Indoor_plant_3\\Low-Poly Plant_.obj");
 	//ModelMatrix = glm::translate(ModelMatrix, glm::vec3(1.0f, 0.2f, 0.0f));
@@ -662,11 +684,15 @@ void Scene::modelSection()
 	newMeshModel->ModelMatrix = ModelMatrix;
 	meshObjects.push_back(newMeshModel);*/
 
-	/*newMeshModel = new MeshLoader("models\\cube\\dum2\\dum2.obj");
-	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, -0.4f, 0.0f));
-	newMeshModel->ModelMatrix = ModelMatrix;
+	//newMeshModel = new MeshLoader("models\\cube\\dum2\\dum2.obj");
+	//auto o10 = std::make_shared<Object>("models\\cube\\dum2\\dum2.obj", ShaderType::DIFFUSE);
+	//o10->setCamera(camera.at(0));
+	//ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, -0.4f, 0.0f));
+	//o10->setMatrix(ModelMatrix);
+	//m_objects.push_back(o10);
+	//newMeshModel->ModelMatrix = ModelMatrix;
 	//meshObjects.push_back(newMeshModel);	// uncomment to import house into scene
-	*/
+	
 
 	//meshModel1 = new MeshLoader("models\\downloaded\\Grass\\Grass.obj");
 	
@@ -680,14 +706,39 @@ void Scene::modelSection()
 
 	//glm::vec3 direction_front_to_back_up_half_down = glm::vec3(1.0f, 1.0f, 0.0f);
 	glm::vec3 direction_front_to_back_up_half_down = glm::vec3(1.0f, 1.0f, 0.0f);
+	GLuint daw = o1->getShader();
 
-	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.direction", direction_front_to_back_up_half_down);
-	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.color", glm::vec3(1.0f, 1.0f, 1.0f));
-	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5));
-	Shader::sendUniform(newMeshModel->shaderProgramID, "dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(o1->getShader(), "dirLight.direction", direction_front_to_back_up_half_down);
+	Shader::sendUniform(o1->getShader(), "dirLight.color", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(o1->getShader(), "dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	Shader::sendUniform(o1->getShader(), "dirLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5));
+	Shader::sendUniform(o1->getShader(), "dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 	//Shader::sendUniform(newMeshModel->shaderProgramID, "viewMatrix2", camera[0]->getProjectionMatrix());
+
+	Shader::sendUniform(o2->getShader(), "dirLight.direction", direction_front_to_back_up_half_down);
+	Shader::sendUniform(o2->getShader(), "dirLight.color", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(o2->getShader(), "dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	Shader::sendUniform(o2->getShader(), "dirLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5));
+	Shader::sendUniform(o2->getShader(), "dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+	Shader::sendUniform(o3->getShader(), "dirLight.direction", direction_front_to_back_up_half_down);
+	Shader::sendUniform(o3->getShader(), "dirLight.color", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(o3->getShader(), "dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	Shader::sendUniform(o3->getShader(), "dirLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5));
+	Shader::sendUniform(o3->getShader(), "dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 	
+	Shader::sendUniform(o4->getShader(), "dirLight.direction", direction_front_to_back_up_half_down);
+	Shader::sendUniform(o4->getShader(), "dirLight.color", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(o4->getShader(), "dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	Shader::sendUniform(o4->getShader(), "dirLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5));
+	Shader::sendUniform(o4->getShader(), "dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+	Shader::sendUniform(o5->getShader(), "dirLight.direction", direction_front_to_back_up_half_down);
+	Shader::sendUniform(o5->getShader(), "dirLight.color", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(o5->getShader(), "dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	Shader::sendUniform(o5->getShader(), "dirLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5));
+	Shader::sendUniform(o5->getShader(), "dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
 }
 
 //void Scene::skybox

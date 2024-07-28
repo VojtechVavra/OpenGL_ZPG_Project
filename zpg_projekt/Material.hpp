@@ -20,7 +20,7 @@ struct Material {
     glm::vec3 specular;
     float shininess;
 
-    // textures
+    // texture names
     std::string diffuseMap;
     std::string specularMap;
     std::string heightMap;

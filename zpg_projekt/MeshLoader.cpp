@@ -1,15 +1,33 @@
 #include "MeshLoader.hpp"
 #include "TextureManager.hpp"
 #include "MemoryUsage.hpp"
+#include "Mesh.hpp"
+
+#include <iostream>
+
+//#include "VAO.hpp"
+//#include "VBO.hpp"
+
+
 
 /**
 *	Constructor, loading the specified aiMesh
 **/
 MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
+	//vbo[VERTEX_BUFFER] = NULL;
+	//vbo[TEXCOORD_BUFFER] = NULL;
+	//vbo[NORMAL_BUFFER] = NULL;
+	//vbo[INDEX_BUFFER] = NULL;
+	
+	//m_VBO[VERTEX_BUFFER] = std::make_shared<VBO>();
+	//m_VBO[TEXCOORD_BUFFER] = std::make_shared<VBO>();
+	//m_VBO[NORMAL_BUFFER] = std::make_shared<VBO>();
+	//m_VBO[INDEX_BUFFER] = std::make_shared<VBO>();
 	vbo[VERTEX_BUFFER] = NULL;
 	vbo[TEXCOORD_BUFFER] = NULL;
 	vbo[NORMAL_BUFFER] = NULL;
 	vbo[INDEX_BUFFER] = NULL;
+
 
 	if (mesh->mMaterialIndex >= 0)
 	{
@@ -17,8 +35,15 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 	}
 
 	glGenVertexArrays(1, &vao);
+	//m_VAO = std::make_shared<VAO>();
+	
 	glBindVertexArray(vao);
+	//m_VAO.bind();
 
+	/*
+	*  @mNumFaces The number of primitives (triangles, polygons, lines) in this  mesh.
+	*  mNumFaces * 3 = number of vertices (probably we use only triangles, thats why we multiply by 3)
+	*/
 	elementCount = mesh->mNumFaces * 3;
 
 	if (mesh->HasPositions()) {
@@ -28,9 +53,13 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 			vertices[i * 3 + 1] = mesh->mVertices[i].y;
 			vertices[i * 3 + 2] = mesh->mVertices[i].z;
 		}
-
+		
 		glGenBuffers(1, &vbo[VERTEX_BUFFER]);
+		//m_VBO.assign
+		//m_VBO[VERTEX_BUFFER] = std::make_unique<VBO>();
+
 		glBindBuffer(GL_ARRAY_BUFFER, vbo[VERTEX_BUFFER]);
+		//m_VBO[VERTEX_BUFFER].bind();
 		glBufferData(GL_ARRAY_BUFFER, 3 * mesh->mNumVertices * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
@@ -48,8 +77,10 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 		}
 
 		glGenBuffers(1, &vbo[TEXCOORD_BUFFER]);
+		//m_VBO[TEXCOORD_BUFFER] = std::make_shared<VBO>();
 		glBindBuffer(GL_ARRAY_BUFFER, vbo[TEXCOORD_BUFFER]);
-		glBufferData(GL_ARRAY_BUFFER, 2 * mesh->mNumVertices * sizeof(GLfloat), texCoords, GL_STATIC_DRAW);
+		//m_VBO[TEXCOORD_BUFFER].bind();
+		glBufferData(GL_ARRAY_BUFFER, 2 * mesh->mNumVertices * sizeof(GLfloat), texCoords, GL_STATIC_DRAW); // mozno pouzit: m_VBO[TEXCOORD_BUFFER]->setData(2 * mesh->mNumVertices * sizeof(GLfloat), texCoords, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 		glEnableVertexAttribArray(1);
@@ -67,7 +98,9 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 		}
 
 		glGenBuffers(1, &vbo[NORMAL_BUFFER]);
+		//m_VBO[NORMAL_BUFFER] = std::make_shared<VBO>();
 		glBindBuffer(GL_ARRAY_BUFFER, vbo[NORMAL_BUFFER]);
+		//m_VBO[NORMAL_BUFFER].bind();
 		glBufferData(GL_ARRAY_BUFFER, 3 * mesh->mNumVertices * sizeof(GLfloat), normals, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, NULL);
@@ -86,7 +119,9 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 		}
 
 		glGenBuffers(1, &vbo[INDEX_BUFFER]);
+		//m_VBO[INDEX_BUFFER] = std::make_shared<VBO>();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[INDEX_BUFFER]);
+		//m_VBO[INDEX_BUFFER]->bind();
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * mesh->mNumFaces * sizeof(GLuint), indices, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, NULL);
@@ -94,7 +129,7 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 		
 		delete[] indices;
 	}
-
+	
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -105,7 +140,11 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 /**
 *	Deletes the allocated OpenGL buffers
 **/
-MeshLoader::MeshEntry::~MeshEntry() {
+MeshLoader::MeshEntry::~MeshEntry()
+{
+	int a = 0;
+	std::cout << "mesh deleted" << std::endl;
+	/*
 	if (vbo[VERTEX_BUFFER]) {
 		glDeleteBuffers(1, &vbo[VERTEX_BUFFER]);
 	}
@@ -123,21 +162,24 @@ MeshLoader::MeshEntry::~MeshEntry() {
 	}
 
 	glDeleteVertexArrays(1, &vao);
+	*/
 }
 
 /**
 *	Renders this MeshEntry
 **/
 void MeshLoader::MeshEntry::render() {
-	glBindVertexArray(vao);
-	glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, NULL);
-	glBindVertexArray(0);
+	//glBindVertexArray(vao);
+	//m_VAO->bind();
+	//glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, NULL);
+	//glBindVertexArray(0);
+	//m_VAO->unbind();
 }
 
 /**
 *	Mesh constructor, loads the specified filename if supported by Assimp
 **/
-MeshLoader::MeshLoader(const char* filename)
+MeshLoader::MeshLoader(const char* filename, std::shared_ptr<Mesh>& out_mesh)
 {
 	ModelMatrix = glm::mat4(1.0);
 	Assimp::Importer importer;
@@ -157,11 +199,17 @@ MeshLoader::MeshLoader(const char* filename)
 
 	SaveFilenameAndPath(std::string(filename));
 	shaderProgramID = 0;
+	// The number of primitives(triangles, polygons, lines) in this  mesh.
+	unsigned int numPrimitives = 0;
 
 	for (int i = 0; i < scene->mNumMeshes; ++i) {
 		aiMesh* mesh = scene->mMeshes[i];
-		meshEntries.push_back(new MeshLoader::MeshEntry(mesh));
-		
+		numPrimitives += mesh->mNumFaces * 3;
+
+		//meshEntries.push_back(new MeshLoader::MeshEntry(mesh));
+		meshEntries.push_back(std::make_shared<MeshLoader::MeshEntry>(mesh));
+		meshEntries.back()->m_numVertices = mesh->mNumVertices;
+
 		const aiMaterial* pMaterial;
 		if (i <= scene->mNumMaterials) {
 			pMaterial = scene->mMaterials[i];
@@ -194,6 +242,24 @@ MeshLoader::MeshLoader(const char* filename)
 		}*/
 	}
 
+	auto textureManager = TextureManager::getInstance();
+	std::vector<std::shared_ptr<Texture>> textures;
+
+	// Získání textur na základì materiálù
+	for (int j = 0; j < material.size(); j++) {
+		if (material[j]->diffuseMap != "no_texture") {
+			textures.emplace_back(textureManager->getModelTexture(material[j]->diffuseMap));
+		}
+	}
+
+	/*
+	*  @mNumFaces The number of primitives (triangles, polygons, lines) in this  mesh.
+	*  numPrimitives * 3 = number of vertices (probably we use only triangles, thats why we multiply by 3)
+	*/
+	
+
+	out_mesh = std::make_shared<Mesh>(std::move(material), std::move(meshEntries), numPrimitives, std::move(textures)/*, std::move(m_VAO), std::move(m_VBO)*/);
+	
 	/*for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
 	//for(unsigned int i = 0; i < mat->GetTextureCount()) {
 		const aiMaterial* pMaterial = scene->mMaterials[i];
@@ -283,10 +349,12 @@ std::unique_ptr<Material> MeshLoader::getMaterial(const aiMaterial* mat, const c
 **/
 MeshLoader::~MeshLoader(void)
 {
+	/* this functionality moved to mesh.cpp
 	for (int i = 0; i < meshEntries.size(); ++i) {
 		delete meshEntries.at(i);
 	}
 	meshEntries.clear();
+	*/
 }
 
 /**
@@ -332,9 +400,9 @@ void MeshLoader::render()
 	
 
 	for (int j = 0; j < material.size(); j++) {
-		//if (material[j]->diffuseMap != "no_texture") {
+		if (material[j]->diffuseMap != "no_texture") {
 			t.emplace_back(textureManager->getModelTexture(material[j]->diffuseMap));
-		//}
+		}
 		
 		//t.emplace_back(textureManager->getModelTexture("..\\" + material[j]->diffuseMap));
 		//std::string a = "..\\" + material[j]->diffuseMap;

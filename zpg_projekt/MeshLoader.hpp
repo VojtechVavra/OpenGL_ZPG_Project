@@ -2,8 +2,9 @@
 
 // this code taken and edited from: https://badvertex.com/2014/04/13/loading-meshes-using-assimp-in-opengl.html
 #include <vector>
+#include <array>
 #include <memory>
-#include <cstddef>         // std::size_t
+#include <cstddef>					// std::size_t
 #include <string>
 
 #include <assimp/Importer.hpp>      // C++ importer interface
@@ -15,33 +16,50 @@
 
 #include "Material.hpp"
 #include "Shader.hpp"
+//#include "Mesh.hpp"
+#include "VAO.hpp"
+#include "VBO.hpp"
 
+class Mesh;
 
 class MeshLoader
 {
-public:
+private:
 	struct MeshEntry {
-		static enum BUFFERS {
+		enum BUFFERS : int {
 			VERTEX_BUFFER, TEXCOORD_BUFFER, NORMAL_BUFFER, INDEX_BUFFER
 		};
+
+		//GLuint vao;
+		//GLuint vbo[4];
 		GLuint vao;
 		GLuint vbo[4];
+
+		
+		//std::shared_ptr<VAO> m_VAO;
+		//std::array<std::shared_ptr<VBO>, 4> m_VBO;
+		//VAO m_VAO;
+		//VBO m_VBO[4];
+		
+		
+		unsigned int m_numVertices = 0;
 
 		unsigned int elementCount;
 
 		MeshEntry(aiMesh* mesh);
 		~MeshEntry();
 
-		int materialIndex;	// added
+		int materialIndex = 0;	// added
 
-		void load(aiMesh* mesh);
+		//void load(aiMesh* mesh);
 		void render();
 	};
 
-	std::vector<MeshEntry*> meshEntries;
+	std::vector<std::shared_ptr<struct MeshLoader::MeshEntry>> meshEntries;
+	//std::vector<struct MeshLoader::MeshEntry*> meshEntries;
 
 public:
-	MeshLoader(const char* filename);
+	MeshLoader(const char* filename, std::shared_ptr<Mesh>& out_mesh);
 	~MeshLoader(void);
 
 	std::vector<std::unique_ptr<Material>> material;
@@ -59,6 +77,4 @@ public:
 
 private:
 	void SaveFilenameAndPath(const std::string& filename);
-	
 };
-

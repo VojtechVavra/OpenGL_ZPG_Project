@@ -15,8 +15,10 @@
 #include "Shader.hpp"
 #include "Subject.hpp"
 
-#include "VAO.hpp"
+// added new code - after refactoring
+#include "VAO.hpp" // added misto Model.hpp ten by se mel smazat a zaniknout
 #include "VBO.hpp"
+#include "Mesh.hpp"
 
 #include "Texture.hpp"
 
@@ -37,8 +39,9 @@ public:
     Object();
 
     // nova funkce pro tvorbu objektu - + vao a vbo tvoreni
-    Object(const Shader& shader);
+    Object(const std::string& name, const ShaderType shaderType = ShaderType::PHONG);
     //~Object();
+    void setCamera(std::shared_ptr<Camera> camera);
 
     glm::vec3 getPosition() const;
     glm::mat4 getMatrix() const;
@@ -61,7 +64,7 @@ public:
     // Draw object
     virtual void draw();
     // Render mesh model
-    void render_mesh_new();
+    //void render_mesh_new();
 
     void render();
     void renderSkybox(std::shared_ptr<Camera> camera);
@@ -98,9 +101,11 @@ protected:
     static GLuint objectCount;
     GLuint objID;
 private:
-    VAO m_VAO;
-    VBO m_VBO;
+    std::shared_ptr<Mesh> m_mesh;
+    //VAO m_VAO;
+    //VBO m_VBO;
     Shader m_shader;
+    std::shared_ptr<Camera> m_camera;
 };
 
 #endif // !OBJECTSPACE_H

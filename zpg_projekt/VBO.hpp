@@ -10,6 +10,7 @@ public:
     void bind();
     void unbind();
     void setData(GLsizeiptr size, const void* data, GLenum usage = GL_STATIC_DRAW);
+    operator bool() const;
 
 private:
     GLuint m_VBO;

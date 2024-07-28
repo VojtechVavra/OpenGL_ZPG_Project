@@ -232,18 +232,24 @@ void Renderer::renderLoop()
 
 		// render objects
 		int i;
-		for (i = 0; i < scene->object.size(); i++)
+		//for (i = 0; i < scene->object.size(); i++)
+		for (i = 0; i < scene->m_objects.size(); i++)
 		{
 			glStencilFunc(GL_ALWAYS, i + 1, 0xFF);
 			//glStencilFunc(GL_ALWAYS, scene->object[i]->getID(), 0xFF);
 			
-			renderObject(scene->object[i]); //uncomment this
+			//renderObject(scene->object[i]); //uncomment this
+
+			// TODO: rewrite as: scene->getObjects().at(i)->draw
+			// new after refactoring
+			
+			scene->m_objects.at(i)->draw();
 		}
 		
 		// render 3D objects
 		//renderModel();
 
-		renderModel(i); //uncomment this
+		//renderModel(i); //uncomment this
 
 		//glDisable(GL_ALPHA_TEST);
 		//glDepthMask(GL_TRUE);

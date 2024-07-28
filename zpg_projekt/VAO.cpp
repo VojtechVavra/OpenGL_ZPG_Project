@@ -21,3 +21,11 @@ void VAO::unbind() const
 {
     glBindVertexArray(0);
 }
+
+/*
+ *  Return true if m_VBO buffer exist, else false
+*/
+VAO::operator bool() const
+{
+    return glIsBuffer(m_VAO);
+}

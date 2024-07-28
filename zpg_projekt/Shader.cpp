@@ -85,9 +85,9 @@ std::vector<ShaderProgram> Shader::getShaderPrograms()
     return this->shaderProgram;
 }*/
 
-GLuint Shader::getShader()
+GLuint Shader::getShader() const
 {
-    return this->shaderProgram;
+    return shaderProgram;
 }
 
 ShaderType Shader::getType()
@@ -97,6 +97,12 @@ ShaderType Shader::getType()
 
 
 
+
+Shader::Shader(const ShaderType shaderType)
+{
+    type = shaderType;
+    shaderProgram = createShader(shaderType);
+}
 
 void Shader::sendUniform(const GLchar* name, GLfloat value)
 {

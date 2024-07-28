@@ -62,6 +62,10 @@ class Camera;
 
 class Shader { //: public virtual Observer {
 public:
+    // Výchozí konstruktor
+    Shader() = default;
+    Shader(const ShaderType shaderType);
+    
     void sendUniform(const GLchar* name, GLfloat value);
     void sendUniform(const GLchar* name, glm::vec3 dataVec3);
     void sendUniform(const GLchar* name, glm::vec4 dataVec4);
@@ -78,7 +82,7 @@ public:
     static GLuint getShader(ShaderType fragmentShaderType);
     static std::vector<ShaderProgram> getShaderPrograms();
 
-    GLuint getShader();
+    GLuint getShader() const;
     ShaderType getType();
 
     // aktivuje shader (nutne pred vykreslovanim objektu a pred zaslanim uniformnich promennych do shaderu)

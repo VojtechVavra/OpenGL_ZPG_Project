@@ -109,16 +109,24 @@ Object::Object()
 
 #include "models/2/cube.hpp"
 
-Object::Object(const Shader& shader) : m_shader(shader)
+Object::Object(const std::string& name, const ShaderType shaderType) //: m_shader(shader)
 {
-    const void* vertices = cube_simple2;
+    m_shader = Shader(shaderType);
+    MeshLoader a(name.c_str(), m_mesh);
 
+    /*
     m_VAO.bind();
     m_VBO.bind();
     m_VBO.setData(sizeof(vertices), vertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     m_VAO.unbind();
+    */
+}
+
+void Object::setCamera(std::shared_ptr<Camera> camera)
+{
+    m_camera = camera;
 }
 
 /*Object::~Object()
@@ -143,7 +151,11 @@ Model Object::getModel() const
 
 GLuint Object::getShader() const
 {
-    return this->shaderProgram;
+    // new refactored code
+    return m_shader.getShader();
+    
+    // old
+    //return this->shaderProgram;
 }
 
 void Object::useShader()
@@ -208,7 +220,8 @@ void Object::Scale(glm::vec3 scale)
 
 bool Object::hasTexture()
 {
-    return texture != nullptr;
+    return m_mesh->getTextureCount() > 0;
+    //return texture != nullptr;
 }
 
 void Object::loadTexture()
@@ -346,39 +359,36 @@ void Object::draw()
     // Aktivace shaderu
     m_shader.use();
     
-    // Nastavíme uniformní promìnné aktuálních dat
+    m_shader.sendUniform("viewMatrix", m_camera->getCamera());
+    m_shader.sendUniform("projectionMatrix", m_camera->getProjectionMatrix());
+
+    // Pošleme z CUPU do GPU uniformní promìnné aktualizovaných dat
     m_shader.sendUniform("modelMatrix", m_matrix);
-    m_shader.sendUniform("fragmentColor", color);
-     
+    //m_shader.sendUniform("fragmentColor", color);
+    
+    m_mesh->setShader(m_shader);
     // texture load
     if (hasTexture())
     {
         // Funkce, která binduje texturu pro použití v shaderu
-        texture->Bind();
+        // TODO: funkce texture->Bind() musi byt nejspis presunuta do tridi Mesh
+        //texture->Bind();
+    }
 
-        //loadTexture();
-        m_shader.sendUniform("hasTexture", 1);
-        m_shader.sendUniform("textureUnitID", 0);
-    }
-    else
-    {
-        m_shader.sendUniform("hasTexture", 0);
-    }
     // viewMatrix a projectionMatrix a viewPos se updatuje ve ShaderProgram classe pøi zmìnì kamery
     
-    m_VAO.bind();
-    // Vykreslovací kód (napø. glDrawArrays nebo glDrawElements)
-    render_mesh_new();
-
-    m_VAO.unbind();
+    GLint stencilValue = 0; // 15
+    //glStencilFunc(GL_ALWAYS, stencilValue, 0xFF);
+    
+    m_mesh->render();
 }
 
-void Object::render_mesh_new()
+/*void Object::render_mesh_new()
 {
     int vertexCount = 555;
     glDrawArrays(GL_TRIANGLES, 0, vertexCount); // mode, first, count
-    glBindVertexArray(0);
-}
+    
+}*/
 
 void Object::render()
 {
@@ -411,7 +421,6 @@ void Object::render()
 
     this->getModel().render();		// glDrawArrays()
 }
-
 
 void Object::renderSkybox(std::shared_ptr<Camera> camera)
 {

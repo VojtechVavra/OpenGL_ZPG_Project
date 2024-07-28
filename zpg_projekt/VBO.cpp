@@ -21,3 +21,11 @@ void VBO::unbind() {
 void VBO::setData(GLsizeiptr size, const void* data, GLenum usage) {
     glBufferData(GL_ARRAY_BUFFER, size, data, usage);
 }
+
+/* 
+ *  Return true if m_VBO buffer exist, else false
+*/
+VBO::operator bool() const
+{
+    return glIsBuffer(m_VBO);
+}

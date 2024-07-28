@@ -56,6 +56,10 @@ public:
 	GLuint programID;
 	std::vector<Mesh*> meshes;	// added 2021
 	std::vector<std::shared_ptr<MeshLoader>> meshObjects;
+
+	// new refactorized code
+	std::vector<std::shared_ptr<Object>> m_objects;
+
 	//std::vector<MeshLoader*> meshObjects;
 	//Shader shaderLight;
 	bool zatahlyZaves;
