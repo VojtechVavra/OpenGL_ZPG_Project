@@ -9,4 +9,11 @@
 namespace MemoryUsage
 {
 	void printMemoryUsage(const std::string& name);
+
+	/*
+	*  Return RAM memory usage in MB
+	*/
+	int getMemoryUsage();
+
+	void PrintVRAMInfo();
 };

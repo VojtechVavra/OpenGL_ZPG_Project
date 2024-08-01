@@ -16,14 +16,11 @@ std::shared_ptr<TextureManager> TextureManager::getInstance()
 	return TextureManager::instance;
 }
 
-TextureManager::TextureManager() {}
+TextureManager::TextureManager() : TBaseCollectionManager<Texture>() {}
 
 
 std::shared_ptr<Texture> TextureManager::createTexture(std::string textureName)
 {
-	//Bind the first texture to the first texture unit.
-	//glActiveTexture(GL_TEXTURE0);
-
 	std::string texturePath = "textures\\" + textureName;	// "textures\\floor\\floor1.jpg"
 	GLuint textureID = SOIL_load_OGL_texture(
         texturePath.c_str(), 
@@ -52,7 +49,8 @@ std::shared_ptr<Texture> TextureManager::createTexture(std::string textureName)
     
     // Vytvoø novou instanci textury a pøidej ji do mapy
 	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureName, textureID);
-	textures.insert({ textureName, newTexture });
+	//textures.insert({ textureName, newTexture });
+    addData(newTexture);
 
 	return newTexture;
 }
@@ -90,19 +88,32 @@ std::shared_ptr<Texture> TextureManager::createNoRepeatTexture(std::string textu
     
     // Vytvoø novou instanci textury a pøidej ji do mapy
     std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(texturePath, textureID);
-    textures.insert({ texturePath, newTexture });
+    //textures.insert({ texturePath, newTexture });
+    addData(newTexture);
 
     return newTexture;
 }
 
 std::shared_ptr<Texture> TextureManager::getTexture(std::string textureName, bool repeat)
 {
-	auto it = textures.find(textureName);
+    std::shared_ptr<Texture> texture;
+
+    if ((texture = getData(textureName)) == nullptr) {
+        if (!repeat) {
+            return createNoRepeatTexture(textureName);
+        }
+        return createTexture(textureName);
+    }
+
+    return texture;
+
+	//auto it = textures.find(textureName);
+
 	/*if (textures.empty())
 	{
 		return createTexture(textureName);
 	}*/
-	if (it == textures.end())
+	/*if (it == textures.end())
 	{
         if (!repeat) {
             return createNoRepeatTexture(textureName);
@@ -110,7 +121,8 @@ std::shared_ptr<Texture> TextureManager::getTexture(std::string textureName, boo
 		return createTexture(textureName);
 	}
 
-	return it->second;
+	return it->second;*/
+    
 }
 
 
@@ -145,7 +157,8 @@ std::shared_ptr<Texture> TextureManager::createModelTexture(std::string textureN
     //glBindTexture(GL_TEXTURE_2D, textureID);
 
     std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(texturePath, textureID);
-    textures.insert({ texturePath, newTexture });
+    //textures.insert({ texturePath, newTexture });
+    addData(newTexture);
 
     return newTexture;
 }
@@ -153,20 +166,28 @@ std::shared_ptr<Texture> TextureManager::createModelTexture(std::string textureN
 std::shared_ptr<Texture> TextureManager::getModelTexture(std::string textureName)
 {
     if (textureName == "no_texture") {
-        textureName = "models\\textures\\default2.png"; //  texturePath="models\\textures\\default2.png"
+        textureName = "models\\textures\\default2.png";
     }
 
-    auto it = textures.find(textureName);
-    /*if (textures.empty())
-    {
-        return createTexture(textureName);
-    }*/
+    std::shared_ptr<Texture> texture;
+
+    if ((texture = getData(textureName)) == nullptr) {
+        return createModelTexture(textureName);
+    }
+
+    return texture;
+
+    /*auto it = textures.find(textureName);
+    //if (textures.empty())
+    //{
+    //    return createTexture(textureName);
+    //}
     if (it == textures.end())
     {
         return createModelTexture(textureName);
     }
 
-    return it->second;
+    return it->second;*/
 }
 
 std::shared_ptr<Texture> TextureManager::createCubemap(std::vector<std::string> faces, const std::string skyboxFolderName)
@@ -205,6 +226,8 @@ std::shared_ptr<Texture> TextureManager::createCubemap(std::vector<std::string> 
 
     
     std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(skyboxFolderName, textureID);
+    addData(newTexture);
+
     return newTexture;
 }
 
@@ -227,6 +250,8 @@ std::shared_ptr<Texture> TextureManager::createCubemap2(std::vector<std::string>
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(sky, cubeMapTexture);
+    addData(newTexture);
+
     return newTexture;
 }
 
@@ -237,14 +262,17 @@ void TextureManager::deleteAllTextureFromGraphicsMemory()
     //don't call this method, the texture will stay in graphics card memory until you
     //close the application.
     //it = mymap.find('b');
-    std::unordered_map<std::string, std::shared_ptr<Texture>>::iterator it;
+    
+    deleteAll();
+
+    /*std::unordered_map<std::string, std::shared_ptr<Texture>>::iterator it;
     //for (auto texture : textures) {
     for (it = textures.begin(); it != textures.end(); ++it) {
         std::cout << "Deleting texture: " << it->first << "\n";
         it->second->Delete();
         //it = mymap.find('b');
         textures.erase(it);
-    }
+    }*/
 }
 
 void TextureManager::deleteTextureByName(const std::string& textureName)
@@ -254,9 +282,15 @@ void TextureManager::deleteTextureByName(const std::string& textureName)
     //don't call this method, the texture will stay in graphics card memory until you
     //close the application.
     //it = mymap.find('b');
+
+    std::cout << "Deleting single texture: " << textureName << "\n";
+    deleteOne(textureName);
+
+    /*
     std::unordered_map<std::string, std::shared_ptr<Texture>>::iterator it;
     it = textures.find(textureName);
     std::cout << "Deleting single texture: " << it->first << "\n";
     it->second->Delete();
     textures.erase(it);
+    */
 }

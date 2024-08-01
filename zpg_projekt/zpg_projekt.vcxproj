@@ -179,6 +179,7 @@
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="Subject.cpp" />
+    <ClCompile Include="TBaseCollectionManager.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="VAO.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="SkyBox.hpp" />
     <ClInclude Include="SpotLight.hpp" />
     <ClInclude Include="Subject.hpp" />
+    <ClInclude Include="TBaseCollectionManager.hpp" />
     <ClInclude Include="Texture.hpp" />
     <ClInclude Include="TextureManager.hpp" />
     <ClInclude Include="VAO.hpp" />

@@ -180,6 +180,11 @@ void Object::setPositionWithoutTranslate(glm::vec3 newPosition)
     this->position = newPosition;
 }
 
+void Object::PrintActiveUniformVariables() const
+{
+    m_shader.PrintActiveUniformVariables();
+}
+
 
 void Object::Translate(glm::mat4 mat4x4, glm::vec3 shift)
 {

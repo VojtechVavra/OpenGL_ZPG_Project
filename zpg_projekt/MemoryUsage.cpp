@@ -41,4 +41,42 @@ namespace MemoryUsage
 
 		CloseHandle(process);
 	}
+
+	int getMemoryUsage()
+	{
+		PROCESS_MEMORY_COUNTERS pmc;
+		HANDLE process = GetCurrentProcess();
+
+		int memoryUsedInMB = -1;
+		int memoryUsedInKB = -1;
+		if (GetProcessMemoryInfo(process, &pmc, sizeof(pmc))) {
+			memoryUsedInKB = pmc.WorkingSetSize / megabyte;
+			memoryUsedInMB = memoryUsedInKB / megabyte;
+		}
+
+		CloseHandle(process);
+
+		//return memoryUsedInKB;
+		return memoryUsedInMB;
+	}
+
+
+	/*void PrintVRAMInfo() {
+		IDXGIFactory* pFactory = nullptr;
+		IDXGIAdapter* pAdapter = nullptr;
+
+		if (SUCCEEDED(CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactory))) {
+			if (SUCCEEDED(pFactory->EnumAdapters(0, &pAdapter))) {
+				DXGI_ADAPTER_DESC desc;
+				if (SUCCEEDED(pAdapter->GetDesc(&desc))) {
+					std::wcout << L"VRAM Size: " << desc.DedicatedVideoMemory / (1024 * 1024) << L" MB" << std::endl;
+				}
+				pAdapter->Release();
+			}
+			pFactory->Release();
+		}
+		else {
+			std::cerr << "Failed to create DXGI factory" << std::endl;
+		}
+	}*/
 }

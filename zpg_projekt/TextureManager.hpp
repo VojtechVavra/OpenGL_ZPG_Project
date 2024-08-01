@@ -3,9 +3,11 @@
 #include <unordered_map>
 #include <memory>
 
+#include "TBaseCollectionManager.hpp"
 #include "Texture.hpp"
 
-class TextureManager
+
+class TextureManager : public TBaseCollectionManager<Texture>
 {
 public:
 	static std::shared_ptr<TextureManager> getInstance();
@@ -23,7 +25,7 @@ public:
 	void deleteTextureByName(const std::string& textureName);
 	void deleteAllTextureFromGraphicsMemory();
 
-	std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
+	//std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
 private:
 	static std::shared_ptr<TextureManager> instance;
 	TextureManager();

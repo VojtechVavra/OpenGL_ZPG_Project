@@ -83,6 +83,7 @@ public:
     //void update(Camera* camera, camChange cameraChange) override;
     void setPositionWithoutTranslate(glm::vec3 newPosition);
 
+    void PrintActiveUniformVariables() const;
     //bool hasTexture = false;
 protected:
     glm::vec3 position;

@@ -6,6 +6,8 @@
 #include "ObjLoader.hpp"
 #include "Window.hpp"
 
+//#include "MemoryUsage.hpp"
+
 #include "glm/gtc/matrix_transform.hpp"
 
 // memory usage
@@ -178,9 +180,11 @@ void Renderer::renderLoop()
 {
 	FPSCounter fpsCounter;
 	fpsCounter.enablePrint(false);
-	fpsCounter.bindLambda([this](int fps) {
-		window->setWindowTitle("ZPG - FPS: " + std::to_string(fps));
-		});
+	fpsCounter.bindLambda([this](int fps, std::string anotherText) {
+		window->setWindowTitle("ZPG - FPS: " + std::to_string(fps) + anotherText);
+	});
+
+	//MemoryUsage::PrintVRAMInfo();
 
 	flame = new Flame();
 

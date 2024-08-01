@@ -87,6 +87,8 @@ public:
     GLuint getShader() const;
     ShaderType getType();
 
+    void PrintActiveUniformVariables() const;
+
     // aktivuje shader (nutne pred vykreslovanim objektu a pred zaslanim uniformnich promennych do shaderu)
     void use() const;
     static void use(GLuint shaderProgram);

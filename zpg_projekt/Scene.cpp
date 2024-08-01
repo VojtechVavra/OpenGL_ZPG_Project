@@ -712,6 +712,9 @@ void Scene::modelSection()
 	//glm::vec3 direction_front_to_back_up_half_down = glm::vec3(1.0f, 1.0f, 0.0f);
 	glm::vec3 direction_front_to_back_up_half_down = glm::vec3(1.0f, 1.0f, 0.0f);
 	GLuint daw = o1->getShader();
+	glUseProgram(daw);
+
+	//o1->PrintActiveUniformVariables();
 
 	Shader::sendUniform(o1->getShader(), "dirLight.direction", direction_front_to_back_up_half_down);
 	Shader::sendUniform(o1->getShader(), "dirLight.color", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -763,6 +766,8 @@ void Scene::modelSection()
 	Shader::sendUniform(o5->getShader(), "myTextureSampler", (GLint)0);
 	Shader::sendUniform(o5->getShader(), "flashLight.isActive", camera[0]->isFlashLightOn() ? 1 : 0);
 	Shader::sendUniform(o5->getShader(), "showTextureDetail", camera[0]->getTextureDetail());
+
+	//TextureManager::getInstance()->deleteAllTextureFromGraphicsMemory();
 }
 
 //void Scene::skybox

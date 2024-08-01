@@ -1,6 +1,16 @@
 #include "Texture.hpp"
+#include <iostream>
 
-Texture::Texture(std::string texturePath, GLuint textureId) : texturePath(texturePath), textureId(textureId){ }
+Texture::Texture(std::string texturePath, GLuint textureId) : texturePath(texturePath), textureId(textureId)
+{
+    m_name = getLastNameAfterDelimiter(texturePath);
+}
+
+Texture::~Texture()
+{
+    std::cout << "Deleting texture: " << m_name << "\n";
+    this->Delete();
+}
 
 // TODO: smazat, misto toho pouzit Bind() funkci
 void Texture::Load() const {
@@ -25,6 +35,11 @@ GLuint Texture::getTextureId()
     return textureId;
 }
 
+std::string Texture::getName()
+{
+    return texturePath;
+}
+
 void Texture::Delete()
 {
     /**
@@ -34,4 +49,32 @@ void Texture::Delete()
      close the application.
     */
     glDeleteTextures(1, &textureId);
+}
+
+std::string Texture::getLastNameAfterDelimiter(const std::string& path)
+{
+    // Hledání posledního vıskytu zpìtného lomítka
+    size_t pos_backslash = path.find_last_of('\\');
+    // Hledání posledního vıskytu dopøedného lomítka
+    size_t pos_forwardslash = path.find_last_of('/');
+
+    // Pokud ádné lomítko nebylo nalezeno, vrátíme celı øetìzec
+    if (pos_backslash == std::string::npos && pos_forwardslash == std::string::npos) {
+        return path;
+    }
+
+    // Vyberte vìtší z obou pozic, pokud nìkterá není npos
+    size_t pos;
+    if (pos_backslash == std::string::npos) {
+        pos = pos_forwardslash;
+    }
+    else if (pos_forwardslash == std::string::npos) {
+        pos = pos_backslash;
+    }
+    else {
+        pos = std::max(pos_backslash, pos_forwardslash);
+    }
+
+    // Vrate podøetìzec za posledním lomítkem
+    return path.substr(pos + 1);
 }

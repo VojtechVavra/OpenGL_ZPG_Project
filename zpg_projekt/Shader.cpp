@@ -112,11 +112,14 @@ void Shader::sendUniform(const GLchar* name, GLfloat value)
     }
     else {
         // in shader doesn't exist uniform variable 
+        // Important alert: Vypis textu do konzole je nejnarocnejsi operace!
+        // Dropne to z 2200 fps na 54 fps
         std::cout << "promenna neexistuje(0) " << name << std::endl;
     }
 }
 
 void Shader::sendUniform(const GLchar* name, glm::vec3 pos) {
+    glUseProgram(this->shaderProgram); // activate shaderprogram
     GLint uniformID = glGetUniformLocation(this->shaderProgram, name);  // check for -1, nepouzita uniformni promenna (otestovano)
     if (uniformID >= 0) {
         //glUniformMatrix4fv(uniformID, 1, GL_FALSE,  glm::value_ptr(data));
@@ -215,6 +218,21 @@ void Shader::sendUniform(GLuint shaderProgram, const GLchar* name, glm::mat4 dat
 }
 // end static functions
 
+
+void Shader::PrintActiveUniformVariables() const
+{
+    // Debug: List all active uniforms
+    GLint numUniforms = 0;
+    glGetProgramiv(shaderProgram, GL_ACTIVE_UNIFORMS, &numUniforms);
+    for (GLint i = 0; i < numUniforms; ++i) {
+        char name[256];
+        GLsizei length;
+        GLint size;
+        GLenum type;
+        glGetActiveUniform(shaderProgram, i, sizeof(name), &length, &size, &type, name);
+        std::cout << "Uniform #" << i << " Type: " << type << "\tName: " << name << std::endl;
+    }
+}
 
 void Shader::use() const
 {

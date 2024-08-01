@@ -123,11 +123,11 @@ void main() {
         //result += CalcSpotLight(spotLight[i], norm, fragPos);
     //}
     // phase 4: FlashLight
-    //if(flashLight.isActive == 1) {
-    //    result += CalcFlashLight2(flashLight, norm, fragPos) * 2.0; // originally uncommented
+    if(flashLight.isActive == 1) {
+        result += CalcFlashLight2(flashLight, norm, fragPos) * 2.0; // originally uncommented
         //result *= vec4(0.5, 0.5, 0.5, 1.0);
-    //}
-   // else {
+    }
+    else {
         if(hasTexture == 1)
         {
             vec4 val = texture(myTextureSampler, texCoordUV);
@@ -139,9 +139,11 @@ void main() {
             //vec3 materialDiffuseColor = myTextureSampler  * texture( myTextureSampler, texCoordUV ).rgb - (myTextureSampler - 1) * meshMaterial.diffuse;
 
 
-            //result += val * vec4(meshMaterial.ambient + meshMaterial.diffuse, 1.0); // originally uncommented
+            result += val * vec4(meshMaterial.ambient + meshMaterial.diffuse, 1.0); // originally uncommented
+            vec3 dwa = vec3(meshMaterial.specular * 0.f);
+            result += vec4(dwa, 1.0f);
 
-            result = val;
+            //result = val;
         }
         else {
         // only material
@@ -151,14 +153,14 @@ void main() {
         //result *= scene_ambient;
         //result *= vec4(0.4, 0.4, 0.4, 1.0);
 
-        //result *= vec4(0.4, 0.4, 0.4, 1.0); // original uncommented
+        result *= vec4(0.4, 0.4, 0.4, 1.0); // original uncommented
 
         //result += val * vec4(0.3f, 0.3f, 0.3f, 0.0f);
         //result += val * 0.6f; // 0.7f good value  // ambientStrength;
-   // }
+    }
 
 
-    if(showTextureDetail) {
+    if(showTextureDetail == true) {
         //vec4 textureColorProj2 = textureProj(texProj2, textureCoordProj2);
         //result = mix(result, textureColorProj2, 0.5);
 
@@ -166,7 +168,8 @@ void main() {
         result = mix(result, val, 0.5);
     }
     
-    
+     vec3 specular3 = 1.0f * meshMaterial.specular;
+
     //gl_FragColor = result; // originally uncommented
     vec4 val = texture(myTextureSampler, texCoordUV);   
 	gl_FragColor = val;
@@ -227,7 +230,7 @@ vec4 CalcDirLight(DirLight light, vec3 normal)
 {
     //diffuse
     vec3 norm = normalize(normal);
-    vec3 lightDir = normalize(light.direction);
+    vec3 lightDir = normalize(dirLight.direction);
     float diff = max(dot(norm, lightDir), 0.0);  // dot product?
 
     vec3 ambient, diffuse, specular;
