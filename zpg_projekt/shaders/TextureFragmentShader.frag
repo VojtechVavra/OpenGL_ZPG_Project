@@ -111,23 +111,23 @@ void main() {
 	vec4 result = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
     // phase 1: Directional lighting
-    //result = CalcDirLight(dirLight, norm) * 0.5f;
+    result = CalcDirLight(dirLight, norm) * 0.5f;
 
 	// phase 2: Point lights
-    for(int i = 0; i < pointLightCount; i++) {
-        result += vec4(CalcPointLight(pointLight[i], norm, fragPos), 1.0);
+    //for(int i = 0; i < pointLightCount; i++) {
+    //    result += vec4(CalcPointLight(pointLight[i], norm, fragPos), 1.0);  // originally uncommented
         //result += CalcPointLight(pointLight[i], norm, fragPos);
-    }
+    //}
     // phase 3: Spot lights
     //for(int i = 0; i < spotLightCount; i++) {
         //result += CalcSpotLight(spotLight[i], norm, fragPos);
     //}
     // phase 4: FlashLight
-    if(flashLight.isActive == 1) {
-        result += CalcFlashLight2(flashLight, norm, fragPos) * 2.0;
+    //if(flashLight.isActive == 1) {
+    //    result += CalcFlashLight2(flashLight, norm, fragPos) * 2.0; // originally uncommented
         //result *= vec4(0.5, 0.5, 0.5, 1.0);
-    }
-    else {
+    //}
+   // else {
         if(hasTexture == 1)
         {
             vec4 val = texture(myTextureSampler, texCoordUV);
@@ -137,7 +137,11 @@ void main() {
             //result += val * scene_ambient * vec4(meshMaterial.ambient, 1.0);
             //result += val; // + vec4(meshMaterial.ambient, 1.0);
             //vec3 materialDiffuseColor = myTextureSampler  * texture( myTextureSampler, texCoordUV ).rgb - (myTextureSampler - 1) * meshMaterial.diffuse;
-            result += val * vec4(meshMaterial.ambient + meshMaterial.diffuse, 1.0); 
+
+
+            //result += val * vec4(meshMaterial.ambient + meshMaterial.diffuse, 1.0); // originally uncommented
+
+            result = val;
         }
         else {
         // only material
@@ -146,11 +150,12 @@ void main() {
         }
         //result *= scene_ambient;
         //result *= vec4(0.4, 0.4, 0.4, 1.0);
-        result *= vec4(0.4, 0.4, 0.4, 1.0);
+
+        //result *= vec4(0.4, 0.4, 0.4, 1.0); // original uncommented
 
         //result += val * vec4(0.3f, 0.3f, 0.3f, 0.0f);
         //result += val * 0.6f; // 0.7f good value  // ambientStrength;
-    }
+   // }
 
 
     if(showTextureDetail) {
@@ -162,10 +167,11 @@ void main() {
     }
     
     
+    //gl_FragColor = result; // originally uncommented
+    vec4 val = texture(myTextureSampler, texCoordUV);   
+	gl_FragColor = val;
 
-    gl_FragColor = result;
-
-	// Output color = color of the texture at the specified UV
+    // Output color = color of the texture at the specified UV
 	//color = texture( myTextureSampler, UV ); // texture().rgba
 }
 

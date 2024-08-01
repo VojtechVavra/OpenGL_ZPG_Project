@@ -29,6 +29,8 @@ enum class ShaderType {
     FLAME
 };
 
+// TODO: Rename Shader class into ShaderManager and 
+// ShaderProgram class will renamed to Shader
 static std::unordered_map<ShaderType, std::string> fragShaderPath(
     {
         { ShaderType::AMBIENT,          "./shaders/ambient.frag" },

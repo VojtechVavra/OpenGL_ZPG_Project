@@ -113,6 +113,8 @@ Object::Object(const std::string& name, const ShaderType shaderType) //: m_shade
 {
     m_shader = Shader(shaderType);
     MeshLoader a(name.c_str(), m_mesh);
+    a.shaderProgramID = m_shader.getShader();
+    m_mesh->setShader(m_shader);
 
     /*
     m_VAO.bind();
@@ -365,11 +367,13 @@ void Object::draw()
     // Pošleme z CUPU do GPU uniformní promìnné aktualizovaných dat
     m_shader.sendUniform("modelMatrix", m_matrix);
     //m_shader.sendUniform("fragmentColor", color);
+    // send uniformmeshMaterial
+    //m_mesh->setShader(m_shader);
     
-    m_mesh->setShader(m_shader);
     // texture load
     if (hasTexture())
     {
+        m_shader.sendUniform("myTextureSampler", (GLint)0);
         // Funkce, která binduje texturu pro použití v shaderu
         // TODO: funkce texture->Bind() musi byt nejspis presunuta do tridi Mesh
         //texture->Bind();

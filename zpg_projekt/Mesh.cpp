@@ -32,7 +32,7 @@ Mesh::~Mesh()
 
 
 // TODO: podivat se na tuto funkci jeste
-void Mesh::render()
+void Mesh::render(bool f)
 {
 	/*for (int i = 0; i < m_meshEntries.size(); ++i) {
 		// Zajištìní, že všechny objekty jsou správnì inicializovány
@@ -99,11 +99,11 @@ void Mesh::render()
 			//m_shader.sendUniform("meshMaterial.specular", m_material[i]->specular);
 
 			if (m_material[i]->diffuseMap == "no_texture") {
-				//m_shader.sendUniform("hasTexture", 0);
+				m_shader.sendUniform("hasTexture", 0);
 			}
 			else {
-				//m_shader.sendUniform("hasTexture", 1);
-				
+				m_shader.sendUniform("hasTexture", 1);
+				glActiveTexture(GL_TEXTURE0 + textureNumberToUse);
 				glBindTexture(GL_TEXTURE_2D, t[textureNumberToUse]->getTextureId());
 				++textureNumberToUse;
 			}
@@ -130,6 +130,59 @@ void Mesh::render()
 	}
 
 	//m_VAO->unbind();
+}
+
+void Mesh::render() // nefunkcni
+{
+	auto textureManager = TextureManager::getInstance();
+	static std::vector<std::shared_ptr<Texture>> t;
+	//t.clear(); // Clear vector to reuse
+
+
+
+	glActiveTexture(GL_TEXTURE0 + 0);
+
+	for (int j = 0; j < m_material.size(); j++) {
+		
+			t.emplace_back(textureManager->getModelTexture(m_material[j]->diffuseMap));
+		
+
+		//t.emplace_back(textureManager->getModelTexture("..\\" + material[j]->diffuseMap));
+		//std::string a = "..\\" + material[j]->diffuseMap;
+	}
+
+	for (int i = 0; i < m_meshEntries.size(); ++i) {
+		if (m_material.size() - 1 >= i) {
+			glBindVertexArray(m_meshEntries[i]->vao);
+			glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[VERTEX_BUFFER]);
+			glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[TEXCOORD_BUFFER]);
+			glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[NORMAL_BUFFER]);
+			glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[INDEX_BUFFER]);
+
+			//m_shader.sendUniform("meshMaterial.ambient", m_material[i]->ambient);
+			//m_shader.sendUniform("meshMaterial.diffuse", m_material[i]->diffuse);
+			//m_shader.sendUniform("meshMaterial.specular", m_material[i]->specular);
+
+			if (m_material[i]->diffuseMap == "no_texture") {
+				m_shader.sendUniform("hasTexture", 0);
+			}
+			else {
+				m_shader.sendUniform("hasTexture", 1);
+				glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
+			}
+			//printf("diffuse: %f, %f, %f\n", material[i]->diffuse.x, material[i]->diffuse.y, material[i]->diffuse.z);
+			m_shader.sendUniform("meshMaterial.ambient", m_material[i]->ambient);
+			m_shader.sendUniform("meshMaterial.diffuse", m_material[i]->diffuse);
+			m_shader.sendUniform("meshMaterial.specular", m_material[i]->specular);
+		}
+
+		//m_meshEntries.at(i)->render();
+		// Vykreslovací kód (napø. glDrawArrays nebo glDrawElements)
+		glDrawElements(GL_TRIANGLES, m_meshEntries[i]->m_numVertices * 3 * sizeof(GLfloat), GL_UNSIGNED_INT, NULL);
+
+		//glBindVertexArray(0);
+	}
+	//t.clear(); // added mb smazat
 }
 
 int Mesh::getTextureCount() const

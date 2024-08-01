@@ -40,6 +40,7 @@ public:
 
     // nova funkce pro tvorbu objektu - + vao a vbo tvoreni
     Object(const std::string& name, const ShaderType shaderType = ShaderType::PHONG);
+    
     //~Object();
     void setCamera(std::shared_ptr<Camera> camera);
 

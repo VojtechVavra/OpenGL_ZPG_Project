@@ -27,7 +27,7 @@ Application* Application::getInstance()
 Application::Application()
 {
 	m_window = std::make_shared<Window>("ZPG - OpenGL");
-	m_window->VSyncEnable(true);
+	m_window->VSyncEnable(false);
 
 	srand(time(nullptr));
 }
@@ -69,11 +69,17 @@ void Application::callbackFunctions() const
 
 	glfwSetErrorCallback([](int error, const char* description) { Callback::error_callback(error, description); });
 	glfwSetCursorPosCallback(m_window->getGLFWwindow(), Callback::cursor_pos_callback);
-	glfwSetKeyCallback(m_window->getGLFWwindow(), [](GLFWwindow* window, int key, int scancode, int action, int mods) { Callback::key_callback(window, key, scancode, action, mods); });
-	glfwSetMouseButtonCallback(m_window->getGLFWwindow(), [](GLFWwindow* window, int button, int action, int mode) { Callback::button_callback(window, button, action, mode); });
+	glfwSetKeyCallback(m_window->getGLFWwindow(), [](GLFWwindow* window, int key, int scancode, int action, int mods) { 
+		Callback::key_callback(window, key, scancode, action, mods);
+		});
+	glfwSetMouseButtonCallback(m_window->getGLFWwindow(), [](GLFWwindow* window, int button, int action, int mode) { 
+		Callback::button_callback(window, button, action, mode);
+		});
 	//glfwSetWindowFocusCallback(this->GetWindow().get(), [](GLFWwindow* window, int focused) { Callback::window_focus_callback(window, focused); });
 	glfwSetWindowFocusCallback(m_window->getGLFWwindow(), Callback::window_focus_callback);
-	glfwSetWindowIconifyCallback(m_window->getGLFWwindow(), [](GLFWwindow* window, int iconified) { Callback::window_iconify_callback(window, iconified); });
+	glfwSetWindowIconifyCallback(m_window->getGLFWwindow(), [](GLFWwindow* window, int iconified) { 
+		Callback::window_iconify_callback(window, iconified); 
+		});
 	glfwSetWindowUserPointer(m_window->getGLFWwindow(), m_window->getWindowSizePtr()/*&windSize*/);
 	glfwSetWindowSizeCallback(m_window->getGLFWwindow(), Callback::window_size_callback);
 	

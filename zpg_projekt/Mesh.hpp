@@ -31,6 +31,7 @@ public:
 	 *	Render this Mesh
 	 */
 	void render();
+	void render(bool b);
 
 	int getTextureCount() const;
 	void setShader(Shader shader);
