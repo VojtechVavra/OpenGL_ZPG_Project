@@ -2,6 +2,8 @@
 
 #include <unordered_map>
 #include <memory>
+#include <functional>
+
 
 template <typename DataType>
 class TBaseCollectionManager
@@ -13,6 +15,7 @@ public:
 	void deleteAll();
 	void deleteOne(const std::string& name);
 	void deleteOne(std::shared_ptr<DataType> data);
+	void deleteByConditionLambda(std::function<bool(std::shared_ptr<DataType>)> condition);
 
 private:
 	//std::unordered_map<DataType> m_data;
@@ -73,4 +76,11 @@ inline void TBaseCollectionManager<DataType>::deleteOne(std::shared_ptr<DataType
 {
 	// Odstranit všechny výskyty hodnoty dataToDelete
 	m_data.erase(std::remove(m_data.begin(), m_data.end(), dataToDelete), m_data.end());
+}
+
+template<typename DataType>
+inline void TBaseCollectionManager<DataType>::deleteByConditionLambda(std::function<bool(std::shared_ptr<DataType>)> condition)
+{
+	// Použití std::remove_if s lambda podmínkou
+	m_data.erase(std::remove_if(m_data.begin(), m_data.end(), condition), m_data.end());
 }

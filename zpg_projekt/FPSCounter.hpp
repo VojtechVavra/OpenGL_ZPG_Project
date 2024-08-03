@@ -20,14 +20,16 @@ private:
     //The first thing we do is check if this is the first time we've passed through the counter and set some stuff up:
     
     // lambda function to be executed
-    std::function<void(const int, std::string)> storedLambda;
-    std::function<void(void)> storedLambda2;
+    std::function<void(int)> storedLambda;
+    std::function<void(const int, std::string)> storedLambda2;
+    
     
 public:
     FPSCounter();
     void enablePrint(bool enabled);
 
-    void bindLambda(std::function<void(const int, std::string)> lambda);
+    void bindLambda(std::function<void(const int)> lambda);
+    void bindLambda2(std::function<void(const int, std::string)> lambda);
 
     void drawFps(double timepassed);
 

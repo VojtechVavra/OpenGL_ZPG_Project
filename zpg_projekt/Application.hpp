@@ -2,7 +2,6 @@
 #define APPLICATION_HPP
 
 #include <stdio.h>
-#include <array>
 #include <memory>
 
 #include <GL/glew.h>
@@ -24,13 +23,14 @@ public:
 
 private:
     static Application* m_single;
-    Application();
     std::shared_ptr<Window> m_window;
-    void PrintInfo();
-    void draw();
-
     std::shared_ptr<class Scene> m_scene;
     Renderer m_renderer;
+
+private:
+    void printInfo();
+    void draw();
+    Application();
 };
 
 #endif

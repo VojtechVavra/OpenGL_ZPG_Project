@@ -26,7 +26,7 @@ Application* Application::getInstance()
 
 Application::Application()
 {
-	m_window = std::make_shared<Window>("ZPG - OpenGL");
+	m_window = std::make_shared<Window>("ZPG - OpenGL engine");
 	m_window->VSyncEnable(false);
 
 	srand(time(nullptr));
@@ -34,7 +34,7 @@ Application::Application()
 
 void Application::init()
 {
-	PrintInfo();
+	printInfo();
 	// after window creation we can set callbacks
 	callbackFunctions();
 	draw();
@@ -50,7 +50,7 @@ void Application::setWindowTitle(const std::string& newTitle) const
 	this->m_window->setWindowTitle(newTitle);
 }
 
-void Application::PrintInfo()
+void Application::printInfo()
 {
 	// get version info
 	printf("OpenGL Version: %s\n", glGetString(GL_VERSION));

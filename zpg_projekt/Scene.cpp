@@ -767,7 +767,10 @@ void Scene::modelSection()
 	Shader::sendUniform(o5->getShader(), "flashLight.isActive", camera[0]->isFlashLightOn() ? 1 : 0);
 	Shader::sendUniform(o5->getShader(), "showTextureDetail", camera[0]->getTextureDetail());
 
+
+	// function tests
 	//TextureManager::getInstance()->deleteAllTextureFromGraphicsMemory();
+	//TextureManager::getInstance()->deleteTextureByName("book2.jpg");
 }
 
 //void Scene::skybox

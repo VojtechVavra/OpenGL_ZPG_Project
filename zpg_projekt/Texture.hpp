@@ -13,9 +13,10 @@ public:
 	void Load() const;
 	void LoadCubemap() const;
 
-	GLuint getTextureId();
-	std::string getName();
-	
+	GLuint getTextureId() const;
+	std::string getName() const;
+	std::string getPath() const;
+
 	// operator == to compare Texture object with std::string name
 	bool operator==(const std::string& rhs) {
 		return this->texturePath == rhs;

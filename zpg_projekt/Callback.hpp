@@ -15,13 +15,14 @@ public:
     static void setWindow(GLFWwindow* glfwWindow);
     static std::shared_ptr<Window> window;
     static GLFWwindow* glfwWindow;
+
 private:
-    //static GLFWwindow* window;
     static std::shared_ptr<Camera> camera;
     static bool isObjectHold;
     static unsigned int indexObject;
     static bool fullscreen;
     static int width, height, refreshRate;
+
 public:
     static std::shared_ptr<Scene> scene;
     static float lastX, lastY;
@@ -41,6 +42,5 @@ public:
     static void button_callback(GLFWwindow* window, int button, int action, int mode);
     static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 };
-
 
 #endif

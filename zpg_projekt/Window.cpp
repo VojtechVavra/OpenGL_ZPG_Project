@@ -77,7 +77,7 @@ void Window::VSyncEnable(bool enabled)
 }
 
 /*
-*  Get raw ptr to glfwWindow
+*   Get raw ptr to glfwWindow
 */
 GLFWwindow* Window::getGLFWwindow() const
 {
@@ -100,5 +100,3 @@ void Window::printWindowSize()
 {
 	std::cout << windowSize[0] << " " << windowSize[1] << std::endl;
 }
-
-

@@ -1,7 +1,6 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
-#include <memory>
 #include <string>
 
 #include <GL/glew.h>
@@ -23,7 +22,6 @@ public:
 	void printWindowSize();
 private:
 	GLFWwindow* m_glfwWindow;
-
 	int windowWidth, windowHeight;
 	int windowSize[2] = { 0, 0 };
 };

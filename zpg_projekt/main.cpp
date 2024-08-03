@@ -15,7 +15,7 @@ int main()
 {
 	Application* app = nullptr;
 	app = app->getInstance();
-	app->setWindowTitle("Zabijak je jeskynni troll");
+	app->setWindowTitle("ZPG - OpenGL engine");
 	//app->setWindowSize(1024, 768);	// [800,600]
 	app->init();
 

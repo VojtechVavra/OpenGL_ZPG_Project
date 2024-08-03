@@ -10,8 +10,12 @@ void FPSCounter::enablePrint(bool enabled) {
     m_bPrintFps = enabled;
 }
 
-void FPSCounter::bindLambda(std::function<void(const int, std::string)> lambda) {
+void FPSCounter::bindLambda(std::function<void(const int)> lambda) {
     storedLambda = lambda;
+}
+
+void FPSCounter::bindLambda2(std::function<void(const int, std::string)> lambda) {
+    storedLambda2 = lambda;
 }
 
 
@@ -39,9 +43,12 @@ void FPSCounter::drawFps(double timepassed)
 
 void FPSCounter::executeLambda() const {
     if (storedLambda) {
+        storedLambda(fps);
+    }
+    if (storedLambda2) {
         int memory_usage_in_mb = MemoryUsage::getMemoryUsage(); // This shows 80 MB but in Windows Task Manager it shows 60 MB
         // Maybe remove string with memory usage, not needed
         std::string memoryStr = " | " + std::to_string(memory_usage_in_mb) + " MB";
-        storedLambda(fps, memoryStr);
+        storedLambda2(fps, memoryStr);
     }
 }

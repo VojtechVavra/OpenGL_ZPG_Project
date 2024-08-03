@@ -30,12 +30,17 @@ void Texture::LoadCubemap() const {
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
 }
 
-GLuint Texture::getTextureId()
+GLuint Texture::getTextureId() const
 {
     return textureId;
 }
 
-std::string Texture::getName()
+std::string Texture::getName() const
+{
+    return m_name;
+}
+
+std::string Texture::getPath() const
 {
     return texturePath;
 }

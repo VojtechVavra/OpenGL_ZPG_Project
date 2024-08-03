@@ -283,14 +283,14 @@ void TextureManager::deleteTextureByName(const std::string& textureName)
     //close the application.
     //it = mymap.find('b');
 
-    std::cout << "Deleting single texture: " << textureName << "\n";
-    deleteOne(textureName);
 
-    /*
-    std::unordered_map<std::string, std::shared_ptr<Texture>>::iterator it;
-    it = textures.find(textureName);
-    std::cout << "Deleting single texture: " << it->first << "\n";
-    it->second->Delete();
-    textures.erase(it);
-    */
+    // Lambda podmínka pro odstranìní prvkù rovná dataToDelete
+    auto condition = [textureName](std::shared_ptr<Texture> texture) { return texture->getName() == textureName; };
+
+    deleteByConditionLambda(condition);
+    std::cout << "Deleting single texture: " << textureName << "\n";
+    
+    /* stary spatny pristup, pres lambdu s template typem mnohem 
+       univerzalnejsi i pro ostatni datove typy */
+    //deleteOne(textureName);
 }
