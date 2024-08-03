@@ -128,7 +128,3 @@ void ShaderLoader::checkProgramShaderCompileError(GLuint programID)
 		exit(EXIT_FAILURE);
 	}
 }
-
-ShaderLoader::~ShaderLoader()
-{
-}

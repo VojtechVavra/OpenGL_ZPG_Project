@@ -1,4 +1,5 @@
 ﻿#include "SkyBox.hpp"
+#include "Camera.hpp"
 
 #include "SOIL.h"
 

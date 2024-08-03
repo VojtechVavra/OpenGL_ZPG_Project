@@ -8,7 +8,7 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp> 
 
-#include "Observer.hpp"
+#include "IObserver.hpp"
 
 //#include "Subject.hpp"
 // http://www.cplusplus.com/forum/beginner/146499/
@@ -62,7 +62,8 @@ static std::unordered_map<ShaderType, GLuint> shaderPrograms(
 
 class Camera;
 
-class Shader { //: public virtual Observer {
+class Shader : public IObserver
+{
 public:
     // Výchozí konstruktor
     Shader() = default;
@@ -80,7 +81,7 @@ public:
     static void sendUniform(GLuint shaderProgram, const GLchar* name, glm::mat4 dataMat4);
 
     //GLuint createShader(ShaderType fragmentShaderType = ShaderType::PHONG);
-    static GLuint createShader(ShaderType fragmentShaderType);
+    static GLuint createShaderProgram(ShaderType fragmentShaderType);
     static GLuint getShader(ShaderType fragmentShaderType);
     static std::vector<ShaderProgram> getShaderPrograms();
 
@@ -93,9 +94,13 @@ public:
     void use() const;
     static void use(GLuint shaderProgram);
 
-private:  
+    // new refactored
+    void update(Camera* camera, camChange cameraChange) override;
+
+    // new refactored
+private:
     GLuint shaderProgram;
-    ShaderType type;
+    ShaderType m_type;
 };
 
 #endif

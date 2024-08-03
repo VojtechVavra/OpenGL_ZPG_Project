@@ -34,7 +34,7 @@ public:
 	void render(bool b);
 
 	int getTextureCount() const;
-	void setShader(Shader shader);
+	void setShader(std::shared_ptr<Shader> shader);
 
 private:
 	std::vector<std::unique_ptr<Material>> m_material;
@@ -45,7 +45,7 @@ private:
 	std::array<std::unique_ptr<VBO>, 4> m_VBO;
 	
 	GLuint m_elementCount = 0;
-	Shader m_shader;
+	std::shared_ptr<Shader> m_shader;
 
 	static enum BUFFERS {
 		VERTEX_BUFFER, TEXCOORD_BUFFER, NORMAL_BUFFER, INDEX_BUFFER

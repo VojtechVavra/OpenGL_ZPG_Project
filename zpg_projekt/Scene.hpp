@@ -27,7 +27,6 @@ public:
 	Scene();
 	~Scene();
 
-
 	/* Scene contain objects:
 	*  objects can be:
 	*	 1. 3D Models which contains:
@@ -74,6 +73,7 @@ public:
 
 private:
 	void registerUsedShaders();
+	void registerUsedShaders_old();
 	void cameraSection();
 	void lightSection();
 	void objectSection();

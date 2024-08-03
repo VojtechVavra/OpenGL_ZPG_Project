@@ -12,17 +12,19 @@
 
 class ShaderLoader
 {
-private:
-	GLuint programID;
-	std::string loadFile(const char* fname);
-
 public:
+	ShaderLoader() = default;
 	GLuint loadShader(const char* vertexFile, const char* fragmentFile);
 	void deleteShader();
-	ShaderLoader() = default;
+
+private:
 	ShaderLoader(const char* vertexFile, const char* fragmentFile, GLuint* shaderID);
+	std::string loadFile(const char* fname);
+
 	void checkVertShaderCompileError(GLuint vertShader);
 	void checkFragShaderCompileError(GLuint fragShader);
 	void checkProgramShaderCompileError(GLuint programID);
-	~ShaderLoader();
+
+private:
+	GLuint programID;
 };

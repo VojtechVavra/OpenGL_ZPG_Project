@@ -160,8 +160,8 @@ void Camera::processKeyboard(float deltaTime)
 	{
 		//added
 		//updateHoldObject(velocity);	// posun drziciho objektu
-		Shader::use(holdObject->getShader());
-		Shader::sendUniform(holdObject->getShader(), "modelMatrix", position + glm::normalize(target) * 5.0f);
+		Shader::use(holdObject->getShaderID());
+		Shader::sendUniform(holdObject->getShaderID(), "modelMatrix", position + glm::normalize(target) * 5.0f);
 	}
 
 	if (movingDirection == (FORWARD | STRAFE_RIGHT)) {
@@ -347,8 +347,8 @@ void Camera::setResolution(Resolution resolution)
 void Camera::setHoldObject(std::shared_ptr<Object> object)
 {
 	this->holdObject = object;
-	Shader::use(holdObject->getShader());
-	Shader::sendUniform(holdObject->getShader(), "isHeld", true);
+	Shader::use(holdObject->getShaderID());
+	Shader::sendUniform(holdObject->getShaderID(), "isHeld", true);
 	//Shader::sendUniform(holdObject->getShader(), "modelMatrix", position + glm::normalize(target) + 10.0f);
 
 	glm::mat4 newMatrix = glm::mat4(1.0);
@@ -359,7 +359,7 @@ void Camera::setHoldObject(std::shared_ptr<Object> object)
 
 	holdObject->setPositionWithoutTranslate(position + target * 15.0f);
 	holdObject->setMatrix(newMatrix);
-	Shader::sendUniform(holdObject->getShader(), "modelMatrix", newMatrix);
+	Shader::sendUniform(holdObject->getShaderID(), "modelMatrix", newMatrix);
 	//glm::lookAt(position, position + target, up);
 	Shader::use(0);
 }
@@ -387,9 +387,9 @@ void Camera::dropObject()
 
 	holdObject->Scale(newMatrix, holdObject->getScale());
 
-	Shader::use(holdObject->getShader());
-	Shader::sendUniform(holdObject->getShader(), "isHeld", false);
-	Shader::sendUniform(holdObject->getShader(), "modelMatrix", holdObject->getMatrix());
+	Shader::use(holdObject->getShaderID());
+	Shader::sendUniform(holdObject->getShaderID(), "isHeld", false);
+	Shader::sendUniform(holdObject->getShaderID(), "modelMatrix", holdObject->getMatrix());
 	//Shader::sendUniform(holdObject->getShader(), "modelMatrix", position + glm::normalize(target) * 5.0f);
 
 	this->holdObject = nullptr;	

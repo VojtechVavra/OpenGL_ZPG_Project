@@ -63,9 +63,6 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Observer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Subject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -161,7 +158,7 @@
     <ClInclude Include="Scene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Observer.hpp">
+    <ClInclude Include="IObserver.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Subject.hpp">

@@ -11,6 +11,7 @@
 
 #include "Texture.hpp"
 #include "ShaderProgram.hpp"
+#include "Model.hpp"
 
 
 // IMPORTANT

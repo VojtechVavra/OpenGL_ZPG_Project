@@ -10,7 +10,7 @@
 #include <glm/vec4.hpp>     // glm::vec4
 #include <glm/mat4x4.hpp>   // glm::mat4
 
-#include "Observer.hpp"
+#include "IObserver.hpp"
 #include "Model.hpp"  // dodat
 #include "Shader.hpp"
 #include "Subject.hpp"
@@ -27,7 +27,7 @@
 class camera;
 
 // Object model space
-class Object // : public virtual Observer
+class Object
 {
 public:
     virtual ~Object() = default;
@@ -49,7 +49,7 @@ public:
     glm::vec3 getRotate() const;
     glm::vec3 getScale() const;
     Model getModel() const;
-    GLuint getShader() const;
+    GLuint getShaderID() const;
 
     void useShader();
     void setMatrix(glm::mat4 newMatrix);
@@ -84,6 +84,9 @@ public:
     void setPositionWithoutTranslate(glm::vec3 newPosition);
 
     void PrintActiveUniformVariables() const;
+
+    std::shared_ptr<Shader> getShaderProgram();
+    //void update(Camera* camera, camChange cameraChange) override;
     //bool hasTexture = false;
 protected:
     glm::vec3 position;
@@ -98,13 +101,17 @@ public:
     glm::vec3 rotation;
     glm::vec3 scale;
 protected:
+    
     glm::vec3 color;
     glm::vec3 lastColor;
     static GLuint objectCount;
     GLuint objID;
 private:
+    
+    
+
     std::shared_ptr<Mesh> m_mesh;
-    Shader m_shader;
+    std::shared_ptr<Shader> m_shader;
     std::shared_ptr<Camera> m_camera;
 };
 

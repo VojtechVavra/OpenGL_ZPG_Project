@@ -1,5 +1,5 @@
 #include "ShaderProgram.hpp"
-//#include "Camera.hpp"
+#include "Camera.hpp"
 
 ShaderProgram::ShaderProgram(ShaderType shaderType, GLuint shaderProgram)
 {

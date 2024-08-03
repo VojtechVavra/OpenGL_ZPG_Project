@@ -4,11 +4,14 @@
 #include <GLFW/glfw3.h>
 
 //#include "Shader.hpp"
-#include "Observer.hpp"
-#include "Camera.hpp"
+#include "IObserver.hpp"
+
+class Camera; // Forward declaration of Camera
+enum class ShaderType;
+//#include "Camera.hpp"
 
 
-class ShaderProgram  : public Observer
+class ShaderProgram  : public IObserver
 {
 public:
 	ShaderProgram(ShaderType shaderType, GLuint shaderProgram);
@@ -19,4 +22,3 @@ public:
 	ShaderType shaderType;
 	GLuint shaderProgram;
 };
-

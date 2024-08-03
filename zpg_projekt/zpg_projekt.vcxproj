@@ -169,7 +169,6 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
     <ClCompile Include="ObjLoader.cpp" />
-    <ClCompile Include="Observer.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -216,7 +215,7 @@
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="ObjectFactory.hpp" />
     <ClInclude Include="ObjLoader.hpp" />
-    <ClInclude Include="Observer.hpp" />
+    <ClInclude Include="IObserver.hpp" />
     <ClInclude Include="PointLight.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="resource.h" />

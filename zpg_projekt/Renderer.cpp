@@ -58,39 +58,39 @@ void Renderer::renderInit()
 		scene->object[i]->useShader();		//glUseProgram(scene->shaderProgram);
 		ShaderType shadType = scene->object[i]->getShaderType();
 
-		Shader::sendUniform(scene->object[i]->getShader(), "modelMatrix", scene->object[i]->getMatrix());
-		Shader::sendUniform(scene->object[i]->getShader(), "viewMatrix", scene->camera[0]->getCamera());
-		Shader::sendUniform(scene->object[i]->getShader(), "projectionMatrix", scene->camera[0]->getProjectionMatrix());
+		Shader::sendUniform(scene->object[i]->getShaderID(), "modelMatrix", scene->object[i]->getMatrix());
+		Shader::sendUniform(scene->object[i]->getShaderID(), "viewMatrix", scene->camera[0]->getCamera());
+		Shader::sendUniform(scene->object[i]->getShaderID(), "projectionMatrix", scene->camera[0]->getProjectionMatrix());
 
 		if (shadType == ShaderType::AMBIENT)
 		{
 			// fragment scene->shader uniforms
-			Shader::sendUniform(scene->object[i]->getShader(), "fragmentColor", scene->object[i]->getColor());
+			Shader::sendUniform(scene->object[i]->getShaderID(), "fragmentColor", scene->object[i]->getColor());
 		}
 		else if (shadType == ShaderType::DIFFUSE)
 		{
-			Shader::sendUniform(scene->object[i]->getShader(), "fragmentColor", scene->object[i]->getColor());
+			Shader::sendUniform(scene->object[i]->getShaderID(), "fragmentColor", scene->object[i]->getColor());
 
-			Shader::sendUniform(scene->object[i]->getShader(), "lightPosition", scene->light[0]->getPosition());
-			Shader::sendUniform(scene->object[i]->getShader(), "lightColor", scene->light[0]->lightColor);
+			Shader::sendUniform(scene->object[i]->getShaderID(), "lightPosition", scene->light[0]->getPosition());
+			Shader::sendUniform(scene->object[i]->getShaderID(), "lightColor", scene->light[0]->lightColor);
 		}
 		else if (shadType == ShaderType::SPECULAR)
 		{
-			Shader::sendUniform(scene->object[i]->getShader(), "fragmentColor", scene->object[i]->getColor());
+			Shader::sendUniform(scene->object[i]->getShaderID(), "fragmentColor", scene->object[i]->getColor());
 
-			Shader::sendUniform(scene->object[i]->getShader(), "lightPosition", scene->light[0]->getPosition());
-			Shader::sendUniform(scene->object[i]->getShader(), "lightColor", scene->light[0]->lightColor);
+			Shader::sendUniform(scene->object[i]->getShaderID(), "lightPosition", scene->light[0]->getPosition());
+			Shader::sendUniform(scene->object[i]->getShaderID(), "lightColor", scene->light[0]->lightColor);
 
-			Shader::sendUniform(scene->object[i]->getShader(), "viewPos", scene->camera[0]->getPosition());
-			Shader::sendUniform(scene->object[i]->getShader(), "specularStrength", 0.5f);
+			Shader::sendUniform(scene->object[i]->getShaderID(), "viewPos", scene->camera[0]->getPosition());
+			Shader::sendUniform(scene->object[i]->getShaderID(), "specularStrength", 0.5f);
 		}
 		else if (shadType == ShaderType::PHONG)
 		{
-			Shader::sendUniform(scene->object[i]->getShader(), "fragmentColor", scene->object[i]->getColor());
-			Shader::sendUniform(scene->object[i]->getShader(), "viewPos", scene->camera[0]->getPosition());
+			Shader::sendUniform(scene->object[i]->getShaderID(), "fragmentColor", scene->object[i]->getColor());
+			Shader::sendUniform(scene->object[i]->getShaderID(), "viewPos", scene->camera[0]->getPosition());
 
 			// posilat jen pri zmnene
-			Shader::sendUniform(scene->object[i]->getShader(), "lightCount", static_cast<GLint>(scene->light.size()));
+			Shader::sendUniform(scene->object[i]->getShaderID(), "lightCount", static_cast<GLint>(scene->light.size()));
 			char buff[100] = { 0 };
 
 			// z kama kam to sviti
@@ -101,35 +101,35 @@ void Renderer::renderInit()
 			glm::vec3 direction_front_to_back = glm::vec3(1.0f, 0.0f, 0.0f);
 			glm::vec3 direction_back_to_front = glm::vec3(-1.0f, 0.0f, 0.0f);
 
-			Shader::sendUniform(scene->object[i]->getShader(), "dirLight.direction", direction_front_to_back);
+			Shader::sendUniform(scene->object[i]->getShaderID(), "dirLight.direction", direction_front_to_back);
 			//glUniform3f(glGetUniformLocation(scene->object[i]->getShader(), "dirLight.direction"), 0.0f, 1.0f, 0.0f);
-			glUniform3f(glGetUniformLocation(scene->object[i]->getShader(), "dirLight.ambient"), 0.2f, 0.2f, 0.2f);
-			glUniform3f(glGetUniformLocation(scene->object[i]->getShader(), "dirLight.diffuse"), 0.2f, 0.2f, 0.2);
-			glUniform3f(glGetUniformLocation(scene->object[i]->getShader(), "dirLight.specular"), 1.0f, 1.0f, 1.0f);
+			glUniform3f(glGetUniformLocation(scene->object[i]->getShaderID(), "dirLight.ambient"), 0.2f, 0.2f, 0.2f);
+			glUniform3f(glGetUniformLocation(scene->object[i]->getShaderID(), "dirLight.diffuse"), 0.2f, 0.2f, 0.2);
+			glUniform3f(glGetUniformLocation(scene->object[i]->getShaderID(), "dirLight.specular"), 1.0f, 1.0f, 1.0f);
 
 			// spotLight
-			Shader::sendUniform(scene->object[i]->getShader(), "spotLight[0].position", scene->camera[0]->getPosition());
-			Shader::sendUniform(scene->object[i]->getShader(), "spotLight[0].direction", scene->camera[0]->target);
-			Shader::sendUniform(scene->object[i]->getShader(), "spotLight[0].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-			Shader::sendUniform(scene->object[i]->getShader(), "spotLight[0].diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-			Shader::sendUniform(scene->object[i]->getShader(), "spotLight[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-			Shader::sendUniform(scene->object[i]->getShader(), "spotLight[0].constant", 1.0f);
-			Shader::sendUniform(scene->object[i]->getShader(), "spotLight[0].linear", 0.09f);
-			Shader::sendUniform(scene->object[i]->getShader(), "spotLight[0].quadratic", 0.032f);
-			Shader::sendUniform(scene->object[i]->getShader(), "spotLight[0].cutOff", glm::cos(glm::radians(12.5f)));
-			Shader::sendUniform(scene->object[i]->getShader(), "spotLight[0].outerCutOff", glm::cos(glm::radians(15.0f)));
+			Shader::sendUniform(scene->object[i]->getShaderID(), "spotLight[0].position", scene->camera[0]->getPosition());
+			Shader::sendUniform(scene->object[i]->getShaderID(), "spotLight[0].direction", scene->camera[0]->target);
+			Shader::sendUniform(scene->object[i]->getShaderID(), "spotLight[0].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+			Shader::sendUniform(scene->object[i]->getShaderID(), "spotLight[0].diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+			Shader::sendUniform(scene->object[i]->getShaderID(), "spotLight[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+			Shader::sendUniform(scene->object[i]->getShaderID(), "spotLight[0].constant", 1.0f);
+			Shader::sendUniform(scene->object[i]->getShaderID(), "spotLight[0].linear", 0.09f);
+			Shader::sendUniform(scene->object[i]->getShaderID(), "spotLight[0].quadratic", 0.032f);
+			Shader::sendUniform(scene->object[i]->getShaderID(), "spotLight[0].cutOff", glm::cos(glm::radians(12.5f)));
+			Shader::sendUniform(scene->object[i]->getShaderID(), "spotLight[0].outerCutOff", glm::cos(glm::radians(15.0f)));
 
 			// FlashLight
-			Shader::sendUniform(scene->object[i]->getShader(), "flashLight.position", scene->camera[0]->getPosition());
-			Shader::sendUniform(scene->object[i]->getShader(), "flashLight.direction", scene->camera[0]->target);
-			Shader::sendUniform(scene->object[i]->getShader(), "flashLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-			Shader::sendUniform(scene->object[i]->getShader(), "flashLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-			Shader::sendUniform(scene->object[i]->getShader(), "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-			Shader::sendUniform(scene->object[i]->getShader(), "flashLight.constant", 1.0f);
-			Shader::sendUniform(scene->object[i]->getShader(), "flashLight.linear", 0.09f);
-			Shader::sendUniform(scene->object[i]->getShader(), "flashLight.quadratic", 0.032f);
-			Shader::sendUniform(scene->object[i]->getShader(), "flashLight.cutOff", glm::cos(glm::radians(12.5f)));
-			Shader::sendUniform(scene->object[i]->getShader(), "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.position", scene->camera[0]->getPosition());
+			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.direction", scene->camera[0]->target);
+			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.constant", 1.0f);
+			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.linear", 0.09f);
+			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.quadratic", 0.032f);
+			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.cutOff", glm::cos(glm::radians(12.5f)));
+			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
 			for (int lightIndex = 0; lightIndex < scene->light.size() - 1; lightIndex++) {
 				/*sprintf_s(buff, sizeof buff, "lights[%d].position", lightIndex);

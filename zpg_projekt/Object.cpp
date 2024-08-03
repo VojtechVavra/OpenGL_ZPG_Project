@@ -111,9 +111,9 @@ Object::Object()
 
 Object::Object(const std::string& name, const ShaderType shaderType) //: m_shader(shader)
 {
-    m_shader = Shader(shaderType);
+    m_shader = std::make_shared<Shader>(shaderType);
     MeshLoader a(name.c_str(), m_mesh);
-    a.shaderProgramID = m_shader.getShader();
+    a.shaderProgramID = m_shader->getShader();
     m_mesh->setShader(m_shader);
 
     /*
@@ -151,10 +151,10 @@ Model Object::getModel() const
     return this->model;
 }
 
-GLuint Object::getShader() const
+GLuint Object::getShaderID() const
 {
     // new refactored code
-    return m_shader.getShader();
+    return m_shader->getShader();
     
     // old
     //return this->shaderProgram;
@@ -180,9 +180,14 @@ void Object::setPositionWithoutTranslate(glm::vec3 newPosition)
     this->position = newPosition;
 }
 
+std::shared_ptr<Shader> Object::getShaderProgram()
+{
+    return this->m_shader;
+}
+
 void Object::PrintActiveUniformVariables() const
 {
-    m_shader.PrintActiveUniformVariables();
+    m_shader->PrintActiveUniformVariables();
 }
 
 
@@ -364,13 +369,13 @@ glm::vec3 Object::getScale() const
 void Object::draw()
 {
     // Aktivace shaderu
-    m_shader.use();
+    m_shader->use();
     
-    m_shader.sendUniform("viewMatrix", m_camera->getCamera());
-    m_shader.sendUniform("projectionMatrix", m_camera->getProjectionMatrix());
+    m_shader->sendUniform("viewMatrix", m_camera->getCamera());
+    m_shader->sendUniform("projectionMatrix", m_camera->getProjectionMatrix());
 
     // Pošleme z CUPU do GPU uniformní promìnné aktualizovaných dat
-    m_shader.sendUniform("modelMatrix", m_matrix);
+    m_shader->sendUniform("modelMatrix", m_matrix);
     //m_shader.sendUniform("fragmentColor", color);
     // send uniformmeshMaterial
     //m_mesh->setShader(m_shader);
@@ -378,7 +383,7 @@ void Object::draw()
     // texture load
     if (hasTexture())
     {
-        m_shader.sendUniform("myTextureSampler", (GLint)0);
+        m_shader->sendUniform("myTextureSampler", (GLint)0);
         // Funkce, která binduje texturu pro použití v shaderu
         // TODO: funkce texture->Bind() musi byt nejspis presunuta do tridi Mesh
         //texture->Bind();
@@ -392,13 +397,8 @@ void Object::draw()
     m_mesh->render();
 }
 
-/*void Object::render_mesh_new()
-{
-    int vertexCount = 555;
-    glDrawArrays(GL_TRIANGLES, 0, vertexCount); // mode, first, count
-    
-}*/
-
+// TODO: old, nepouzivam uz pro vykreslovani, takze by se toto melo smazat
+// misto toho pouzivam funkci draw()
 void Object::render()
 {
     this->getModel().bindVAO();
@@ -407,21 +407,21 @@ void Object::render()
     //glUseProgram(Shader::getShader(getShaderType()));
     
     //Shader::sendUniform(Shader::getShader(getShaderType()), "modelMatrix", getMatrix());
-    Shader::sendUniform(getShader(), "modelMatrix", getMatrix());
+    Shader::sendUniform(getShaderID(), "modelMatrix", getMatrix());
 
     if (getShaderType() == ShaderType::PHONG /*|| (getShaderType() == ShaderType::DIFFUSE)*/)
     {
         if (hasTexture()) {
             loadTexture();
-            Shader::sendUniform(getShader(), "hasTexture", 1);
+            Shader::sendUniform(getShaderID(), "hasTexture", 1);
 
-            Shader::sendUniform(getShader(), "textureUnitID", 0);
+            Shader::sendUniform(getShaderID(), "textureUnitID", 0);
             //GLint uniformID = glGetUniformLocation(getShader(), "textureUnitID");
             //glUniform1i(uniformID, 0);
         }
         else {
-            Shader::sendUniform(getShader(), "hasTexture", 0);
-            Shader::sendUniform(getShader(), "fragmentColor", getColor());
+            Shader::sendUniform(getShaderID(), "hasTexture", 0);
+            Shader::sendUniform(getShaderID(), "fragmentColor", getColor());
         }
     }
     
@@ -439,9 +439,9 @@ void Object::renderSkybox(std::shared_ptr<Camera> camera)
     //glUseProgram(Shader::getShader(getShaderType()));
 
     //Shader::sendUniform(Shader::getShader(getShaderType()), "modelMatrix", getMatrix());
-    Shader::sendUniform(getShader(), "modelMatrix", getMatrix());
-    Shader::sendUniform(getShader(), "projectionMatrix", camera->getProjectionMatrix());
-    Shader::sendUniform(getShader(), "skybox", 0);
+    Shader::sendUniform(getShaderID(), "modelMatrix", getMatrix());
+    Shader::sendUniform(getShaderID(), "projectionMatrix", camera->getProjectionMatrix());
+    Shader::sendUniform(getShaderID(), "skybox", 0);
 
     texture->LoadCubemap();
 

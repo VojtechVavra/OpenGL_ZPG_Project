@@ -1,27 +1,28 @@
 #ifndef SUBJECT_HPP
 #define SUBJECT_HPP
 
-#include <vector>
+#include <list>
 #include <string>
 #include <memory>
+#include <functional>
 
-#include "Observer.hpp"
+#include "IObserver.hpp"
 
-
+/**
+ * The Subject owns some important state and notifies observers when the state
+ * changes.
+ */
 class Subject
 {
 public:
-	//void registerObserver(Observer& observer);
-	void registerObserver(std::shared_ptr<Observer> observer);
-	//void removeObserver(Observer& observer);
-	void removeObserver(std::shared_ptr<Observer> observer);
-	//void notifyObservers();	// Notify all the registered observers when a change happens
-	//void notifyObservers(std::string change);
-
-	void notifyObservers(Camera* camera, enum class camChange cameraChange);	//Subject*
+	void registerObserver(std::shared_ptr<IObserver> observer);
+	void removeObserver(std::shared_ptr<IObserver> observer);
+	// Notify all the registered observers when a change happens
+	void notifyObservers(Camera* camera, enum class camChange cameraChange);
 private:
 	//std::vector<Observer*> observers;
-	std::vector<std::shared_ptr<Observer>> observers;
+	std::list<std::shared_ptr<IObserver>> m_observers;
+	//std::vector<std::shared_ptr<Observer>> observers;
 };
 
 #endif // !SUBJECT_HPP

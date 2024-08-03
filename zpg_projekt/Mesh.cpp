@@ -99,10 +99,10 @@ void Mesh::render(bool f)
 			//m_shader.sendUniform("meshMaterial.specular", m_material[i]->specular);
 
 			if (m_material[i]->diffuseMap == "no_texture") {
-				m_shader.sendUniform("hasTexture", 0);
+				m_shader->sendUniform("hasTexture", 0);
 			}
 			else {
-				m_shader.sendUniform("hasTexture", 1);
+				m_shader->sendUniform("hasTexture", 1);
 				glActiveTexture(GL_TEXTURE0 + textureNumberToUse);
 				glBindTexture(GL_TEXTURE_2D, t[textureNumberToUse]->getTextureId());
 				++textureNumberToUse;
@@ -164,16 +164,16 @@ void Mesh::render() // nefunkcni
 			//m_shader.sendUniform("meshMaterial.specular", m_material[i]->specular);
 
 			if (m_material[i]->diffuseMap == "no_texture") {
-				m_shader.sendUniform("hasTexture", 0);
+				m_shader->sendUniform("hasTexture", 0);
 			}
 			else {
-				m_shader.sendUniform("hasTexture", 1);
+				m_shader->sendUniform("hasTexture", 1);
 				glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
 			}
 			//printf("diffuse: %f, %f, %f\n", material[i]->diffuse.x, material[i]->diffuse.y, material[i]->diffuse.z);
-			m_shader.sendUniform("meshMaterial.ambient", m_material[i]->ambient);
-			m_shader.sendUniform("meshMaterial.diffuse", m_material[i]->diffuse);
-			m_shader.sendUniform("meshMaterial.specular", m_material[i]->specular);
+			m_shader->sendUniform("meshMaterial.ambient", m_material[i]->ambient);
+			m_shader->sendUniform("meshMaterial.diffuse", m_material[i]->diffuse);
+			m_shader->sendUniform("meshMaterial.specular", m_material[i]->specular);
 		}
 
 		//m_meshEntries.at(i)->render();
@@ -190,7 +190,7 @@ int Mesh::getTextureCount() const
 	return m_textures.size();
 }
 
-void Mesh::setShader(Shader shader)
+void Mesh::setShader(std::shared_ptr<Shader> shader)
 {
 	m_shader = shader;
 }

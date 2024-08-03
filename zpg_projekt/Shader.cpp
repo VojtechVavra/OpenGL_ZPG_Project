@@ -26,7 +26,7 @@
     return this->shaderProgram;
 }*/
 
-GLuint Shader::createShader(ShaderType fragmentShaderType)
+GLuint Shader::createShaderProgram(ShaderType fragmentShaderType)
 {
     ShaderLoader loader;
     const std::string fragmentShaderName = fragShaderPath[fragmentShaderType];
@@ -56,7 +56,7 @@ GLuint Shader::getShader(ShaderType fragmentShaderType)
     if (it != shaderPrograms.end()) {   // shader found
         if (it->second == 0) {
             //std::cout << "Shader program PRED: " << it->second << "\n";
-            it->second = Shader::createShader(fragmentShaderType);
+            it->second = Shader::createShaderProgram(fragmentShaderType);
             //std::cout << "Shader program PO: " << it->second << "\n";
         }
         return it->second;
@@ -92,7 +92,7 @@ GLuint Shader::getShader() const
 
 ShaderType Shader::getType()
 {
-    return this->type;
+    return this->m_type;
 }
 
 
@@ -100,8 +100,8 @@ ShaderType Shader::getType()
 
 Shader::Shader(const ShaderType shaderType)
 {
-    type = shaderType;
-    shaderProgram = createShader(shaderType);
+    m_type = shaderType;
+    shaderProgram = createShaderProgram(shaderType);
 }
 
 void Shader::sendUniform(const GLchar* name, GLfloat value)
@@ -242,6 +242,70 @@ void Shader::use() const
 void Shader::use(GLuint shaderProgram)
 {
     glUseProgram(shaderProgram);
+}
+
+void Shader::update(Camera* camera, camChange cameraChange)
+{
+        Shader::use(shaderProgram);
+
+        if (cameraChange == camChange::MOVE_ROTATE) {
+            // nepridavat vypisy/printy sekala by se scena
+            if (m_type == ShaderType::AMBIENT)
+            {
+                Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
+            }
+            else if (m_type == ShaderType::DIFFUSE)
+            {
+                Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
+
+                // flashlight(as Spotlight) on Camera 
+                if (camera->isFlashLightOn()) {
+
+                    Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
+                    Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
+                }
+            }
+            else if (m_type == ShaderType::SPECULAR)
+            {
+                Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
+                Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
+            }
+            else if (m_type == ShaderType::PHONG)
+            {
+                Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
+                Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
+
+                // flashlight(as Spotlight) on Camera 
+                if (camera->isFlashLightOn()) {
+
+                    Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
+                    Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
+                }
+            }
+            else if (m_type == ShaderType::BLINN)
+            {
+            }
+            //std::cout << "Camera has changed" << std::endl;
+        }
+        else if (cameraChange == camChange::PROJECTION) {
+            // zoom / fov changed
+            Shader::sendUniform(shaderProgram, "projectionMatrix", camera->getProjectionMatrix());
+            //std::cout << "Projection has changed" << std::endl;
+        }
+        else if (cameraChange == camChange::FLASHLIGHT) {          // camChange::FLASHLIGHT
+            if (m_type == ShaderType::DIFFUSE || m_type == ShaderType::DIFFUSE_MODEL) {
+                Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
+                if (camera->isFlashLightOn()) {
+                    Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
+                    Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
+                }
+            }
+        }
+        else if (cameraChange == camChange::SHOW_TEXTURE_DETAIL) {
+            if (this->m_type == ShaderType::DIFFUSE_MODEL || this->m_type == ShaderType::SPECULAR_MODEL) {
+                Shader::sendUniform(shaderProgram, "showTextureDetail", camera->getTextureDetail());
+            }
+        }
 }
 
 
