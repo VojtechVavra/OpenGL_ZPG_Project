@@ -27,14 +27,14 @@ GLuint ShaderLoader::loadShader(const char* vertexFile, const char* fragmentFile
 	const char* vertexShaderCStr = vertexShaderString.c_str();
 	const char* fragmentShaderCStr = fragmentShaderString.c_str();
 
-	vertexID = glCreateShader(GL_VERTEX_SHADER);    //Vertex Shader
+	GLuint vertexID = glCreateShader(GL_VERTEX_SHADER);    //Vertex Shader
 	glShaderSource(vertexID, 1, (const GLchar**)&vertexShaderCStr, &vlen);
 	glCompileShader(vertexID);
 
 	// Check for vertex shader compilation errors
 	checkVertShaderCompileError(vertexID);
 
-	fragmentID = glCreateShader(GL_FRAGMENT_SHADER); //Fragment Shader
+	GLuint fragmentID = glCreateShader(GL_FRAGMENT_SHADER); //Fragment Shader
 	glShaderSource(fragmentID, 1, (const GLchar**)&fragmentShaderCStr, &flen);
 	glCompileShader(fragmentID);
 
@@ -46,8 +46,12 @@ GLuint ShaderLoader::loadShader(const char* vertexFile, const char* fragmentFile
 	glAttachShader(programID, fragmentID);
 	glLinkProgram(programID);
 
-	// Check for shader program compilation errors
-	checkProgramShaderCompileError(programID);
+	
+	// Detach and delete the shader objects
+	glDetachShader(programID, vertexID);
+	glDetachShader(programID, fragmentID);
+	glDeleteShader(vertexID);
+	glDeleteShader(fragmentID);
 
 
 	return programID;
@@ -55,10 +59,10 @@ GLuint ShaderLoader::loadShader(const char* vertexFile, const char* fragmentFile
 
 void ShaderLoader::deleteShader() {
 	printf("ShaderLoader::deleteShader()\n");
-	glDetachShader(programID, vertexID);
-	glDetachShader(programID, fragmentID);
-	glDeleteShader(vertexID);
-	glDeleteShader(fragmentID);
+	//glDetachShader(programID, vertexID);
+	//glDetachShader(programID, fragmentID);
+	//glDeleteShader(vertexID);
+	//glDeleteShader(fragmentID);
 	glUseProgram(0);
 	glDeleteProgram(this->programID);
 }
@@ -71,37 +75,40 @@ ShaderLoader::ShaderLoader(const char* vertexFile, const char* fragmentFile, GLu
 
 void ShaderLoader::checkVertShaderCompileError(GLuint vertShader) {
 	GLint status;
-	glGetShaderiv(vertexID, GL_COMPILE_STATUS, &status);
+	glGetShaderiv(vertShader, GL_COMPILE_STATUS, &status);
 
 	if (status == GL_FALSE)
 	{
 		GLint infoLogLength;
-		glGetShaderiv(vertexID, GL_INFO_LOG_LENGTH, &infoLogLength);
+		glGetShaderiv(vertShader, GL_INFO_LOG_LENGTH, &infoLogLength);
 		GLchar* strInfoLog = new GLchar[infoLogLength];
-		glGetShaderInfoLog(vertexID, infoLogLength, NULL, strInfoLog);
+		glGetShaderInfoLog(vertShader, infoLogLength, NULL, strInfoLog);
 		fprintf(stderr, "Compile failure in Vertex shader:\n%s\n", strInfoLog);
 		
 		// Exit with failure.
-		glDeleteShader(vertexID); // Don't leak the shader.
+		glDeleteShader(vertShader); // Don't leak the shader.
 		delete[] strInfoLog;
 	}
 }
 
 void ShaderLoader::checkFragShaderCompileError(GLuint fragShader) {
 	GLint status;
-	glGetShaderiv(fragmentID, GL_COMPILE_STATUS, &status);
+	glGetShaderiv(fragShader, GL_COMPILE_STATUS, &status);
 	if (status == GL_FALSE)
 	{
 		GLint logLen;
-		glGetShaderiv(fragmentID, GL_INFO_LOG_LENGTH, &logLen);
+		glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &logLen);
 
 		if (logLen > 0) {
 			GLchar* log = (GLchar*)malloc(logLen);
 			GLsizei writter;
-			glGetShaderInfoLog(fragmentID, logLen, &writter, log);
+			glGetShaderInfoLog(fragShader, logLen, &writter, log);
 			fprintf(stderr, "Compile failure in Fragment shader:\n%s\n", log);
 			free(log);
 		}
+
+		// Exit with failure.
+		glDeleteShader(fragShader); // Don't leak the shader.
 	}
 }
 
@@ -121,11 +128,6 @@ void ShaderLoader::checkProgramShaderCompileError(GLuint programID)
 		exit(EXIT_FAILURE);
 	}
 }
-
-ShaderLoader::ShaderLoader()
-{
-}
-
 
 ShaderLoader::~ShaderLoader()
 {

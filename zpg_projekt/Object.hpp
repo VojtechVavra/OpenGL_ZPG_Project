@@ -104,8 +104,6 @@ protected:
     GLuint objID;
 private:
     std::shared_ptr<Mesh> m_mesh;
-    //VAO m_VAO;
-    //VBO m_VBO;
     Shader m_shader;
     std::shared_ptr<Camera> m_camera;
 };

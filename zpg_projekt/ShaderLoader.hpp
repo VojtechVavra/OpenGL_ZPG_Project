@@ -2,6 +2,7 @@
 
 //GLEW - The OpenGL Extension Wrangler Library
 #include <GL/glew.h>
+
 #include <string.h> 
 #include <stdio.h>
 #include <fstream>
@@ -12,12 +13,13 @@
 class ShaderLoader
 {
 private:
-	GLuint	programID, vertexID, fragmentID;
+	GLuint programID;
 	std::string loadFile(const char* fname);
+
 public:
 	GLuint loadShader(const char* vertexFile, const char* fragmentFile);
 	void deleteShader();
-	ShaderLoader();
+	ShaderLoader() = default;
 	ShaderLoader(const char* vertexFile, const char* fragmentFile, GLuint* shaderID);
 	void checkVertShaderCompileError(GLuint vertShader);
 	void checkFragShaderCompileError(GLuint fragShader);

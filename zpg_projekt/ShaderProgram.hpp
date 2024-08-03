@@ -8,7 +8,7 @@
 #include "Camera.hpp"
 
 
-class ShaderProgram  : public /*virtual*/ Observer
+class ShaderProgram  : public Observer
 {
 public:
 	ShaderProgram(ShaderType shaderType, GLuint shaderProgram);

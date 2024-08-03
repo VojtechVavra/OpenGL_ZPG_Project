@@ -29,6 +29,9 @@ Application::Application()
 	m_window = std::make_shared<Window>("ZPG - OpenGL engine");
 	m_window->VSyncEnable(false);
 
+	// TODO: Anti-Aliasing - it looks simple to enable it
+	// https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing
+
 	srand(time(nullptr));
 }
 
