@@ -1,4 +1,4 @@
-#version 420   // 330
+#version 330 core  // 330 , 420
 
 out vec3 fragPos;				// ex_worldPosition;
 out vec3 normal;				// ex_worldNormal;

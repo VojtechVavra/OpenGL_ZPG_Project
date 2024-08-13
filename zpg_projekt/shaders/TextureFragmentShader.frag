@@ -11,7 +11,12 @@ in vec4 textureCoordProj2;   // show detail texture - added
 
 
 // Ouput data
-out vec4 gl_FragColor;      // output color
+out vec4 FragColor;
+/*
+//out vec4 gl_FragColor;      // error
+Your fragment shader has a problem because it still uses gl_FragColor, which is deprecated in modern GLSL versions like #version 330 core. In GLSL 3.30 and above, you should define your own output variable instead of using gl_FragColor.
+*/
+
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;     // Regular texture image 
@@ -172,7 +177,8 @@ void main() {
 
     //gl_FragColor = result; // originally uncommented
     vec4 val = texture(myTextureSampler, texCoordUV);   
-	gl_FragColor = val;
+	//gl_FragColor = val;
+    FragColor = val;
 
     // Output color = color of the texture at the specified UV
 	//color = texture( myTextureSampler, UV ); // texture().rgba
