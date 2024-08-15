@@ -12,6 +12,19 @@
 #include "VAO.hpp"
 #include "VBO.hpp"
 
+// Z-buffer pipeline 142 stran prezentaci
+// https://www.cs.utexas.edu/~fussell/courses/cs384g-spring2017/lectures/Lecture9-Zbuffer_pipeline.pdf
+
+// Material -> presunout ho do samostatneho souboru a jen ho importovat
+/*struct Material {
+	glm::vec3 diffuse{ 0.f };
+	glm::vec3 specular{ 0.f };
+	glm::vec3 ambient{ 0.f };
+	std::string diffuseMap;
+	std::string specularMap;
+	std::string heightMap;
+	float shininess = 0.f;
+};*/
 
 class Mesh
 {

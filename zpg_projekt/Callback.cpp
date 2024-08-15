@@ -130,6 +130,8 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 						//scene->setNewColor(indexObject);
 						printf("Object %u taken\n", indexObject - 1);
 
+						// TODO: Prepracovat drzeni objektu pred kamerou
+						/*
 						if (indexObject == 12) {
 							isObjectHold = true;
 							std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[4];
@@ -144,7 +146,7 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 							isObjectHold = true;
 							std::shared_ptr<MeshLoader> holdedObject = scene->meshObjects[6];
 							Callback::camera->setHoldObject2(holdedObject);
-						}				
+						}*/			
 					}
 					else {
 						indexObject = 0;

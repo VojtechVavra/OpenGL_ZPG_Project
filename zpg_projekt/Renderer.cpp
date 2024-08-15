@@ -2,8 +2,6 @@
 
 #include "Renderer.hpp"
 #include "FPSCounter.hpp"
-#include "LoadModel.hpp"	// smazat
-#include "ObjLoader.hpp"
 #include "Window.hpp"
 
 //#include "MemoryUsage.hpp"
@@ -50,12 +48,13 @@ void Renderer::renderInit()
 		scene->light[i]->getModel().render();	//	glDrawArrays(GL_TRIANGLES, 0, 2880);
 	}*/
 
-
+	
 	// draw models
-	for (int i = 4; i < scene->object.size(); i++) {
+	//for (int i = 4; i < scene->object.size(); i++) {
+		/*
 		glBindVertexArray(0);
-		scene->object[i]->getModel().bindVAO();
-		scene->object[i]->useShader();		//glUseProgram(scene->shaderProgram);
+		//scene->object[i]->getModel().bindVAO();
+		//scene->object[i]->useShader();		//glUseProgram(scene->shaderProgram);
 		ShaderType shadType = scene->object[i]->getShaderType();
 
 		Shader::sendUniform(scene->object[i]->getShaderID(), "modelMatrix", scene->object[i]->getMatrix());
@@ -130,9 +129,11 @@ void Renderer::renderInit()
 			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.quadratic", 0.032f);
 			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.cutOff", glm::cos(glm::radians(12.5f)));
 			Shader::sendUniform(scene->object[i]->getShaderID(), "flashLight.outerCutOff", glm::cos(glm::radians(15.0f)));
-
+			*/
+			
+			/*
 			for (int lightIndex = 0; lightIndex < scene->light.size() - 1; lightIndex++) {
-				/*sprintf_s(buff, sizeof buff, "lights[%d].position", lightIndex);
+				sprintf_s(buff, sizeof buff, "lights[%d].position", lightIndex);
 				//glUniform3f(glGetUniformLocation(scene->object[i]->getShader(), "lights[0].position"), scene->light[lightIndex]->getPosition().x, scene->light[lightIndex]->getPosition().y, scene->light[lightIndex]->getPosition().z);
 
 				Shader::sendUniform(scene->object[i]->getShader(), buff, scene->light[lightIndex]->getPosition());
@@ -167,12 +168,12 @@ void Renderer::renderInit()
 				Shader::sendUniform(scene->object[i]->getShader(), ("lights[" + std::to_string(lightIndex) + "].ambientCoefficient").c_str(), scene->light2[lightIndex]->ambientCoefficient);
 				Shader::sendUniform(scene->object[i]->getShader(), ("lights[" + std::to_string(lightIndex) + "].coneAngle").c_str(), scene->light2[lightIndex]->coneAngle);
 				Shader::sendUniform(scene->object[i]->getShader(), ("lights[" + std::to_string(lightIndex) + "].coneDirection").c_str(), scene->light2[lightIndex]->coneDirection);
-				*/
-			}
-		}
+				
+			} */
+		//}
 
-		scene->object[i]->getModel().render();
-	}
+		//scene->object[i]->getModel().render();
+	//}
 }
 
 
@@ -213,7 +214,8 @@ void Renderer::renderLoop()
 	{
 		// per-frame time logic
 		currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;	// rozdil casu, kolik ubehlo mezi timto a predchozim casem
+		// rozdil casu, kolik ubehlo mezi timto a predchozim snimkem
+		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
 		// FPSCounter
@@ -239,17 +241,15 @@ void Renderer::renderLoop()
 
 		// render objects
 		int i;
-		//for (i = 0; i < scene->object.size(); i++)
 		for (i = 0; i < scene->m_objects.size(); i++)
 		{
 			glStencilFunc(GL_ALWAYS, i + 1, 0xFF);
 			//glStencilFunc(GL_ALWAYS, scene->object[i]->getID(), 0xFF);
-			
-			//renderObject(scene->object[i]); //uncomment this
 
 			// TODO: rewrite as: scene->getObjects().at(i)->draw
 			// new after refactoring
-			
+
+			// render 3d models
 			scene->m_objects.at(i)->draw();
 		}
 		
@@ -272,41 +272,6 @@ void Renderer::renderLoop()
 	glfwTerminate();
 }
 
-void Renderer::renderObject(std::shared_ptr<Object> object)
-{
-	object->render();
-	/*object->getModel().bindVAO();
-	object->useShader();
-	object->getModel().render();		// glDrawArrays()*/
-}
-
-
-/*void Renderer::renderModel()
-{
-	glUseProgram(scene->programID);
-	//scene->newMeshModel->Draw2(scene->programID);
-
-	for (auto mesh : scene->meshes) {
-		mesh->Draw2(scene->programID);
-	}
-	
-	//scene->meshes[1]->Draw2(scene->programID);
-	//scene->meshes[2]->Draw2(scene->programID);
-
-	glm::mat4 ProjectionMatrix = scene->camera[0]->getProjectionMatrix();
-	glm::mat4 ViewMatrix = scene->camera[0]->getCamera();
-	glm::mat4 ModelMatrix = glm::mat4(1.0);
-
-	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.5f, 0.5f, 0.5f));
-	ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, -0.5f, 0.0f));
-	glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
-
-	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "modelMatrix"), 1, GL_FALSE, &ModelMatrix[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "viewMatrix"), 1, GL_FALSE, &ViewMatrix[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(scene->programID, "projectionMatrix"), 1, GL_FALSE, &ProjectionMatrix[0][0]);
-
-}*/
-
 void Renderer::renderModel(int i_stencil_offset)
 {
 	// how to
@@ -314,8 +279,8 @@ void Renderer::renderModel(int i_stencil_offset)
 	// and
 	// http://web.cse.ohio-state.edu/~shen.94/781/Site/Slides_files/glsl.pdf
 
-	GLuint shaderProgramID;
-	shaderProgramID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
+	//GLuint shaderProgramID;
+	//shaderProgramID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
 	/*if (scene->camera[0]->holdObjects.size() != 0) {
 		shaderProgramID = Shader::getShader(ShaderType::GRAB_MODEL);	// DIFFUSE_MODEL
 	}
@@ -324,7 +289,7 @@ void Renderer::renderModel(int i_stencil_offset)
 		shaderProgramID = Shader::getShader(ShaderType::DIFFUSE_MODEL);
 	}*/
 	
-
+	/*
 	glUseProgram(shaderProgramID);
 
 	glm::mat4 ProjectionMatrix = scene->camera[0]->getProjectionMatrix();
@@ -425,12 +390,13 @@ void Renderer::renderModel(int i_stencil_offset)
 		else if (obj->fileName == "zaves_zatahly.obj" || obj->fileName == "zaves_odtahly.obj") {
 			continue;
 		}
+		*/
 
-		if (obj->fileName == "Low-Poly Plant_.obj" || obj->fileName == "chair.obj" || obj->fileName == "vetev1.obj" || obj->fileName == "vetev2.obj") {
+		/*if (obj->fileName == "Low-Poly Plant_.obj" || obj->fileName == "chair.obj" || obj->fileName == "vetev1.obj" || obj->fileName == "vetev2.obj") {
 			if (scene->camera[0]->holdingObject == true) {
 				shaderProgramID = Shader::getShader(ShaderType::GRAB_MODEL);	// DIFFUSE_MODEL
 				glUseProgram(shaderProgramID);
-
+				*/
 				/*glm::mat4 ProjectionMatrix = scene->camera[0]->getProjectionMatrix();
 				glm::mat4 ViewMatrix = scene->camera[0]->getCamera();
 				glm::mat4 ModelMatrix = glm::mat4(1.0);
@@ -468,6 +434,7 @@ void Renderer::renderModel(int i_stencil_offset)
 				Shader::sendUniform(shaderProgramID, "pointLight[1].position", glm::vec3(8.944598, 0.974669, 1.755617));
 				Shader::sendUniform(shaderProgramID, "pointLight[1].color", glm::vec3(1.0f, 1.0f, 1.0f));
 				*/
+			/*
 				Shader::sendUniform(shaderProgramID, "projectionMatrix", ProjectionMatrix);
 
 				//glm::mat4 textureMatrix = glm::scale(glm::mat4(1.0), glm::vec3(0.02, 0.02, 0.02));
@@ -480,7 +447,8 @@ void Renderer::renderModel(int i_stencil_offset)
 			obj->render();
 			
 			continue;
-		}
+		}*/
+
 		/*if (obj->fileName == "chair.obj") {
 			if (scene->camera[0]->holdingObject == true) {
 				shaderProgramID = Shader::getShader(ShaderType::GRAB_MODEL);	// DIFFUSE_MODEL
@@ -493,6 +461,7 @@ void Renderer::renderModel(int i_stencil_offset)
 			continue;
 		}*/
 
+		/*
 		if (obj->fileName == "krb.obj") {
 			glStencilFunc(GL_ALWAYS, 15, 0xFF);
 			obj->render();
@@ -524,6 +493,7 @@ void Renderer::renderModel(int i_stencil_offset)
 	}
 	
 	glUseProgram(0);
+	*/
 }
 
 

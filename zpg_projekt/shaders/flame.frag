@@ -226,40 +226,6 @@ vec4 CalcDirLight(DirLight light, vec3 normal)
     return vec4(ambient * diffuse, 1.0) * val;
 }
 
-// calculates the color when using a spot light.
-/*vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos)
-{
-    //light.position = viewPos;
-
-    vec3 lightDir = normalize(light.position - fragPos);
-    // diffuse shading
-    float diff = max(dot(normal, lightDir), 0.0);
-
-    // attenuation
-    float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-    // spotlight intensity
-    float theta = dot(lightDir, normalize(-light.direction)); 
-    float epsilon = light.cutOff - light.outerCutOff;
-    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
-    // combine results
-
-    vec3 ambient, diffuse;
-
-    if(hasTexture == 1) {
-        ambient = ambientStrength * vec3(texture(myTextureSampler, texCoordUV)); // TexCoords = uv
-        diffuse =  light.diffuse * diff * vec3(texture(myTextureSampler, texCoordUV));
-    }
-    else {
-        ambient  = ambientStrength * fragmentColor; //vec3(1.0f, 1.0f, 1.0f); // light.color // * fragmentColor;
-        diffuse  = light.diffuse  * diff * fragmentColor; // * fragmentColor;
-    }
-
-    ambient *= attenuation * intensity;
-    diffuse *= attenuation * intensity;
-
-    return (ambient + diffuse); // * fragmentColor;
-}*/
 
 
 float getAttenuation(vec3 _lightPosition, vec3 _fragPos)

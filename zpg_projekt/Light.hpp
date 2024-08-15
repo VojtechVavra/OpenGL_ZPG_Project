@@ -17,7 +17,7 @@ public:
 protected:
 	LightType lightType;
 public:
-	Light(glm::vec3 position, Model model, glm::vec3 modelColor, GLuint shaderProgram, ShaderType shaderType, glm::vec3 lightColor, float ambientCoefficient);
+	Light(glm::vec3 position/*, Model model*/, glm::vec3 modelColor, GLuint shaderProgram, ShaderType shaderType, glm::vec3 lightColor, float ambientCoefficient);
 	Light(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType, glm::vec3 lightColor, float ambientCoefficient);
 
 

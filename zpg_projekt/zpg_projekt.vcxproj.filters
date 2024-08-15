@@ -57,7 +57,7 @@
     <ClCompile Include="ShaderLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
+    <ClCompile Include="Model_from_file_OLD.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
@@ -67,9 +67,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ModelPrefabs.cpp">
@@ -129,6 +126,9 @@
     <ClCompile Include="TBaseCollectionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.hpp">
@@ -152,7 +152,7 @@
     <ClInclude Include="ShaderLoader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Model.hpp">
+    <ClInclude Include="Model_from_file_OLD.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scene.hpp">
@@ -200,9 +200,6 @@
     <ClInclude Include="models\1\worker.hpp">
       <Filter>models\1</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectFactory.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ModelPrefabs.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -236,9 +233,6 @@
     <ClInclude Include="LoadModel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ObjLoader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh_old.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -267,6 +261,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TBaseCollectionManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectFactory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

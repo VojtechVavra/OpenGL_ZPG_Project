@@ -1,19 +1,18 @@
 #include <GL/glew.h> // must be always included first!
 #include <GLFW/glfw3.h> // this will include <GL/gl.h>
 
-#include "Model.hpp"
-//#include "Shader.hpp"
+#include "Model_from_file_OLD.hpp"
 
 // https://www.cs.utexas.edu/~fussell/courses/cs384g-spring2017/lectures/Lecture9-Zbuffer_pipeline.pdf
 
-Model::Model()
+Model_from_file_OLD::Model_from_file_OLD()
 {
 	// camera
 }
-Model::Model(std::string modelName/*, Shader shader*/, GLuint vertCount)
+
+Model_from_file_OLD::Model_from_file_OLD(std::string modelName, GLuint vertCount)
 {
     bool  isTextured = false;
-   // this->shader = shader; //Shader(1);
 
     VAO = VBO = 0;
 
@@ -75,7 +74,6 @@ Model::Model(std::string modelName/*, Shader shader*/, GLuint vertCount)
     if (isTextured)
     {
         glBindVertexArray(VAO);
-
         //enable vertex attributes
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -102,7 +100,6 @@ Model::Model(std::string modelName/*, Shader shader*/, GLuint vertCount)
         return;
     }
 
-
     glBindVertexArray(VAO);
 
     // position attribute
@@ -116,7 +113,7 @@ Model::Model(std::string modelName/*, Shader shader*/, GLuint vertCount)
 }
 
 
-Model::Model(std::string modelName, bool _isTextured)
+Model_from_file_OLD::Model_from_file_OLD(std::string modelName, bool _isTextured)
 {
     bool  isTextured = _isTextured;
 
@@ -154,7 +151,7 @@ Model::Model(std::string modelName, bool _isTextured)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(cubemapPoints[0]), nullptr);
 }
 
-void Model::render() {
+void Model_from_file_OLD::render() {
 	// render the cube
 	//glBindVertexArray(VAO); 
 	glDrawArrays(GL_TRIANGLES, 0, vertexCount); // mode, first, count
@@ -166,16 +163,13 @@ void Model::render() {
 	return VAO;
 }*/
 
-void Model::bindVAO()
+void Model_from_file_OLD::bindVAO()
 {
     //glBindVertexArray(0);
     glBindVertexArray(VAO);
 }
 
-
-
-
-const std::vector<float> Model::cubemapPoints = {
+const std::vector<float> Model_from_file_OLD::cubemapPoints = {
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
         1.0f, -1.0f, -1.0f,

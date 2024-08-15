@@ -3,12 +3,12 @@
 
 #include "SOIL.h"
 
+#include <iostream>
 
-/*SkyBox::SkyBox(std::shared_ptr<Texture> cubeMap)
+
+
+SkyBox::SkyBox(const std::string imageType, const std::string skybox, const float size)
 {
-}*/
-
-SkyBox::SkyBox(const std::string imageType, const std::string skybox, const float size) /*: Model("cube", true)*/ {
     if (imageType == "jpg") {
         InitJpg(size, skybox);
     }
@@ -17,13 +17,18 @@ SkyBox::SkyBox(const std::string imageType, const std::string skybox, const floa
     }  
 };
 
-//skybox path = /textures/skybox/countryside/
+SkyBox::~SkyBox()
+{
+    std::cout << "Destructor of SkyBox" << std::endl;
+}
+
 unsigned int SkyBox::loadCubemap(std::vector<std::string> faces, const std::string sky)
 {
     unsigned int textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
+    //skybox path = /textures/skybox/countryside/
     std::string path = std::string("textures\\skybox\\") + sky + std::string("\\");
     int width, height, nrChannels;
     for (unsigned int i = 0; i < faces.size(); i++)
@@ -191,10 +196,8 @@ void SkyBox::draw(const ShaderProgram& shader, const std::shared_ptr<Camera>& ca
 
     Shader::sendUniform(shader.shaderProgram, "viewMatrix", camera->getCamera());
     Shader::sendUniform(shader.shaderProgram, "projectionMatrix", camera->getProjectionMatrix());
-    //Shader::sendUniform(shader.shaderProgram, "viewPos", camera->getPosition());
-    //shader.SetUniform("campos", campos);
 
-    glBindVertexArray(vao);   // funguje
+    glBindVertexArray(vao);
     //bindVAO();
 
     //glActiveTexture(GL_TEXTURE0);

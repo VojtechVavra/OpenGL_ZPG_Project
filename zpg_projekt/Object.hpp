@@ -11,7 +11,7 @@
 #include <glm/mat4x4.hpp>   // glm::mat4
 
 #include "IObserver.hpp"
-#include "Model.hpp"  // dodat
+//#include "Model.hpp"  // dodat
 #include "Shader.hpp"
 #include "Subject.hpp"
 
@@ -32,13 +32,15 @@ class Object
 public:
     virtual ~Object() = default;
     Object(glm::vec3 position); // pouzivam jen pro kameru
-    Object(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType); // For lights without model
-    Object(glm::vec3 position, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType);
-    Object(glm::vec3 position, std::shared_ptr<Texture> texture, GLuint shaderProgram, ShaderType shaderType);
+
+    // tohle asi se muze smazat - nepouziva se
+    //Object(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType); // For lights without model
+    //Object(glm::vec3 position, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType);
+    //Object(glm::vec3 position, std::shared_ptr<Texture> texture, GLuint shaderProgram, ShaderType shaderType);
     
     Object();
 
-    // nova funkce pro tvorbu objektu - + vao a vbo tvoreni
+    // nova funkce pro tvorbu objektu s vao a vbo tvorbou
     Object(const std::string& name, const ShaderType shaderType = ShaderType::PHONG);
     
     //~Object();
@@ -48,10 +50,8 @@ public:
     glm::mat4 getMatrix() const;
     glm::vec3 getRotate() const;
     glm::vec3 getScale() const;
-    Model getModel() const;
     GLuint getShaderID() const;
-
-    void useShader();
+    
     void setMatrix(glm::mat4 newMatrix);
     void setPosition(glm::vec3 position);
     void Rotate(glm::mat4 mat4x4, float angle, glm::vec3 axis);
@@ -66,11 +66,7 @@ public:
     virtual void draw();
     // Render mesh model
     //void render_mesh_new();
-
-    void render();
-    void renderSkybox(std::shared_ptr<Camera> camera);
-    void renderSkybox2(std::shared_ptr<Camera> camera);
-
+    
     bool hasTexture();
     void loadTexture();
 
@@ -82,7 +78,6 @@ public:
     //void update(std::string change) override;
     //void update(Camera* camera, camChange cameraChange) override;
     void setPositionWithoutTranslate(glm::vec3 newPosition);
-
     void PrintActiveUniformVariables() const;
 
     std::shared_ptr<Shader> getShaderProgram();
@@ -91,25 +86,17 @@ public:
 protected:
     glm::vec3 position;
     glm::mat4 m_matrix;   // model matrix
-    Model model;
-    GLuint shaderProgram;   // originally shaderID
-    ShaderType shaderType;
-    //std::shared_ptr<Camera> camera;
+
 public:
     std::shared_ptr<Texture> texture;
-
     glm::vec3 rotation;
     glm::vec3 scale;
 protected:
-    
     glm::vec3 color;
     glm::vec3 lastColor;
     static GLuint objectCount;
     GLuint objID;
 private:
-    
-    
-
     std::shared_ptr<Mesh> m_mesh;
     std::shared_ptr<Shader> m_shader;
     std::shared_ptr<Camera> m_camera;

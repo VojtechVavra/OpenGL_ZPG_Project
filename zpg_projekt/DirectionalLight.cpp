@@ -1,7 +1,7 @@
 #include "DirectionalLight.hpp"
 
 
-DirectionalLight::DirectionalLight(glm::vec3 position, Model model, glm::vec3 modelColor, GLuint shaderProgram, ShaderType shaderType, glm::vec3 lightColor, glm::vec3 direction, float ambientCoefficient) : Light(position, model, modelColor, shaderProgram, shaderType, lightColor, ambientCoefficient)
+DirectionalLight::DirectionalLight(glm::vec3 position/*, Model model*/, glm::vec3 modelColor, GLuint shaderProgram, ShaderType shaderType, glm::vec3 lightColor, glm::vec3 direction, float ambientCoefficient) : Light(position/*, model*/, modelColor, shaderProgram, shaderType, lightColor, ambientCoefficient)
 {
 	this->lightType = LightType::DIRECTION_LIGHT;
 	this->direction = direction;

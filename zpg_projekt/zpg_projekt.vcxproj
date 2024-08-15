@@ -164,7 +164,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Mesh_old.cpp" />
     <ClCompile Include="MeshLoader.cpp" />
-    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Model_from_file_OLD.cpp" />
     <ClCompile Include="ModelPrefabs.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
@@ -199,7 +199,7 @@
     <ClInclude Include="Mesh.hpp" />
     <ClInclude Include="Mesh_old.hpp" />
     <ClInclude Include="MeshLoader.hpp" />
-    <ClInclude Include="Model.hpp" />
+    <ClInclude Include="Model_from_file_OLD.hpp" />
     <ClInclude Include="ModelPrefabs.hpp" />
     <ClInclude Include="models\1\bedna.hpp" />
     <ClInclude Include="models\1\sphere2.hpp" />
@@ -213,9 +213,8 @@
     <ClInclude Include="models\2\suzi_smooth.hpp" />
     <ClInclude Include="models\vertex2.hpp" />
     <ClInclude Include="Object.hpp" />
-    <ClInclude Include="ObjectFactory.hpp" />
-    <ClInclude Include="ObjLoader.hpp" />
     <ClInclude Include="IObserver.hpp" />
+    <ClInclude Include="ObjectFactory.hpp" />
     <ClInclude Include="PointLight.hpp" />
     <ClInclude Include="Renderer.hpp" />
     <ClInclude Include="resource.h" />

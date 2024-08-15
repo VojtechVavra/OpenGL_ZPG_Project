@@ -7,12 +7,11 @@
 #include "Object.hpp"
 #include "Light.hpp"
 #include "DirectionalLight.hpp"
-#include "Model.hpp"
+//#include "Model.hpp"
 #include "Camera.hpp"
 #include "ShaderProgram.hpp"
 #include "SkyBox.hpp"
 #include "LoadModel.hpp"
-#include "ObjLoader.hpp"
 
 #include "Mesh.hpp"
 
@@ -40,7 +39,8 @@ public:
 	*	 4.
 	*/
 
-	std::vector<std::shared_ptr<Object>> object;
+	//std::vector<std::shared_ptr<Object>> object;
+
 	std::vector<std::shared_ptr<Camera>> camera;
 	std::vector<std::shared_ptr<Light>> light;
 	std::vector<ShaderProgram> shaderPrograms;
@@ -52,9 +52,10 @@ public:
 	std::vector<std::shared_ptr<DirectionalLight>> directionalLight;
 	
 
-	GLuint programID;
-	std::vector<Mesh*> meshes;	// added 2021
-	std::vector<std::shared_ptr<MeshLoader>> meshObjects;
+	//GLuint programID;
+	//std::vector<Mesh*> meshes;	// added 2021
+	//std::vector<std::shared_ptr<MeshLoader>> meshObjects;
+
 
 	// new refactorized code
 	std::vector<std::shared_ptr<Object>> m_objects;

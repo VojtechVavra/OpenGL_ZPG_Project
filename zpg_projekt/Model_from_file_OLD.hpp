@@ -24,12 +24,12 @@
 
 // https://www.cs.utexas.edu/~fussell/courses/cs384g-spring2017/lectures/Lecture9-Zbuffer_pipeline.pdf
 
-class Model
+class Model_from_file_OLD
 {
 public:
-	Model();
-	Model(std::string modelName, GLuint vertCount = 0);
-	Model(std::string modelName, bool _isTextured);
+	Model_from_file_OLD();
+	Model_from_file_OLD(std::string modelName, GLuint vertCount = 0);
+	Model_from_file_OLD(std::string modelName, bool _isTextured);
 	//GLuint getVAO();
 	void render();
 	void bindVAO();

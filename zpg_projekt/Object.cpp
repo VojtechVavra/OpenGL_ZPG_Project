@@ -27,7 +27,7 @@ Object::Object(glm::vec3 position)
 }
 
 // Constructor for lights without model
-Object::Object(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType)
+/*Object::Object(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType)
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -35,20 +35,14 @@ Object::Object(glm::vec3 position, GLuint shaderProgram, ShaderType shaderType)
     this->scale = glm::vec3(0.0f);
     //this->color = color;
     this->color = glm::vec3(1.0f, 1.0f, 1.0f);
-    //this->model = nullptr;
-    this->shaderProgram = shaderProgram;
-    this->shaderType = shaderType;
-    //this->camera = camera;
-    //this->hasTexture = false;
-    //this->objID = Object::objectCount += 1;
 
     Translate(position);
 
     std::cout << "Object type 2 - light without model" << std::endl;
-}
+}*/
 
 // Colored 3D model
-Object::Object(glm::vec3 position, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType)
+/*Object::Object(glm::vec3 position, glm::vec3 color, GLuint shaderProgram, ShaderType shaderType)
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -56,8 +50,8 @@ Object::Object(glm::vec3 position, glm::vec3 color, GLuint shaderProgram, Shader
     this->scale = glm::vec3(0.0f);
     this->color = color;
     //this->model = model;
-    this->shaderProgram = shaderProgram;
-    this->shaderType = shaderType;
+    //this->shaderProgram = shaderProgram;
+    //this->shaderType = shaderType;
     //this->camera = camera;
     //this->hasTexture = false;
 
@@ -66,10 +60,10 @@ Object::Object(glm::vec3 position, glm::vec3 color, GLuint shaderProgram, Shader
     Translate(position);
 
     std::cout << "Object type 3 - other model objects" << std::endl;
-}
+}*/
 
 // Textured 3D model
-Object::Object(glm::vec3 position, std::shared_ptr<Texture> texture, GLuint shaderProgram, ShaderType shaderType)
+/*Object::Object(glm::vec3 position, std::shared_ptr<Texture> texture, GLuint shaderProgram, ShaderType shaderType)
 {
     this->m_matrix = glm::mat4(1.0f);
     this->position = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -77,8 +71,8 @@ Object::Object(glm::vec3 position, std::shared_ptr<Texture> texture, GLuint shad
     this->scale = glm::vec3(0.0f);
     this->texture = texture;
     //this->model = model;
-    this->shaderProgram = shaderProgram;
-    this->shaderType = shaderType;
+    //this->shaderProgram = shaderProgram;
+    //this->shaderType = shaderType;
     //this->hasTexture = false;
     //this->hasTexture = true;
 
@@ -87,20 +81,8 @@ Object::Object(glm::vec3 position, std::shared_ptr<Texture> texture, GLuint shad
     Translate(position);
 
     std::cout << "Object type 4 - texture model object" << std::endl;
-}
-
-/*Object::Object(glm::vec3 position, Model model, GLuint shaderProgram, ShaderType shaderType)
-{
-    this->m_matrix = glm::mat4(1.0f);
-    this->position = glm::vec3(0.0f, 0.0f, 0.0f);
-    this->color = glm::vec3(1.0f, 1.0f, 1.0f);
-    this->model = model;
-    this->shaderProgram = shaderProgram;
-    this->shaderType = shaderType;
-    Translate(position);
-
-    std::cout << "Object 3" << std::endl;
 }*/
+
 
 Object::Object()
 {
@@ -109,7 +91,8 @@ Object::Object()
 
 #include "models/2/cube.hpp"
 
-Object::Object(const std::string& name, const ShaderType shaderType) //: m_shader(shader)
+// New after refactoring used
+Object::Object(const std::string& name, const ShaderType shaderType)
 {
     m_shader = std::make_shared<Shader>(shaderType);
     MeshLoader a(name.c_str(), m_mesh);
@@ -146,11 +129,6 @@ glm::mat4 Object::getMatrix() const
     return this->m_matrix;
 }
 
-Model Object::getModel() const
-{
-    return this->model;
-}
-
 GLuint Object::getShaderID() const
 {
     // new refactored code
@@ -158,11 +136,6 @@ GLuint Object::getShaderID() const
     
     // old
     //return this->shaderProgram;
-}
-
-void Object::useShader()
-{
-    glUseProgram(shaderProgram);
 }
 
 void Object::setMatrix(glm::mat4 newMatrix) {
@@ -190,7 +163,6 @@ void Object::PrintActiveUniformVariables() const
     m_shader->PrintActiveUniformVariables();
 }
 
-
 void Object::Translate(glm::mat4 mat4x4, glm::vec3 shift)
 {
     this->m_matrix = glm::translate(mat4x4, shift);
@@ -201,7 +173,6 @@ void Object::Translate(glm::vec3 shift)
     this->position += shift;
     this->m_matrix = glm::translate(m_matrix, shift);
 }
-
 
 //Note that to convert from degrees to radians, use glm::radians(degrees)
 void Object::Rotate(glm::mat4 mat4x4, float rotxangle, glm::vec3 axis)
@@ -228,7 +199,6 @@ void Object::Scale(glm::vec3 scale)
     this->m_matrix = glm::scale(m_matrix, scale);
     this->scale += scale;
 }
-
 
 bool Object::hasTexture()
 {
@@ -260,7 +230,7 @@ void Object::setLastColor()
 
 ShaderType Object::getShaderType()
 {
-    return this->shaderType;
+    return m_shader->getType();
 }
 
 GLuint Object::getID()
@@ -278,92 +248,9 @@ glm::vec3 Object::getScale() const
     return this->scale;
 }
 
-/*void Object::update(Camera* camera, camChange change)
-{
-    Shader::use(this->getShader());
-    if (change == camChange::MOVE_ROTATE) {
-        // nepridavat vypisy/printy sekala by se scena
-        if (this->shaderType == ShaderType::AMBIENT)
-        {
-            Shader::sendUniform(shaderProgram, "modelMatrix", getMatrix());
-
-            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
-        }
-        else if (shaderType == ShaderType::DIFFUSE)
-        {
-            Shader::sendUniform(shaderProgram, "modelMatrix", getMatrix());
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
-
-            // flashlight(as Spotlight) on Camera 
-            if (camera->isFlashLightOn()) {
-
-                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-            }
-        }
-        else if (shaderType == ShaderType::SPECULAR)
-        {
-            Shader::sendUniform(shaderProgram, "modelMatrix", getMatrix());
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
-            Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
-        }
-        else if (shaderType == ShaderType::PHONG)
-        {
-            Shader::sendUniform(shaderProgram, "modelMatrix", getMatrix());
-            //sendUniform("modelMatrix", scene->object[i].getMatrix());
-            Shader::sendUniform(shaderProgram, "viewMatrix", camera->getCamera());
-            Shader::sendUniform(shaderProgram, "viewPos", camera->getPosition());
-
-            //Shader::sendUniform(shaderProgram, "fragmentColor", glm::vec3(0.f, 0.f, 1.0f));
-
-            // SpotLight
-            //Shader::sendUniform(shaderProgram, "spotLight[0].position", camera->getPosition());
-            //Shader::sendUniform(shaderProgram, "spotLight[0].direction", camera->target);
-
-            // flashlight(as Spotlight) on Camera 
-            if (camera->isFlashLightOn()) {
-                
-                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-            }
-            
-        }
-        else if (shaderType == ShaderType::BLINN)
-        {
-            //Shader::sendUniform(shaderProgram, "modelMatrix", scene->object[i].getMatrix());
-            //Shader::sendUniform(shaderProgram, "viewMatrix", m_camera->getCamera());
-            //Shader::sendUniform(shaderProgram, "viewPos", m_camera->getPosition());
-        }
-        //std::cout << "Camera has changed" << std::endl;
-    }
-    else if (change == camChange::PROJECTION) {
-        // zoom / fov changed
-        Shader::sendUniform(shaderProgram, "projectionMatrix", camera->getProjectionMatrix());
-        //std::cout << "Projection has changed" << std::endl;
-    }
-    else if (change == FLASHLIGHT) {
-        if (shaderType == ShaderType::DIFFUSE)
-        {
-            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
-            if (camera->isFlashLightOn()) {
-                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-            }
-        }
-        else if (shaderType == ShaderType::PHONG)
-        {
-            Shader::sendUniform(shaderProgram, "flashLight.isActive", camera->isFlashLightOn() ? 1 : 0);
-            if (camera->isFlashLightOn()) {
-                Shader::sendUniform(shaderProgram, "flashLight.position", camera->getPosition());
-                Shader::sendUniform(shaderProgram, "flashLight.direction", camera->target);
-            }
-        }
-    }
-}*/
 
 /*
+*   Render meshes of the object
 *   Default uniforms for PHONG shader
 */
 void Object::draw()
@@ -374,7 +261,7 @@ void Object::draw()
     m_shader->sendUniform("viewMatrix", m_camera->getCamera());
     m_shader->sendUniform("projectionMatrix", m_camera->getProjectionMatrix());
 
-    // Pošleme z CUPU do GPU uniformní promìnné aktualizovaných dat
+    // Pošleme z CPU do GPU uniformní promìnné aktualizovaných dat
     m_shader->sendUniform("modelMatrix", m_matrix);
     //m_shader.sendUniform("fragmentColor", color);
     // send uniformmeshMaterial
@@ -391,7 +278,7 @@ void Object::draw()
 
     // viewMatrix a projectionMatrix a viewPos se updatuje ve ShaderProgram classe pøi zmìnì kamery
     
-    GLint stencilValue = 0; // 15
+    //GLint stencilValue = 0; // 15
     //glStencilFunc(GL_ALWAYS, stencilValue, 0xFF);
     
     m_mesh->render();
@@ -399,7 +286,7 @@ void Object::draw()
 
 // TODO: old, nepouzivam uz pro vykreslovani, takze by se toto melo smazat
 // misto toho pouzivam funkci draw()
-void Object::render()
+/*void Object::render()
 {
     this->getModel().bindVAO();
     
@@ -409,7 +296,7 @@ void Object::render()
     //Shader::sendUniform(Shader::getShader(getShaderType()), "modelMatrix", getMatrix());
     Shader::sendUniform(getShaderID(), "modelMatrix", getMatrix());
 
-    if (getShaderType() == ShaderType::PHONG /*|| (getShaderType() == ShaderType::DIFFUSE)*/)
+    if (getShaderType() == ShaderType::PHONG //|| (getShaderType() == ShaderType::DIFFUSE))
     {
         if (hasTexture()) {
             loadTexture();
@@ -429,34 +316,4 @@ void Object::render()
     //Shader::sendUniform(getShader(), "fragmentColor", glm::vec3(1.f, 0.0f, 0.0f));
 
     this->getModel().render();		// glDrawArrays()
-}
-
-void Object::renderSkybox(std::shared_ptr<Camera> camera)
-{
-    this->getModel().bindVAO();
-
-    this->useShader();  // use shaderProgram
-    //glUseProgram(Shader::getShader(getShaderType()));
-
-    //Shader::sendUniform(Shader::getShader(getShaderType()), "modelMatrix", getMatrix());
-    Shader::sendUniform(getShaderID(), "modelMatrix", getMatrix());
-    Shader::sendUniform(getShaderID(), "projectionMatrix", camera->getProjectionMatrix());
-    Shader::sendUniform(getShaderID(), "skybox", 0);
-
-    texture->LoadCubemap();
-
-    this->getModel().render();		// glDrawArrays()
-    glBindVertexArray(0);
-}
-
-void Object::renderSkybox2(std::shared_ptr<Camera> camera)
-{
-    glDepthMask(GL_FALSE);
-    this->useShader();  // use shaderProgram -  glUseProgram(shaderProgram);
-    //cubeMap->bind(shader);
-    glStencilFunc(GL_ALWAYS, -1, 0xFF);
-    this->getModel().bindVAO();  //glBindVertexArray(vao);
-    //glDrawArrays(GL_TRIANGLES, 0, points.size());
-    this->getModel().render();		// glDrawArrays()
-    glDepthMask(GL_TRUE);
-}
+}*/
