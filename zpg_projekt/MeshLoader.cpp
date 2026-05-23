@@ -142,26 +142,23 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 **/
 MeshLoader::MeshEntry::~MeshEntry()
 {
-	std::cout << "mesh deleted" << std::endl;
-	/*
-	if (vbo[VERTEX_BUFFER]) {
-		glDeleteBuffers(1, &vbo[VERTEX_BUFFER]);
-	}
+    std::cout << "mesh deleted" << std::endl;
 
-	if (vbo[TEXCOORD_BUFFER]) {
-		glDeleteBuffers(1, &vbo[TEXCOORD_BUFFER]);
-	}
-
-	if (vbo[NORMAL_BUFFER]) {
-		glDeleteBuffers(1, &vbo[NORMAL_BUFFER]);
-	}
-
-	if (vbo[INDEX_BUFFER]) {
-		glDeleteBuffers(1, &vbo[INDEX_BUFFER]);
-	}
-
-	glDeleteVertexArrays(1, &vao);
-	*/
+    if (vbo[VERTEX_BUFFER]) {
+        glDeleteBuffers(1, &vbo[VERTEX_BUFFER]);
+    }
+    if (vbo[TEXCOORD_BUFFER]) {
+        glDeleteBuffers(1, &vbo[TEXCOORD_BUFFER]);
+    }
+    if (vbo[NORMAL_BUFFER]) {
+        glDeleteBuffers(1, &vbo[NORMAL_BUFFER]);
+    }
+    if (vbo[INDEX_BUFFER]) {
+        glDeleteBuffers(1, &vbo[INDEX_BUFFER]);
+    }
+    if (vao) {
+        glDeleteVertexArrays(1, &vao);
+    }
 }
 
 /**
@@ -185,8 +182,8 @@ MeshLoader::MeshLoader(const char* filename, std::shared_ptr<Mesh>& out_mesh)
 	//unsigned int importOptionFlags = aiProcess_Triangulate | aiProcess_GenNormals;	// default NULL
 	//unsigned int importOptionFlags = aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_JoinIdenticalVertices;
 	unsigned int importOptionFlags = 
-		  aiProcess_OptimizeMeshes              // slouËenÌ mal˝ch ploöek
-		| aiProcess_JoinIdenticalVertices       // NUTN… jinak hodnÏ duplikuje
+		  aiProcess_OptimizeMeshes              	// slouƒçen√≠ mal√Ωch plo≈°ek
+		| aiProcess_JoinIdenticalVertices  		// NUTN√â jinak hodnƒõ duplikuje
 		| aiProcess_Triangulate                 // prevod vsech ploch na trojuhelniky
 		| aiProcess_CalcTangentSpace;           // vypocet tangenty, nutny pro spravne pouziti normalove mapy
 
@@ -198,10 +195,9 @@ MeshLoader::MeshLoader(const char* filename, std::shared_ptr<Mesh>& out_mesh)
 
 	SaveFilenameAndPath(std::string(filename));
 	shaderProgramID = 0;
-	// The number of primitives(triangles, polygons, lines) in this  mesh.
 	unsigned int numPrimitives = 0;
 
-	for (int i = 0; i < scene->mNumMeshes; ++i) {
+	for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
 		aiMesh* mesh = scene->mMeshes[i];
 		numPrimitives += mesh->mNumFaces * 3;
 
@@ -244,7 +240,7 @@ MeshLoader::MeshLoader(const char* filename, std::shared_ptr<Mesh>& out_mesh)
 	auto textureManager = TextureManager::getInstance();
 	std::vector<std::shared_ptr<Texture>> textures;
 
-	// ZÌsk·nÌ textur na z·kladÏ materi·l˘
+	// Z√≠sk√°n√≠ textur na z√°kladƒõ materi√°l≈Ø
 	for (int j = 0; j < material.size(); j++) {
 		if (material[j]->diffuseMap != "no_texture") {
 			textures.emplace_back(textureManager->getModelTexture(material[j]->diffuseMap));

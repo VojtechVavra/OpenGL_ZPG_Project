@@ -13,7 +13,7 @@
 
 class Application {
 public:
-    Application* getInstance();
+    static Application* getInstance();
     ~Application();
     
     void callbackFunctions() const;
@@ -22,7 +22,7 @@ public:
     void init();
 
 private:
-    static Application* m_single;
+    static std::unique_ptr<Application> m_single;
     std::shared_ptr<Window> m_window;
     std::shared_ptr<class Scene> m_scene;
     Renderer m_renderer;

@@ -30,17 +30,12 @@ private:
 			VERTEX_BUFFER, TEXCOORD_BUFFER, NORMAL_BUFFER, INDEX_BUFFER
 		};
 
-		//GLuint vao;
-		//GLuint vbo[4];
 		GLuint vao;
 		GLuint vbo[4];
-
-		
+	
 		//std::shared_ptr<VAO> m_VAO;
 		//std::array<std::shared_ptr<VBO>, 4> m_VBO;
 		//VAO m_VAO;
-		//VBO m_VBO[4];
-		
 		
 		unsigned int m_numVertices = 0;
 		unsigned int elementCount;
@@ -48,7 +43,7 @@ private:
 		MeshEntry(aiMesh* mesh);
 		~MeshEntry();
 
-		int materialIndex = 0;	// added
+		int materialIndex = 0;
 
 		//void load(aiMesh* mesh);
 		//void render();
@@ -68,8 +63,8 @@ public:
 	void renderFlame();
 	void render2(); // TODO: Smazat tuto funkci a udelat ji obecne
 // pridat do teto classy textury a materialy
-	glm::mat4 ModelMatrix; // added
-	GLuint shaderProgramID; // added
+	glm::mat4 ModelMatrix;
+	GLuint shaderProgramID;
 
 	std::string path;
 	std::string fileName;

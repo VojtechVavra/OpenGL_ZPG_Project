@@ -19,7 +19,7 @@ Mesh::Mesh( std::vector<std::unique_ptr<Material>>&& material,
 			//m_VAO(VAO),
 			//m_VBO(VBO)
 {
-	// Konstruktor pøesune data do èlenskıch promìnnıch pomoci std::move()
+	// Konstruktor pÅ™esune data do ÄlenskÃ½ch promÄ›nnÃ½ch pomoci std::move()
 	//std::cout << "Mesh created" << std::endl;
 }
 
@@ -36,12 +36,12 @@ Mesh::~Mesh()
 void Mesh::render(bool f)
 {
 	/*for (int i = 0; i < m_meshEntries.size(); ++i) {
-		// Zajištìní, e všechny objekty jsou správnì inicializovány
+		// ZajiÅ¡tÄ›nÃ­, Å¾e vÅ¡echny objekty jsou sprÃ¡vnÄ› inicializovny
 		if (!m_meshEntries[i]->vao) {
 			std::cout << "Error: VAO is not initialized!" << std::endl;
 			return;
 		}
-		// Kontrola, e všechny VBO jsou inicializovány
+		// Kontrola, Å¾e vechny VBO jsou inicializovÃ¡ny
 		for (const auto& vbo : m_meshEntries[i]->vbo) {
 			if (!vbo) {
 				std::cout << "Error: VBO is not initialized!" << std::endl;
@@ -77,7 +77,7 @@ void Mesh::render(bool f)
 		//m_meshEntries[i]->vao->bind();
 		glBindVertexArray(m_meshEntries[i]->vao);
 
-		// Kontrola, e všechny VBO v m_meshEntries jsou inicializovány
+		// Kontrola, Å¾e vÅ¡echny VBO v m_meshEntries jsou inicializovÃ¡ny
 		/*for (const auto& vbo : m_meshEntries[i]->m_VBO) {
 			if (!vbo) {
 				std::cerr << "Error: VBO in MeshEntry is not initialized!" << std::endl;
@@ -92,7 +92,7 @@ void Mesh::render(bool f)
 		glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[VERTEX_BUFFER]);
 		glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[TEXCOORD_BUFFER]);
 		glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[NORMAL_BUFFER]);
-		glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[INDEX_BUFFER]);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshEntries[i]->vbo[INDEX_BUFFER]);
 
 		if (m_material.size() - 1 >= i) {
 			//m_shader.sendUniform("meshMaterial.ambient", glm::vec3(1.0f, 1.0f, 1.0f)/*m_material[i]->ambient*/);
@@ -113,18 +113,17 @@ void Mesh::render(bool f)
 		}
 
 		//m_meshEntries.at(i)->render();
-		// Vykreslovací kód (napø. glDrawArrays nebo glDrawElements)
+		// Vykreslovacï¿½ kï¿½d (napï¿½. glDrawArrays nebo glDrawElements)
 		
 		//glDrawElements(GL_TRIANGLES, m_meshEntries[i]->m_numVertices, GL_UNSIGNED_INT, NULL); // uncomment, actually broken
 
-		// Kontrola, e poèet vrcholù je správnı
+		// Kontrola, Å¾e poÄet vrcholÅ¯ je sprÃ¡vnÃ½
 		if (m_meshEntries[i]->m_numVertices <= 0) {
 			std::cerr << "Error: Number of vertices is invalid!" << std::endl;
 			continue;
 		}
 
-		// Vykreslovací kód (napø. glDrawArrays nebo glDrawElements)
-		glDrawElements(GL_TRIANGLES, m_meshEntries[i]->m_numVertices * 3 * sizeof(GLfloat), GL_UNSIGNED_INT, NULL);
+		glDrawElements(GL_TRIANGLES, m_meshEntries[i]->elementCount, GL_UNSIGNED_INT, NULL);
 
 		glBindVertexArray(0);
 		//m_meshEntries[i]->m_VAO->unbind();
@@ -139,7 +138,6 @@ void Mesh::render() // nefunkcni
 	static std::vector<std::shared_ptr<Texture>> t;
 	//t.clear(); // Clear vector to reuse
 
-	// std::set<> Pokud potøebujete uloit unikátní prvky v uspoøádaném poøadí a rychle je vyhledávat. ádné duplikáty.
 	std::set<std::shared_ptr<Texture>> unique_textures;
 
 	int num_texture_to_load = 0;
@@ -174,11 +172,10 @@ void Mesh::render() // nefunkcni
 	for (int i = 0; i < m_meshEntries.size(); ++i) {
 		if (m_material.size() - 1 >= i) {
 			glBindVertexArray(m_meshEntries[i]->vao);
-			glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[VERTEX_BUFFER]);
-			glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[TEXCOORD_BUFFER]);
-			glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[NORMAL_BUFFER]);
-			glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[INDEX_BUFFER]);
-
+            glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[VERTEX_BUFFER]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[TEXCOORD_BUFFER]);
+            glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[NORMAL_BUFFER]);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshEntries[i]->vbo[INDEX_BUFFER]);
 			//m_shader.sendUniform("meshMaterial.ambient", m_material[i]->ambient);
 			//m_shader.sendUniform("meshMaterial.diffuse", m_material[i]->diffuse);
 			//m_shader.sendUniform("meshMaterial.specular", m_material[i]->specular);
@@ -193,10 +190,10 @@ void Mesh::render() // nefunkcni
 				unique_textures.insert(texture);
 
 				// added
-				// Najít poøadí prvku v setu
+				// NajÃ­t poÅ™adÃ­ prvku v setu
 				auto it = unique_textures.find(t[i]);
 				if (it != unique_textures.end()) {
-					// Iterujeme od zaèátku setu a po hledanı prvek
+					// Iterujeme od zaÄÃ¡tku setu aÅ¾ po hledanÃ½ prvek
 					int index = std::distance(unique_textures.begin(), it);
 					//std::cout << "Binding texture ID: " << it->getTextureId() << " at position " << index << std::endl;
 					glBindTexture(GL_TEXTURE_2D + 0, (*it)->getTextureId());
@@ -208,7 +205,6 @@ void Mesh::render() // nefunkcni
 
 				/*auto it = unique_textures.find(t[i]);
 				if (it != unique_textures.end()) {
-					// Iterujeme od zaèátku setu a po hledanı prvek
 					//int index = std::distance(unique_textures.begin(), it);
 					
 				}
@@ -227,9 +223,7 @@ void Mesh::render() // nefunkcni
 			m_shader->sendUniform("meshMaterial.specular", m_material[i]->specular);
 		}
 
-		//m_meshEntries.at(i)->render();
-		// Vykreslovací kód (napø. glDrawArrays nebo glDrawElements)
-		glDrawElements(GL_TRIANGLES, m_meshEntries[i]->m_numVertices * 3 * sizeof(GLfloat), GL_UNSIGNED_INT, NULL);
+            glDrawElements(GL_TRIANGLES, m_meshEntries[i]->elementCount, GL_UNSIGNED_INT, NULL);
 
 		//glBindVertexArray(0);
 	}

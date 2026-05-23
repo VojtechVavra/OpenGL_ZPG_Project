@@ -14,14 +14,14 @@
 #include "Renderer.hpp"
 
 
-Application* Application::m_single = nullptr;
+std::unique_ptr<Application> Application::m_single;
 
 Application* Application::getInstance()
 {
-	if (Application::m_single == nullptr) {
-		Application::m_single = new Application();
-	}
-	return Application::m_single;
+    if (!Application::m_single) {
+        Application::m_single.reset(new Application());
+    }
+    return Application::m_single.get();
 }
 
 Application::Application()
@@ -86,7 +86,7 @@ void Application::callbackFunctions() const
 	glfwSetWindowUserPointer(m_window->getGLFWwindow(), m_window->getWindowSizePtr()/*&windSize*/);
 	glfwSetWindowSizeCallback(m_window->getGLFWwindow(), Callback::window_size_callback);
 	
-	// Nastavení callbacku pro zmìnu velikosti framebufferu
+	// NastavenÃ­ callbacku pro zmÄ›nu velikosti framebufferu
 	glfwSetFramebufferSizeCallback(m_window->getGLFWwindow(), Callback::framebuffer_size_callback);
 
 	glfwSetScrollCallback(m_window->getGLFWwindow(), Callback::scroll_callback);

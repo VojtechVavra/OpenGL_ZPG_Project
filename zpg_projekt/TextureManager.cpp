@@ -30,8 +30,7 @@ std::shared_ptr<Texture> TextureManager::createTexture(std::string textureName)
     );
 
     if (textureID == 0) {
-        // Pokud se naètení nepodaøilo, nastavíme vıchozí texturu
-        // 
+        // Pokud se naÄtenÃ­ nepodaÅ™ilo, nastavÃ­me vÃ½chozÃ­ texturu
         //printf("[Texture manager/loader] \"%s\" failed to load texture!\n", texturePath.c_str());
 
         //int r = rand() % 2 + 1;
@@ -47,7 +46,7 @@ std::shared_ptr<Texture> TextureManager::createTexture(std::string textureName)
         texturePath = std::string(rand_texture_choice);
     }
     
-    // Vytvoø novou instanci textury a pøidej ji do mapy
+    // VytvoÅ™ novou instanci textury a pÅ™idej ji do mapy
 	std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(textureName, textureID);
 	//textures.insert({ textureName, newTexture });
     addData(newTexture);
@@ -69,8 +68,7 @@ std::shared_ptr<Texture> TextureManager::createNoRepeatTexture(std::string textu
     );
 
     if (textureID == 0) {
-        // Pokud se naètení nepodaøilo, nastavíme vıchozí texturu
-        
+        // Pokud se naÄtenÃ­ nepodaÅ™ilo, nastavÃ­me vÃ½chozÃ­ texturu
         //printf("[Texture model manager/loader] \"%s\" failed to load texture!\n", texturePath.c_str());
 
         //int r = rand() % 2 + 1;
@@ -86,7 +84,7 @@ std::shared_ptr<Texture> TextureManager::createNoRepeatTexture(std::string textu
         texturePath = std::string(rand_texture_choice);
     }
     
-    // Vytvoø novou instanci textury a pøidej ji do mapy
+    // VytvoÅ™ novou instanci textury a pÅ™idej ji do mapy
     std::shared_ptr<Texture> newTexture = std::make_shared<Texture>(texturePath, textureID);
     //textures.insert({ texturePath, newTexture });
     addData(newTexture);
@@ -240,7 +238,10 @@ std::shared_ptr<Texture> TextureManager::createCubemap2(std::vector<std::string>
         SOIL_LOAD_RGBA, SOIL_CREATE_NEW_ID, 0 //SOIL_FLAG_INVERT_Y
     );
 
-    glGenTextures(1, &cubeMapTexture);
+    if (!cubeMapTexture) {
+        std::cerr << "Failed to load cubemap faces." << std::endl;
+        return nullptr;
+    }
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture);
 
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -283,8 +284,7 @@ void TextureManager::deleteTextureByName(const std::string& textureName)
     //close the application.
     //it = mymap.find('b');
 
-
-    // Lambda podmínka pro odstranìní prvkù rovná dataToDelete
+    // Lambda podmÃ­nka pro odstranÄ›nÃ­ prvkÅ¯ rovnÃ© dataToDelete
     auto condition = [textureName](std::shared_ptr<Texture> texture) { return texture->getName() == textureName; };
 
     deleteByConditionLambda(condition);
