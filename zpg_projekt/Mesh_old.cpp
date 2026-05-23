@@ -1,7 +1,8 @@
 #include "Mesh_old.hpp"
 #include "Shader.hpp"
-#include "ObjLoader.hpp"    // added
 #include "TextureManager.hpp"
+#include "Material.hpp"
+
 
 Mesh_old::Mesh_old(std::vector<Vertex> vertices, std::vector<unsigned short> indices, std::vector<std::shared_ptr<Texture>> texture) //std::vector<Texture> textures
 {

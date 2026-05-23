@@ -541,9 +541,9 @@ void Scene::modelSection()
 	m_objects.push_back(o4);
 	
 	//newMeshModel = new MeshLoader("models\\scena\\vetev2.obj");
-	auto o5 = std::make_shared<Object>("models\\scena\\krb.obj", ShaderType::DIFFUSE_MODEL);
+	auto o5 = std::make_shared<Object>("models\\scena\\vetev2.obj", ShaderType::DIFFUSE_MODEL); // use: GRAB_MODEL
 	o5->setCamera(camera.at(0));
-	ModelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-1.25f, 0.26f, 0.6f));
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-1.25f, 0.26f, 0.6f));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));
 	//newMeshModel->ModelMatrix = ModelMatrix;
 	o5->setMatrix(ModelMatrix);
@@ -577,6 +577,14 @@ void Scene::modelSection()
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.7f, 0.7f, 0.7f));
 	o8->setMatrix(ModelMatrix);
 	m_objects.push_back(o8);
+
+
+	auto o9 = std::make_shared<Object>("models\\scena\\flame.obj", ShaderType::DIFFUSE_MODEL);
+	o9->setCamera(camera.at(0));
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0.0, 0.0f, 2.0f));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));	// glm::vec3(0.1f, 0.1f, 0.1f)
+	o9->setMatrix(ModelMatrix);
+	m_objects.push_back(o9);
 
 	//newMeshModel = new MeshLoader("models\\cube\\dum2\\dum2.obj");
 	//auto o10 = std::make_shared<Object>("models\\cube\\dum2\\dum2.obj", ShaderType::DIFFUSE);
@@ -656,6 +664,26 @@ void Scene::modelSection()
 	Shader::sendUniform(o5->getShaderID(), "myTextureSampler", (GLint)0);
 	Shader::sendUniform(o5->getShaderID(), "flashLight.isActive", camera[0]->isFlashLightOn() ? 1 : 0);
 	Shader::sendUniform(o5->getShaderID(), "showTextureDetail", camera[0]->getTextureDetail());
+
+	Shader::sendUniform(o6->getShaderID(), "dirLight.direction", direction_front_to_back_up_half_down);
+	Shader::sendUniform(o6->getShaderID(), "dirLight.color", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(o6->getShaderID(), "dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	Shader::sendUniform(o6->getShaderID(), "dirLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+	Shader::sendUniform(o6->getShaderID(), "dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(o6->getShaderID(), "hasTexture", 1);
+	Shader::sendUniform(o6->getShaderID(), "myTextureSampler", (GLint)0);
+	Shader::sendUniform(o6->getShaderID(), "flashLight.isActive", camera[0]->isFlashLightOn() ? 1 : 0);
+	Shader::sendUniform(o6->getShaderID(), "showTextureDetail", camera[0]->getTextureDetail());
+
+	Shader::sendUniform(o7->getShaderID(), "dirLight.direction", direction_front_to_back_up_half_down);
+	Shader::sendUniform(o7->getShaderID(), "dirLight.color", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(o7->getShaderID(), "dirLight.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	Shader::sendUniform(o7->getShaderID(), "dirLight.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+	Shader::sendUniform(o7->getShaderID(), "dirLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+	Shader::sendUniform(o7->getShaderID(), "hasTexture", 1);
+	Shader::sendUniform(o7->getShaderID(), "myTextureSampler", (GLint)0);
+	Shader::sendUniform(o7->getShaderID(), "flashLight.isActive", camera[0]->isFlashLightOn() ? 1 : 0);
+	Shader::sendUniform(o7->getShaderID(), "showTextureDetail", camera[0]->getTextureDetail());
 
 
 	// function tests

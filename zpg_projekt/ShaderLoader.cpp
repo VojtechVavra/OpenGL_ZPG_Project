@@ -11,6 +11,7 @@ std::string ShaderLoader::loadFile(const char* fname)
 	std::stringstream fileData;
 	fileData << file.rdbuf();
 	file.close();
+	
 	return fileData.str();
 }
 
@@ -18,24 +19,35 @@ GLuint ShaderLoader::loadShader(const char* vertexFile, const char* fragmentFile
 	printf("Shader::loadShader %s %s \n", vertexFile, fragmentFile);
 	std::string vertexShaderString = loadFile(vertexFile);
 	std::string fragmentShaderString = loadFile(fragmentFile);
-	int vlen = vertexShaderString.length();
-	int flen = fragmentShaderString.length();
+	int vlen = static_cast<int>(vertexShaderString.length());
+	int flen = static_cast<int>(fragmentShaderString.length());
 
-	if (vertexShaderString.empty()) printf("Nulový Vertex Shader\n");
-	if (fragmentShaderString.empty()) printf("Nulový Fragment Shader\n");
+	bool failed = false;
+
+	if (vertexShaderString.empty()) {
+		std::cerr << "Unable to open vertex shader file: " << vertexFile << std::endl;
+		failed = true;
+	}
+	if (fragmentShaderString.empty()) {
+		std::cerr << "Unable to open fragment shader file: " << fragmentFile << std::endl;
+		failed = true;
+	}
+	if (failed) {
+		return 0;
+	}
 
 	const char* vertexShaderCStr = vertexShaderString.c_str();
 	const char* fragmentShaderCStr = fragmentShaderString.c_str();
 
 	GLuint vertexID = glCreateShader(GL_VERTEX_SHADER);    //Vertex Shader
-	glShaderSource(vertexID, 1, (const GLchar**)&vertexShaderCStr, &vlen);
+	glShaderSource(vertexID, 1, reinterpret_cast<const GLchar* const*>(&vertexShaderCStr), &vlen);
 	glCompileShader(vertexID);
 
 	// Check for vertex shader compilation errors
 	checkVertShaderCompileError(vertexID);
 
 	GLuint fragmentID = glCreateShader(GL_FRAGMENT_SHADER); //Fragment Shader
-	glShaderSource(fragmentID, 1, (const GLchar**)&fragmentShaderCStr, &flen);
+	glShaderSource(fragmentID, 1, reinterpret_cast<const GLchar* const*>(&fragmentShaderCStr), &flen);
 	glCompileShader(fragmentID);
 
 	// Check for fragment shader compilation errors
@@ -45,14 +57,13 @@ GLuint ShaderLoader::loadShader(const char* vertexFile, const char* fragmentFile
 	glAttachShader(programID, vertexID);
 	glAttachShader(programID, fragmentID);
 	glLinkProgram(programID);
+	checkProgramShaderCompileError(programID);
 
-	
 	// Detach and delete the shader objects
 	glDetachShader(programID, vertexID);
 	glDetachShader(programID, fragmentID);
 	glDeleteShader(vertexID);
 	glDeleteShader(fragmentID);
-
 
 	return programID;
 }
@@ -68,10 +79,8 @@ void ShaderLoader::deleteShader() {
 }
 
 ShaderLoader::ShaderLoader(const char* vertexFile, const char* fragmentFile, GLuint* shaderID) {
-
 	*shaderID = loadShader(vertexFile, fragmentFile);
 }
-
 
 void ShaderLoader::checkVertShaderCompileError(GLuint vertShader) {
 	GLint status;

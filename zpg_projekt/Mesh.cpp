@@ -2,6 +2,7 @@
 #include "TextureManager.hpp"
 
 #include <iostream>
+#include <set>
 
 
 Mesh::Mesh( std::vector<std::unique_ptr<Material>>&& material,
@@ -138,18 +139,37 @@ void Mesh::render() // nefunkcni
 	static std::vector<std::shared_ptr<Texture>> t;
 	//t.clear(); // Clear vector to reuse
 
+	// std::set<> Pokud potøebujete uložit unikátní prvky v uspoøádaném poøadí a rychle je vyhledávat. Žádné duplikáty.
+	std::set<std::shared_ptr<Texture>> unique_textures;
 
+	int num_texture_to_load = 0;
 
 	glActiveTexture(GL_TEXTURE0 + 0);
 
 	for (int j = 0; j < m_material.size(); j++) {
 		
-			t.emplace_back(textureManager->getModelTexture(m_material[j]->diffuseMap));
-		
+		auto texture = textureManager->getModelTexture(m_material[j]->diffuseMap);
+		t.emplace_back(texture);
+		//unique_textures.insert(texture);
 
 		//t.emplace_back(textureManager->getModelTexture("..\\" + material[j]->diffuseMap));
 		//std::string a = "..\\" + material[j]->diffuseMap;
 	}
+
+	//auto t2 = t.erase(std::unique(t.begin(), t.end()), t.end());
+	
+	
+
+	/*auto new_end = std::remove_if(t2.begin(), t2.end(),
+		[&t2](const std::shared_ptr<Texture>& text)
+		{
+			auto it = std::find(t2.begin(), t2.end(), text->getName());
+			return it != t2.end();
+		});
+
+	t2.erase(new_end, t2.end());
+	*/
+
 
 	for (int i = 0; i < m_meshEntries.size(); ++i) {
 		if (m_material.size() - 1 >= i) {
@@ -168,7 +188,38 @@ void Mesh::render() // nefunkcni
 			}
 			else {
 				m_shader->sendUniform("hasTexture", 1);
-				glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
+
+				auto texture = textureManager->getModelTexture(m_material[i]->diffuseMap);
+				unique_textures.insert(texture);
+
+				// added
+				// Najít poøadí prvku v setu
+				auto it = unique_textures.find(t[i]);
+				if (it != unique_textures.end()) {
+					// Iterujeme od zaèátku setu až po hledaný prvek
+					int index = std::distance(unique_textures.begin(), it);
+					//std::cout << "Binding texture ID: " << it->getTextureId() << " at position " << index << std::endl;
+					glBindTexture(GL_TEXTURE_2D + 0, (*it)->getTextureId());
+					// glBindTexture(GL_TEXTURE_2D + num_texture_to_load++, it->getTextureId());
+				}
+				else {
+					//std::cout << "Texture ID " << (*it)->getTextureId() << " not found in set." << std::endl;
+				}
+
+				/*auto it = unique_textures.find(t[i]);
+				if (it != unique_textures.end()) {
+					// Iterujeme od zaèátku setu až po hledaný prvek
+					//int index = std::distance(unique_textures.begin(), it);
+					
+				}
+				
+				if (unique_textures.find(t[i]) != unique_textures.end()) {
+					//std::cout << "Hodnota " << value << " je v setu." << std::endl;
+
+				}*/
+
+				// added 2024 - commented - originally uncommented
+				//glBindTexture(GL_TEXTURE_2D + num_texture_to_load++, t[i]->getTextureId());
 			}
 			//printf("diffuse: %f, %f, %f\n", material[i]->diffuse.x, material[i]->diffuse.y, material[i]->diffuse.z);
 			m_shader->sendUniform("meshMaterial.ambient", m_material[i]->ambient);

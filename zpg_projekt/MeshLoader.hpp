@@ -22,22 +22,11 @@
 
 class Mesh;
 
-// Material -> presunout ho do samostatneho souboru a jen ho importovat
-/*struct Material {
-	glm::vec3 diffuse{ 0.f };
-	glm::vec3 specular{ 0.f };
-	glm::vec3 ambient{ 0.f };
-	std::string diffuseMap;
-	std::string specularMap;
-	std::string heightMap;
-	float shininess = 0.f;
-};*/
-
 class MeshLoader
 {
 private:
 	struct MeshEntry {
-		enum BUFFERS : int {
+		enum BUFFERS : int8_t {
 			VERTEX_BUFFER, TEXCOORD_BUFFER, NORMAL_BUFFER, INDEX_BUFFER
 		};
 
@@ -54,7 +43,6 @@ private:
 		
 		
 		unsigned int m_numVertices = 0;
-
 		unsigned int elementCount;
 
 		MeshEntry(aiMesh* mesh);
@@ -63,7 +51,7 @@ private:
 		int materialIndex = 0;	// added
 
 		//void load(aiMesh* mesh);
-		void render();
+		//void render();
 	};
 
 	std::vector<std::shared_ptr<struct MeshLoader::MeshEntry>> meshEntries;

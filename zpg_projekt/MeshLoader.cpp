@@ -142,7 +142,6 @@ MeshLoader::MeshEntry::MeshEntry(aiMesh* mesh) {
 **/
 MeshLoader::MeshEntry::~MeshEntry()
 {
-	int a = 0;
 	std::cout << "mesh deleted" << std::endl;
 	/*
 	if (vbo[VERTEX_BUFFER]) {
@@ -168,13 +167,13 @@ MeshLoader::MeshEntry::~MeshEntry()
 /**
 *	Renders this MeshEntry
 **/
-void MeshLoader::MeshEntry::render() {
+//void MeshLoader::MeshEntry::render() {
 	//glBindVertexArray(vao);
 	//m_VAO->bind();
 	//glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, NULL);
 	//glBindVertexArray(0);
 	//m_VAO->unbind();
-}
+//}
 
 /**
 *	Mesh constructor, loads the specified filename if supported by Assimp
@@ -426,7 +425,7 @@ void MeshLoader::render()
 			//printf("diffuse: %f, %f, %f\n", material[i]->diffuse.x, material[i]->diffuse.y, material[i]->diffuse.z);
 		}		
 
-		meshEntries.at(i)->render();
+		//meshEntries.at(i)->render();
 	}
 	t.clear(); // added mb smazat
 	//MemoryUsage::printMemoryUsage("After Render ");
@@ -466,7 +465,7 @@ void MeshLoader::renderFlame() {
 				//glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
 			}
 		}
-		meshEntries.at(i)->render();
+		//meshEntries.at(i)->render();
 	}
 }
 
@@ -480,7 +479,7 @@ void MeshLoader::render2() {
 	for (int i = 0; i < meshEntries.size(); ++i) {
 		//printf("mesh entries size %d\n", meshEntries.size());
 		glBindTexture(GL_TEXTURE_2D, t[i]->getTextureId());
-		meshEntries.at(i)->render();
+		//meshEntries.at(i)->render();
 	}
 }
 

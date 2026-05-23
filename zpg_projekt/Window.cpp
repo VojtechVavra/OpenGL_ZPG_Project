@@ -12,9 +12,9 @@ void Window::createWindow(const char* title, int width, int height)
 {
 	/**
 	 * GLFW (Graphics Library Framework)
-	 * GLFW je knihovna pro správu oken a vstupù, která je primárnì urèena pro použití s OpenGL. Poskytuje
-	 * jednoduché API pro vytváøení oken, kontextù OpenGL a zpracování uživatelských vstupù, jako je
-	 * klávesnice, myš a další zaøízení.
+	 * GLFW je knihovna pro správu oken a vstupù, která je primárnì urèena pro použití s OpenGL.
+	 * Poskytuje jednoduché API pro vytváøení oken, kontextù OpenGL a zpracování uživatelských vstupù,
+	 * jako je klávesnice, myš a další zaøízení.
 	 */
 	if (!glfwInit()) {
 		fprintf(stderr, "ERROR: could not start GLFW3\n");

@@ -22,6 +22,11 @@ public:
 		return this->texturePath == rhs;
 	}
 
+	// Operátor < potøebný pro std::set (pouzito v Mesh.cpp)
+	bool operator<(const Texture& other) const {
+		return textureId < other.textureId;
+	}
+
 	void Bind() const;
 	
 	void Delete();
