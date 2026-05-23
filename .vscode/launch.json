@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug zpg_projekt (Windows)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/x64/Debug/zpg_projekt.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/zpg_projekt",
+      "environment": [],
+      "console": "externalTerminal",
+      "preLaunchTask": "Build Solution (Debug x64)"
+    }
+  ]
+}
