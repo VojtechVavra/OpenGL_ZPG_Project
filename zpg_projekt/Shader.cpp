@@ -61,6 +61,7 @@ GLuint Shader::getShader(ShaderType fragmentShaderType)
         }
         return it->second;
     }
+    return 0;
 }
 
 std::vector<ShaderProgram> Shader::getShaderPrograms()

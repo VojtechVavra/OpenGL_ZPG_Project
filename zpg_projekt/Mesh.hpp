@@ -36,7 +36,7 @@ public:
 	void render();
 	void render(bool b);
 
-	int getTextureCount() const;
+	size_t getTextureCount() const;
 	void setShader(std::shared_ptr<Shader> shader);
 
 private:
@@ -50,7 +50,7 @@ private:
 	GLuint m_elementCount = 0;
 	std::shared_ptr<Shader> m_shader;
 
-	static enum BUFFERS {
+	enum BUFFERS {
 		VERTEX_BUFFER, TEXCOORD_BUFFER, NORMAL_BUFFER, INDEX_BUFFER
 	};
 };

@@ -8,7 +8,8 @@
       "args": [
         "${workspaceFolder}/zpg_projekt.sln",
         "/p:Configuration=Debug",
-        "/p:Platform=x64"
+        "/p:Platform=x64",
+        "/p:PreferredUILang=en-US"
       ],
       "group": { "kind": "build", "isDefault": true },
       "problemMatcher": ["$msCompile"],

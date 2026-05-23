@@ -57,21 +57,21 @@ glm::mat4 Camera::getProjectionMatrix()
 
 void Camera::setPerspectiveCamera()
 {
-	// Nastaveni projekèní matice na perspektivní promítání	(perspective projection)
-	// Projection matrix:            45° Field of View, 4:3 ratio, display range: 0.1 unit, 100 units
+	// Nastaveni projekï¿½nï¿½ matice na perspektivnï¿½ promï¿½tï¿½nï¿½	(perspective projection)
+	// Projection matrix:            45ï¿½ Field of View, 4:3 ratio, display range: 0.1 unit, 100 units
 	projection = glm::perspective(glm::radians(fov), width / height, 0.01f, 100.0f);
 
 	notifyObservers(this, camChange::PROJECTION);	// zoomed
 	//notifyObservers(this);	// zoomed
 }
 
-void Camera::setPerspectiveCamera(GLfloat width, GLfloat height)
+void Camera::setPerspectiveCamera(float width, float height)
 {
-	// Nastaveni projekèní matice na perspektivní promítání	(perspective projection)
-	// Projection matrix:            45° Field of View, 4:3 ratio, display range: 0.1 unit, 100 units
+	// Nastaveni projekn matice na perspektivn promtn	(perspective projection)
+	// Projection matrix:            45 Field of View, 4:3 ratio, display range: 0.1 unit, 100 units
 	this->width = width;
 	this->height = height;
-	GLfloat aspectRatio = width / height;	// 4/3 default 800x600
+	float aspectRatio = width / height;	// 4/3 default 800x600
 
 	this->projection = glm::perspective(glm::radians(fov), aspectRatio, 0.01f, 100.0f);
 
@@ -256,7 +256,7 @@ void Camera::processKeyboard(float deltaTime)
 }
 
 // processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-void Camera::processMouseScroll(float yoffset)
+void Camera::processMouseScroll(double yoffset)
 {
 	// camera zoom
 	fov -= (float)yoffset;

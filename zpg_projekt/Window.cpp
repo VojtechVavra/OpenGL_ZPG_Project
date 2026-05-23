@@ -6,23 +6,24 @@
 Window::Window(const char* title, int width, int height)
 {
 	createWindow(title, width, height);
+	VSyncEnable(false);
 }
 
 void Window::createWindow(const char* title, int width, int height)
 {
 	/**
 	 * GLFW (Graphics Library Framework)
-	 * GLFW je knihovna pro správu oken a vstupù, která je primárnì urèena pro pouití s OpenGL.
-	 * Poskytuje jednoduché API pro vytváøení oken, kontextù OpenGL a zpracování uivatelskıch vstupù,
-	 * jako je klávesnice, myš a další zaøízení.
+	 * GLFW je knihovna pro sprÃ¡vu oken a vstupÅ¯, kterÃ¡ je primÃ¡rnÄ› urÄena pro pouÅ¾itÃ­ s OpenGL.
+	 * Poskytuje jednoduchÃ© API pro vytvÃ¡Å™enÃ­ oken, kontext OpenGL a zpracovÃ¡nÃ­ uÅ¾ivatelskÃ½ch vstupÅ¯,
+	 * jako je klÃ¡vesnice, myÅ¡ a dalÅ¡Ã­ zaÅ™Ã­zenÃ­.
 	 */
 	if (!glfwInit()) {
 		fprintf(stderr, "ERROR: could not start GLFW3\n");
 		/**
 		 * Funkce exit()
-		 * Okamité ukonèení programu z jakéhokoliv místa v programu
-		 * Nepovolá destruktory lokálních objektù, co mùe vést k únikùm pamìti.
-		 * Funkce registrované pomocí atexit() budou volány, stejnì jako destruktory statickıch objektù.
+		 * OkamÅ¾itÄ› ukonÄenÃ­ programu z jakÃ©hokoliv mÃ­sta v programu
+		 * NepovolÃ­ destruktory lokÃ¡lnÃ­ch objektÅ¯, coÅ¾ mÅ¯Å¾e vÃ©st k ÃºnikÅ¯m pamÄ›ti.
+		 * Funkce registrovanÃ© pomocÃ­ atexit() budou volÃ¡ny, stejnÄ› jako destruktory statickÃ½ch objektÅ¯.
 		 */
 		exit(EXIT_FAILURE);
 	}
@@ -39,8 +40,6 @@ void Window::createWindow(const char* title, int width, int height)
 
 	// Make the window's context current
 	glfwMakeContextCurrent(this->m_glfwWindow);
-	
-	VSyncEnable(true);
 
 	// we will tell GLFW that it should hide the cursor and capture it. Capturing a cursor means that, once the application has focus, the mouse cursor stays within the center of the window (unless the application loses focus or quits). We can do this with one simple configuration call:
 	// After this call, wherever we move the mouse it won't be visible and it should not leave the window.
@@ -49,9 +48,9 @@ void Window::createWindow(const char* title, int width, int height)
 	/* Start GLEW extension handler
 	*  -----------------------------------------------------------------
 	*  GLEW (OpenGL Extension Wrangler Library)
-	*  je knihovna pro správu rozšíøení OpenGL. Poskytuje pøístup k
-	*  moderním funkcím OpenGL, které nemusí bıt dostupné ve standardní
-	*  implementaci OpenGL na daném systému.
+	*  je knihovna pro sprÃ¡vu rozÅ¡Ã­Å™enÃ­ OpenGL. Poskytuje pÅ™Ã­stup k
+	*  modernÃ­m funkcÃ­m OpenGL, kterÃ© nemusÃ­ bÃ½t dostupnÃ© ve standardnÃ­
+	*  implementaci OpenGL na danÃ©m systÃ©mu.
 	*/
 	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();

@@ -253,7 +253,7 @@ Mesh* createMesh(std::vector<unsigned short>& indices,
 {
 	std::vector<Vertex> vertices2;
 	// added mesh
-	for (int i = 0; i < vertices.size(); i++)
+	for (size_t i = 0; i < vertices.size(); ++i)
 	{
 		Vertex newVertex;
 

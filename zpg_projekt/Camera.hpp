@@ -62,12 +62,12 @@ public:
 	glm::mat4 getCamera();
 	glm::mat4 getProjectionMatrix();
 	void setPerspectiveCamera();
-	void setPerspectiveCamera(GLfloat width, GLfloat height);
+	void setPerspectiveCamera(float width, float height);
 	void processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
 	void setMoveDir(movDir _movDir);
 	void unSetMoveDir(movDir _movDir);
 	void processKeyboard(float deltaTime);
-	void processMouseScroll(float yoffset);
+	void processMouseScroll(double yoffset);
 	//void update2(Subject* subject) override;
 
 	Resolution getResolution();

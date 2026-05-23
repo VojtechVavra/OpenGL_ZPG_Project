@@ -1,8 +1,8 @@
 /*
 *	ZPG - Zaklady programovani grafiky 2020
-*   VäB - Vysok· äkola B·Úsk· - Technick· Univerzita Ostrava
+*   V≈†B - Vysok√° ≈†kola B√°≈àsk√° - Technick√° Univerzita Ostrava
 *   https://edison.sso.vsb.cz/cz.vsb.edison.edu.study.prepare.web/SubjectVersion.faces?version=460-2021/02&subjectBlockAssignmentId=299169&studyFormId=1&studyPlanId=19954&locale=cs&back=true   
-*   Author: Vooja "VojtÏch V·vra"
+*   Author: Vooja "Vojtƒõch V√°vra"
 *   This project passed in university, 
 *   now I continue on this project by expanding it and refactoring
 *	https://open.gl/transformations

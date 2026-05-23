@@ -32,7 +32,7 @@ Application::Application()
 	// TODO: Anti-Aliasing - it looks simple to enable it
 	// https://learnopengl.com/Advanced-OpenGL/Anti-Aliasing
 
-	srand(time(nullptr));
+	srand(static_cast<unsigned int>(time(nullptr)));
 }
 
 void Application::init()

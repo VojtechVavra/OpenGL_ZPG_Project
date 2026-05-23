@@ -46,30 +46,28 @@ void Callback::setWindow(GLFWwindow* glfwWindow) {
 	Callback::glfwWindow = glfwWindow;
 }
 
-// callback functions
 void Callback::error_callback(int error, const char* description) {
 	fputs(description, stderr);
 }
 
 void Callback::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
 	//printf("cursor_pos_callback ax:%d, ay:%d\n", (int)xpos, (int)ypos);
+	float curX = static_cast<float>(xpos);
+	float curY = static_cast<float>(ypos);
 	if (firstMouse)
 	{
 		int width, height;
 		glfwGetWindowSize(Callback::glfwWindow, &width, &height);
 
-		Callback::lastX = width / 2.0f;
-		Callback::lastY = height / 2.0f;
-		lastX = xpos;
-		lastY = ypos;
+		lastX = curX;
+		lastY = curY;
 		firstMouse = false;
 	}
-
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-	lastX = xpos;
-	lastY = ypos;
+	
+	float xoffset = curX - lastX;
+	float yoffset = lastY - curY; // reversed since y-coordinates go from bottom to top
+	lastX = curX;
+	lastY = curY;
 	
 	Callback::camera->processMouseMovement(xoffset, yoffset);
 }
@@ -111,7 +109,7 @@ void Callback::key_callback(GLFWwindow* window, int key, int scancode, int actio
 					int width, height;
 					glfwGetWindowSize(window, &width, &height);
 
-					// naËtenÌ ID a pozice ve svÏtov˝ch sou¯adnicÌch
+					// naƒçten√≠ ID a pozice ve svƒõtov√Ωch sou≈ôadnic√≠ch
 					GLbyte color[4];
 					GLfloat depth;
 					GLuint index = 0;
@@ -289,7 +287,7 @@ void Callback::window_size_callback(GLFWwindow* window, int width, int height) {
 	windSize[1] = height;
 	//Callback::window->printWindowSize();
 
-	Callback::camera->setPerspectiveCamera(width, height);
+	Callback::camera->setPerspectiveCamera(static_cast<float>(width), static_cast<float>(height));
 }
 
 void Callback::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -317,7 +315,7 @@ void Callback::button_callback(GLFWwindow* window, int button, int action, int m
 		glfwGetWindowSize(window, &width, &height);
 		//printf("window size [%d,%d]\n", width, height);
 
-		// naËtenÌ ID a pozice ve svÏtov˝ch sou¯adnicÌch
+		// naƒçten√≠ ID a pozice ve svƒõtov√Ωch sou≈ôadnic√≠ch
 		GLbyte color[4];
 		GLfloat depth;
 		GLuint index = 0;

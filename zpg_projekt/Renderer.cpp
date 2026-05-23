@@ -203,7 +203,7 @@ void Renderer::renderLoop()
 	//glAlphaFunc(GL_GREATER, 0.1f);
 	// end alpha rendering
 
-	//pøidání ID do stencil bufferu
+	//pÅ™idÃ¡nÃ­ ID do stencil bufferu
 	glEnable(GL_STENCIL_TEST);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
@@ -222,10 +222,10 @@ void Renderer::renderLoop()
 		fpsCounter.drawFps(currentFrame);
 
 		// flame animate texture
-		//flame.AnimateNextFrame(currentFrame);
+		//flame.AnimateNextFrame(static_cast<float>(currentFrame));
 
 		// input
-		scene->camera[0]->processKeyboard(deltaTime);
+		scene->camera[0]->processKeyboard(static_cast<float>(deltaTime));
 
 		// clear color and depth buffer
 		//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);	// space color (gray)
@@ -264,7 +264,7 @@ void Renderer::renderLoop()
 
 		// update other events like input handling
 		glfwPollEvents();
-		// put the stuff we’ve been drawing onto the display
+		// put the stuff we have been drawing onto the display
 		glfwSwapBuffers(glfwWindow);
 	}
 

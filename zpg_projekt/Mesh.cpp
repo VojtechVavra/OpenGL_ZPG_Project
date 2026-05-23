@@ -60,7 +60,7 @@ void Mesh::render(bool f)
 
 	auto textureManager = TextureManager::getInstance();
 	std::vector<std::shared_ptr<Texture>> t;
-	for (int j = 0; j < m_material.size(); j++) {
+	for (size_t j = 0; j < m_material.size(); ++j) {
 		if (m_material[j]->diffuseMap != "no_texture") {
 			t.emplace_back(textureManager->getModelTexture(m_material[j]->diffuseMap));
 		}
@@ -68,7 +68,7 @@ void Mesh::render(bool f)
 
 	int textureNumberToUse = 0;
 
-	for (int i = 0; i < m_meshEntries.size(); ++i) {
+	for (size_t i = 0; i < m_meshEntries.size(); ++i) {
 		/*if (!m_meshEntries[i] || !m_meshEntries[i]->m_VAO) {
 			std::cerr << "Error: MeshEntry or its VAO is not initialized!" << std::endl;
 			continue;
@@ -94,7 +94,7 @@ void Mesh::render(bool f)
 		glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[NORMAL_BUFFER]);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshEntries[i]->vbo[INDEX_BUFFER]);
 
-		if (m_material.size() - 1 >= i) {
+		if (i < m_material.size()) {
 			//m_shader.sendUniform("meshMaterial.ambient", glm::vec3(1.0f, 1.0f, 1.0f)/*m_material[i]->ambient*/);
 			//m_shader.sendUniform("meshMaterial.diffuse", m_material[i]->diffuse);
 			//m_shader.sendUniform("meshMaterial.specular", m_material[i]->specular);
@@ -144,7 +144,7 @@ void Mesh::render() // nefunkcni
 
 	glActiveTexture(GL_TEXTURE0 + 0);
 
-	for (int j = 0; j < m_material.size(); j++) {
+	for (size_t j = 0; j < m_material.size(); ++j) {
 		
 		auto texture = textureManager->getModelTexture(m_material[j]->diffuseMap);
 		t.emplace_back(texture);
@@ -169,8 +169,8 @@ void Mesh::render() // nefunkcni
 	*/
 
 
-	for (int i = 0; i < m_meshEntries.size(); ++i) {
-		if (m_material.size() - 1 >= i) {
+	for (size_t i = 0; i < m_meshEntries.size(); ++i) {
+		if (i < m_material.size()) {
 			glBindVertexArray(m_meshEntries[i]->vao);
             glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[VERTEX_BUFFER]);
             glBindBuffer(GL_ARRAY_BUFFER, m_meshEntries[i]->vbo[TEXCOORD_BUFFER]);
@@ -194,7 +194,7 @@ void Mesh::render() // nefunkcni
 				auto it = unique_textures.find(t[i]);
 				if (it != unique_textures.end()) {
 					// Iterujeme od začátku setu až po hledaný prvek
-					int index = std::distance(unique_textures.begin(), it);
+					auto index = std::distance(unique_textures.begin(), it);
 					//std::cout << "Binding texture ID: " << it->getTextureId() << " at position " << index << std::endl;
 					glBindTexture(GL_TEXTURE_2D + 0, (*it)->getTextureId());
 					// glBindTexture(GL_TEXTURE_2D + num_texture_to_load++, it->getTextureId());
@@ -230,7 +230,7 @@ void Mesh::render() // nefunkcni
 	//t.clear(); // added mb smazat
 }
 
-int Mesh::getTextureCount() const
+size_t Mesh::getTextureCount() const
 {
 	return m_textures.size();
 }

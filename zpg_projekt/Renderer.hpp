@@ -25,9 +25,9 @@ private:
 	
 	Flame* flame;
 	// timing
-	float currentFrame;
-	float deltaTime;	// time between current frame and last frame
-	float lastFrame;
+	double currentFrame;
+	double deltaTime;	// time between current frame and last frame
+	double lastFrame;
 };
 
 #endif // !RENDERER_HPP
