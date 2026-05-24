@@ -3,7 +3,7 @@
 #include "Renderer.hpp"
 #include "FPSCounter.hpp"
 #include "Window.hpp"
-
+#include "Flame.hpp"
 //#include "MemoryUsage.hpp"
 
 #include "glm/gtc/matrix_transform.hpp"

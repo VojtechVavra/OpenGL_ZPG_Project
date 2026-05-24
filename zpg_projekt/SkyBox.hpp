@@ -1,42 +1,34 @@
 #pragma once
 
 #include <memory>
+#include <string>
 #include <vector>
 
 #include <GL/glew.h>            // must be always included first!
-#include <glm/vec3.hpp>         // glm::vec3
-#include <glm/vec4.hpp>         // glm::vec4
-#include <glm/mat4x4.hpp>       // glm::mat4
-
-#include "Texture.hpp"
 #include "ShaderProgram.hpp"
 
+class Camera;
 
-// IMPORTANT
-// Images must be in cube format all in same size.
-// for example 1024x1024 each, otherwise skybox will be black
-
+// IMPORTANT: All cubemap images must be square and the same size (e.g. 1024x1024)
 class SkyBox
 {
 public:
-    SkyBox(const std::string imageType, const std::string skybox, const float size = 1);
+    SkyBox(const std::string& imagePath, const std::string& imageExtension, float size = 1.0f);
     ~SkyBox();
 
-    unsigned int loadCubemap(std::vector<std::string> faces, const std::string sky);
-    void InitJpg(const float size, const std::string sky);
-    void InitTga(const float size, const std::string sky);
+    // Non-copyable (owns OpenGL resources)
+    SkyBox(const SkyBox&) = delete;
+    SkyBox& operator=(const SkyBox&) = delete;
 
-    void draw(const ShaderProgram& shader, const std::shared_ptr<Camera>& camera);
-    //void draw() const;
+    void draw(const ShaderProgram& shader, const std::shared_ptr<Camera>& camera) const;
+
 private:
-    GLuint VBOvertices, VBOindices;
-    unsigned int cubemapTexture;
-
-    std::shared_ptr<Texture> cubeMap;
-    //Shader& shader;
-
-    GLuint vbo = 0;
     GLuint vao = 0;
+    GLuint vboVertices = 0;
+    GLuint vboIndices = 0;
+    GLuint cubemapTexture = 0;
 
-    GLuint textureId;
+    void initMesh(float size);
+    void initCubemap(const std::string& imagePath, const std::string& imageExtension);
+    GLuint loadCubemap(const std::vector<std::string>& faces);
 };

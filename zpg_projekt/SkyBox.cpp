@@ -1,215 +1,122 @@
 ﻿#include "SkyBox.hpp"
 #include "Camera.hpp"
-
 #include "SOIL.h"
 
+#include <filesystem>
 #include <iostream>
+#include <stdexcept>
 
 
-
-SkyBox::SkyBox(const std::string imageType, const std::string skybox, const float size)
+SkyBox::SkyBox(const std::string& imagePath, const std::string& imageExtension, float size)
 {
-    if (imageType == "jpg") {
-        InitJpg(size, skybox);
-    }
-    else if(imageType == "tga") {
-        InitTga(size, skybox);
-    }  
-};
+    initMesh(size);
+    initCubemap(imagePath, imageExtension);
+}
 
 SkyBox::~SkyBox()
 {
-    std::cout << "Destructor of SkyBox" << std::endl;
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vboVertices);
+    glDeleteBuffers(1, &vboIndices);
+    glDeleteTextures(1, &cubemapTexture);
 }
 
-unsigned int SkyBox::loadCubemap(std::vector<std::string> faces, const std::string sky)
+void SkyBox::initMesh(float size)
 {
-    unsigned int textureID;
+    const GLfloat vertices[] = {
+         size,  size,  size,
+         size, -size,  size,
+         size,  size, -size,
+         size, -size, -size,
+        -size, -size, -size,
+        -size,  size, -size,
+        -size, -size,  size,
+        -size,  size,  size
+    };
+
+    const GLuint indices[] = {
+        0,1,3, 3,2,0,
+        0,1,7, 7,6,1,
+        1,3,6, 6,4,3,
+        3,2,4, 4,2,5,
+        5,4,6, 6,5,7,
+        7,5,2, 2,0,7
+    };
+
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &vboVertices);
+    glGenBuffers(1, &vboIndices);
+
+    glBindVertexArray(vao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vboVertices);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glBindVertexArray(0);
+}
+
+void SkyBox::initCubemap(const std::string& imagePath, const std::string& ext)
+{
+    const std::vector<std::string> faces = {
+        (imagePath + "\\right."  + ext),
+        (imagePath + "\\left."   + ext),
+        (imagePath + "\\up."    + ext),     // top
+        (imagePath + "\\down." + ext),      // bottom
+        (imagePath + "\\back."   + ext),
+        (imagePath + "\\front."  + ext),
+    };
+
+    cubemapTexture = loadCubemap(faces);
+}
+#include <windows.h>
+GLuint SkyBox::loadCubemap(const std::vector<std::string>& faces)
+{
+    GLuint textureID = 0;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
-    //skybox path = /textures/skybox/countryside/
-    std::string path = std::string("textures\\skybox\\") + sky + std::string("\\");
-    int width, height, nrChannels;
-    for (unsigned int i = 0; i < faces.size(); i++)
+    int width, height, channels;
+    for (GLuint i = 0; i < faces.size(); ++i)
     {
-        std::string file = path + faces[i];
-        std::cerr << file << std::endl;
-        GLubyte* data = SOIL_load_image(file.c_str(), &width, &height, &nrChannels, SOIL_LOAD_AUTO);
+        GLubyte* data = SOIL_load_image(faces[i].c_str(), &width, &height, &channels, SOIL_LOAD_RGB);
         if (data)
         {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
-            );
-            // glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+                0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
             SOIL_free_image_data(data);
-            // glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
         }
         else
         {
-            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
             SOIL_free_image_data(data);
+            glDeleteTextures(1, &textureID);
+            std::cerr << "SOIL error: " << SOIL_last_result() << std::endl;
+            throw std::runtime_error("Cubemap face failed to load: " + faces[i]);
         }
     }
+
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    
 
     return textureID;
 }
 
-void SkyBox::InitJpg(const float size, const std::string sky) {
-    GLfloat sky_vertices[] = {
-        size,  size,  size,
-        size, -size,  size,
-        size,  size, -size,
-        size, -size, -size,
-       -size, -size, -size,
-       -size,  size, -size,
-       -size, -size,  size,
-       -size,  size,  size
-    };
-
-    GLuint sky_indices[] = {
-        0, 1, 3,
-        3, 2, 0,
-        0, 1, 7,
-        7, 6, 1,
-        1, 3, 6,
-        6, 4, 3,
-        3, 2, 4,
-        4, 2, 5,
-        5, 4, 6,
-        6, 5, 7,
-        7, 5, 2,
-        2, 0, 7
-    };
-
-    // IMPORTANT
-    // Images must be in cube format all in same size.
-    // for example 1024x1024 each, otherwise skybox will be black
-    std::vector<std::string> faces
-    {
-        "right.jpg",
-        "left.jpg",
-        "top.jpg",
-        "bottom.jpg",
-        "back.jpg",
-        "front.jpg"
-    };
-    
-
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &VBOvertices);
-    glGenBuffers(1, &VBOindices);
-
-    cubemapTexture = loadCubemap(faces, sky);
-    glBindVertexArray(vao);
-
-    //passing the vertex coordinates attribute to the shader program
-    glBindBuffer(GL_ARRAY_BUFFER, VBOvertices);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(sky_vertices), sky_vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
-
-    //passing indices to the shader program
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOindices);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sky_indices), sky_indices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(0);
-}
-
-void SkyBox::InitTga(const float size, const std::string sky) {
-    GLfloat sky_vertices[] = {
-        size,  size,  size,
-        size, -size,  size,
-        size,  size, -size,
-        size, -size, -size,
-       -size, -size, -size,
-       -size,  size, -size,
-       -size, -size,  size,
-       -size,  size,  size
-    };
-
-    GLuint sky_indices[] = {
-        0, 1, 3,
-        3, 2, 0,
-        0, 1, 7,
-        7, 6, 1,
-        1, 3, 6,
-        6, 4, 3,
-        3, 2, 4,
-        4, 2, 5,
-        5, 4, 6,
-        6, 5, 7,
-        7, 5, 2,
-        2, 0, 7
-    };
-
-    // IMPORTANT
-    // Images must be in cube format all in same size.
-    // for example 1024x1024 each, otherwise skybox will be black
-    std::vector<std::string> faces
-    {
-        "right.tga",
-        "left.tga",
-        "up.tga",
-        "down.tga",
-        "back.tga",
-        "front.tga"
-    };
-
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &VBOvertices);
-    glGenBuffers(1, &VBOindices);
-
-    cubemapTexture = loadCubemap(faces, sky);
-    glBindVertexArray(vao);
-
-    //passing the vertex coordinates attribute to the shader program
-    glBindBuffer(GL_ARRAY_BUFFER, VBOvertices);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(sky_vertices), sky_vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
-
-    //passing indices to the shader program
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, VBOindices);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sky_indices), sky_indices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(0);
-}
-
-void SkyBox::draw(const ShaderProgram& shader, const std::shared_ptr<Camera>& camera)
+void SkyBox::draw(const ShaderProgram& shader, const std::shared_ptr<Camera>& camera) const
 {
-    //glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-    //shader.StartUseShader();
-    //glDepthMask(GL_FALSE);
-    
     glUseProgram(shader.shaderProgram);
-
-    Shader::sendUniform(shader.shaderProgram, "viewMatrix", camera->getCamera());
+    Shader::sendUniform(shader.shaderProgram, "viewMatrix",       camera->getCamera());
     Shader::sendUniform(shader.shaderProgram, "projectionMatrix", camera->getProjectionMatrix());
+    Shader::sendUniform(shader.shaderProgram, "skybox", 0);
 
     glBindVertexArray(vao);
-    //bindVAO();
-
-    //glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-
-    //shader.SetUniform("skybox", 0);
-    Shader::sendUniform(shader.shaderProgram, "skybox", 0);
-    
-    //render();
-    glDrawElements(GL_TRIANGLE_STRIP, 36, GL_UNSIGNED_INT, nullptr); // funguje
-    //glBindVertexArray(0);
-    //glDrawArrays(GL_TRIANGLES, 0, 36);
-    //glDepthMask(GL_TRUE);
-    //glDepthFunc(GL_LESS); // set depth function back to default
+    glDrawElements(GL_TRIANGLE_STRIP, 36, GL_UNSIGNED_INT, nullptr);
+    glBindVertexArray(0);
 }

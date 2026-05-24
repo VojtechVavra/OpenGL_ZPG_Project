@@ -261,7 +261,7 @@ void Object::draw()
     m_shader->sendUniform("viewMatrix", m_camera->getCamera());
     m_shader->sendUniform("projectionMatrix", m_camera->getProjectionMatrix());
 
-    // Pošleme z CPU do GPU uniformní promìnné aktualizovaných dat
+    // PoÅ¡leme z CPU do GPU uniformnÃ­ promÄ›nnÃ© aktualizovanÃ½ch dat
     m_shader->sendUniform("modelMatrix", m_matrix);
     //m_shader.sendUniform("fragmentColor", color);
     // send uniformmeshMaterial
@@ -271,12 +271,12 @@ void Object::draw()
     if (hasTexture())
     {
         m_shader->sendUniform("myTextureSampler", (GLint)0);
-        // Funkce, která binduje texturu pro použití v shaderu
+        // Funkce, kterÃ¡ binduje texturu pro pouÅ¾itÃ­ v shaderu
         // TODO: funkce texture->Bind() musi byt nejspis presunuta do tridi Mesh
         //texture->Bind();
     }
 
-    // viewMatrix a projectionMatrix a viewPos se updatuje ve ShaderProgram classe pøi zmìnì kamery
+    // viewMatrix a projectionMatrix a viewPos se updatuje ve ShaderProgram classe pÅ™i zmÄ›nÄ› kamery
     
     //GLint stencilValue = 0; // 15
     //glStencilFunc(GL_ALWAYS, stencilValue, 0xFF);

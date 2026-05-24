@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "Scene.hpp"
-#include "Flame.hpp"
 
 class Renderer
 {
@@ -23,7 +22,7 @@ private:
 	void renderModel(int i_stencil_offset);
 	void renderModel2(int meshModel); // 2021 - repairing loading models
 	
-	Flame* flame;
+	class Flame* flame;
 	// timing
 	double currentFrame;
 	double deltaTime;	// time between current frame and last frame

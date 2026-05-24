@@ -459,7 +459,7 @@ void Scene::addObject(std::string modelName, ShaderType shaderType, glm::vec3 po
 
 void Scene::skyboxSection()
 {
-	skybox = std::make_shared<SkyBox>("tga", "env", 1.0f);
+	skybox = std::make_shared<SkyBox>("textures\\skybox\\env", "tga", 1.0f);
 	GLuint shaderProgram = Shader::getShader(ShaderType::SKYBOX);
 	ShaderProgram new_skyboxshader(ShaderType::SKYBOX, shaderProgram);
 	skyboxshader = new_skyboxshader;
